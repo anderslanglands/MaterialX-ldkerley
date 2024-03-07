@@ -328,6 +328,16 @@ MslSyntax::MslSyntax()
             EMPTY_STRING,
             "surfaceshader",
             "#define material surfaceshader"));
+
+
+    registerTypeSyntax(
+        Type::TEXCOORD,
+        std::make_shared<StructTypeSyntax>(
+            "texcoord",
+            "texcoord{0.5, 0.5}",
+            EMPTY_STRING,
+            EMPTY_STRING,
+            "struct texcoord { float ss; float tt; };"));
 }
 
 string MslSyntax::getOutputTypeName(TypeDesc type) const

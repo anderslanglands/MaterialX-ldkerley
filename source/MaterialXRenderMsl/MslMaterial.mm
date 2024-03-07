@@ -55,6 +55,8 @@ void MslMaterial::clearShader()
     _glProgram = nullptr;
 }
 
+
+
 bool MslMaterial::generateShader(GenContext& context)
 {
     if (!_elem)
@@ -75,6 +77,32 @@ bool MslMaterial::generateShader(GenContext& context)
     {
         return false;
     }
+
+    for (auto stage : {Stage::PIXEL, Stage::VERTEX})
+    {
+        auto filename = "shaderSource_"+stage+".txt";
+        auto src = _hwShader->getSourceCode(stage);
+
+        //get the documents directory:
+        NSArray *paths = NSSearchPathForDirectoriesInDomains
+            (NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+
+        NSString *filePath = [NSString stringWithCString:filename.c_str() encoding:[NSString defaultCStringEncoding]];
+
+        //make a file name to write the data to using the documents directory:
+        NSString *fileName = [NSString stringWithFormat:@"%@/%@", documentsDirectory, filePath];
+        //create content - four lines of text
+        NSString *content = [NSString stringWithCString:src.c_str() encoding:[NSString defaultCStringEncoding]];
+        //save content to the documents directory
+        [content writeToFile:fileName
+                  atomically:NO
+                    encoding:NSStringEncodingConversionAllowLossy
+                       error:nil];
+
+
+    }
+
 
     _glProgram = MslProgram::create();
     _glProgram->setStages(_hwShader);

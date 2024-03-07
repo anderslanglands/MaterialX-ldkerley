@@ -1020,7 +1020,9 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                 }
 
                 int tries = 0;
-                auto inputIt = _uniformList.find(v->getVariable());
+
+                auto vvar = v->getVariable();
+                auto inputIt = _uniformList.find(vvar);
 try_again:      if (inputIt != _uniformList.end())
                 {
                     Input* input = inputIt->second.get();
@@ -1429,7 +1431,8 @@ MTLDataType MslProgram::mapTypeToMetalType(TypeDesc type)
              type == Type::VDF                ||
              type == Type::SURFACESHADER      ||
              type == Type::LIGHTSHADER        ||
-             type == Type::VOLUMESHADER)
+             type == Type::VOLUMESHADER       ||
+             type.getBaseType() == TypeDesc::BASETYPE_STRUCT)
         return MTLDataTypeStruct;
 
     return MTLDataTypeNone;

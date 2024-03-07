@@ -408,4 +408,30 @@ string AggregateTypeSyntax::getValue(const StringVec& values, bool /*uniform*/) 
     return ss.str();
 }
 
+string StructTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
+{
+    const string valueString = value.getValueString();
+    return valueString.empty() ? valueString : getName() + "{" + valueString + "}";
+}
+
+string StructTypeSyntax::getValue(const StringVec& values, bool /*uniform*/) const
+{
+    if (values.empty())
+    {
+        throw ExceptionShaderGenError("No values given to construct a value");
+    }
+
+    // Write the value using a stream to maintain any float formatting set
+    // using Value::setFloatFormat() and Value::setFloatPrecision()
+    StringStream ss;
+    ss << getName() << "{" << values[0];
+    for (size_t i = 1; i < values.size(); ++i)
+    {
+        ss << ", " << values[i];
+    }
+    ss << "}";
+
+    return ss.str();
+}
+
 MATERIALX_NAMESPACE_END

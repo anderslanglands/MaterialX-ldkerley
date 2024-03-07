@@ -313,6 +313,16 @@ class MX_GENSHADER_API AggregateTypeSyntax : public TypeSyntax
     string getValue(const StringVec& values, bool uniform) const override;
 };
 
+/// Specialization of TypeSyntax for aggregate types.
+class MX_GENSHADER_API StructTypeSyntax : public AggregateTypeSyntax
+{
+  public:
+    using AggregateTypeSyntax::AggregateTypeSyntax;
+
+    string getValue(const Value& value, bool uniform) const override;
+    string getValue(const StringVec& values, bool uniform) const override;
+};
+
 MATERIALX_NAMESPACE_END
 
 #endif
