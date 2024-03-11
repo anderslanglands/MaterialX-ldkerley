@@ -53,6 +53,17 @@ TypeDescRegistry::TypeDescRegistry(TypeDesc type, const std::string& name)
     typenames[type.typeId()] = name;
 }
 
+TypeDesc createStructTypeDesc(std::string_view name)
+{
+    return {name, TypeDesc::BASETYPE_STRUCT};
+}
+
+void registerStructTypeDesc(std::string_view name)
+{
+    auto structTypeDesc = createStructTypeDesc(name);
+    TypeDescRegistry register_struct(structTypeDesc, name);
+}
+
 namespace Type
 {
 
@@ -82,6 +93,7 @@ TYPEDESC_REGISTER_TYPE(VOLUMESHADER, "volumeshader")
 TYPEDESC_REGISTER_TYPE(DISPLACEMENTSHADER, "displacementshader")
 TYPEDESC_REGISTER_TYPE(LIGHTSHADER, "lightshader")
 TYPEDESC_REGISTER_TYPE(MATERIAL, "material")
+
 TYPEDESC_REGISTER_TYPE(TEXCOORD, "texcoord")
 
 }
