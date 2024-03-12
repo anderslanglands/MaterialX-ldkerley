@@ -61,7 +61,7 @@ TypeDesc createStructTypeDesc(std::string_view name)
 void registerStructTypeDesc(std::string_view name)
 {
     auto structTypeDesc = createStructTypeDesc(name);
-    TypeDescRegistry register_struct(structTypeDesc, name);
+    TypeDescRegistry register_struct(structTypeDesc, std::string(name));
 }
 
 namespace Type
