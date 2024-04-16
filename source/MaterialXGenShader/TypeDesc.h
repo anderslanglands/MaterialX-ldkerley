@@ -17,17 +17,17 @@ MATERIALX_NAMESPACE_BEGIN
 
 /// @class TypeDesc
 /// A type descriptor for MaterialX data types.
-/// 
+///
 /// All types need to have a type descriptor registered in order for shader generators
 /// to know about the type. It can be used for type comparisons as well as getting more
 /// information about the type. Type descriptors for all standard library data types are
 /// registered by default and can be accessed from the Type namespace, e.g. Type::FLOAT.
 ///
 /// To register custom types use the macro TYPEDESC_DEFINE_TYPE to define it in a header
-/// and the macro TYPEDESC_REGISTER_TYPE to register it in the type registry. Registration 
+/// and the macro TYPEDESC_REGISTER_TYPE to register it in the type registry. Registration
 /// must be done in order to access the type's name later using getName() and to find the
 /// type by name using TypeDesc::get().
-/// 
+///
 /// The class is a POD type of 64-bits and can efficiently be stored and passed by value.
 /// Type compare operations and hash operations are done using a precomputed hash value.
 ///
@@ -60,14 +60,15 @@ public:
     };
 
     /// Empty constructor.
-    constexpr TypeDesc() noexcept : _id(0), _basetype(BASETYPE_NONE), _semantic(SEMANTIC_NONE), _size(0) {}
+    constexpr TypeDesc() noexcept : _id(0), _basetype(BASETYPE_NONE), _semantic(SEMANTIC_NONE), _size(0), _structIndex(0) {}
 
     /// Constructor.
-    constexpr TypeDesc(std::string_view name, uint8_t basetype, uint8_t semantic = SEMANTIC_NONE, uint16_t size = 1) noexcept :
+    constexpr TypeDesc(std::string_view name, uint8_t basetype, uint8_t semantic = SEMANTIC_NONE, uint8_t size = 1, uint8_t structIndex = 0) noexcept :
         _id(constexpr_hash(name)), // Note: We only store the hash to keep the class size minimal.
         _basetype(basetype),
         _semantic(semantic),
-        _size(size)
+        _size(size),
+        _structIndex(structIndex)
     {}
 
     /// Return the unique id assigned to this type.
@@ -154,7 +155,8 @@ private:
     uint32_t _id;
     uint8_t _basetype;
     uint8_t _semantic;
-    uint16_t _size;
+    uint8_t _size;
+    uint8_t _structIndex;
 };
 
 /// @class TypeDescRegistry
@@ -163,6 +165,44 @@ class MX_GENSHADER_API TypeDescRegistry
 {
 public:
     TypeDescRegistry(TypeDesc type, const string& name);
+};
+
+// TODO - complete documentation
+
+/// @class StructTypeDesc
+/// A type descriptor for MaterialX struct types.
+///
+/// All types need to have a type descriptor registered in order for shader generators
+/// to know about the type. It can be used for type comparisons as well as getting more
+/// information about the type. Type descriptors for all standard library data types are
+/// registered by default and can be accessed from the Type namespace, e.g. Type::FLOAT.
+///
+/// To register custom types use the macro TYPEDESC_DEFINE_TYPE to define it in a header
+/// and the macro TYPEDESC_REGISTER_TYPE to register it in the type registry. Registration
+/// must be done in order to access the type's name later using getName() and to find the
+/// type by name using TypeDesc::get().
+///
+/// The class is a POD type of 64-bits and can efficiently be stored and passed by value.
+/// Type compare operations and hash operations are done using a precomputed hash value.
+///
+class MX_GENSHADER_API StructTypeDesc
+{
+  public:
+    /// Empty constructor.
+    constexpr StructTypeDesc() noexcept : {}
+
+  private:
+
+    std::vector<std::string> _memberNames;
+    std::vector<TypeDesc> _memberTypes;
+    std::vector<std::string> _memberDefaultValues;
+};
+
+
+class MX_GENSHADER_API StructTypeDescRegistry
+{
+public:
+    StructTypeDescRegistry();
 };
 
 /// Macro to define global type descriptions for commonly used types.
