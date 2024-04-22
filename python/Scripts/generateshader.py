@@ -139,6 +139,9 @@ def main():
         shadergen.setUnitSystem(unitsystem)
         genoptions.targetDistanceUnit = 'meter'
 
+        print('- Set up Struct typedefs ...')
+        shadergen.loadStructTypeDefs(doc)
+
         # Look for renderable nodes
         nodes = mx_gen_shader.findRenderableElements(doc)
         if not nodes:

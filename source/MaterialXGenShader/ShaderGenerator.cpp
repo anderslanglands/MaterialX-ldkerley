@@ -348,6 +348,58 @@ ShaderNodeImplPtr ShaderGenerator::getImplementation(const NodeDef& nodedef, Gen
     return impl;
 }
 
+
+/// Load any struct type definitions from the document in to the type cache.
+void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc)
+{
+    for (const auto& mxTypeDef : doc->getTypeDefs())
+    {
+        const auto& typeDefName = mxTypeDef->getName();
+        const auto& members = mxTypeDef->getMembers();
+
+        // if we don't have any member children then we're not going to consider ourselves a struct.
+        if (members.empty())
+            continue;
+
+        StructTypeDesc newStructTypeDesc;
+        for (const auto& member : members)
+        {
+            auto memberName = member->getName();
+            auto memberTypeName = member->getType();
+            auto memberType = TypeDesc::get(memberTypeName);
+            auto memberDefaultValue = member->getDefaultValue();
+
+            newStructTypeDesc.addMember(memberName, memberType, memberDefaultValue);
+        }
+
+        auto structIndex = StructTypeDesc::emplace_back(newStructTypeDesc);
+
+        TypeDesc structTypeDesc(typeDefName, TypeDesc::BASETYPE_STRUCT, TypeDesc::SEMANTIC_NONE, 1, structIndex);
+
+//
+//        /// Constructor.
+//        constexpr TypeDesc(std::string_view name, uint8_t basetype, uint8_t semantic = SEMANTIC_NONE, uint8_t size = 1, uint8_t structIndex = 0) noexcept :
+//            _id(constexpr_hash(name)), // Note: We only store the hash to keep the class size minimal.
+//            _basetype(basetype),
+//            _semantic(semantic),
+//            _size(size),
+//            _structIndex(structIndex)
+//        {}
+
+
+        TypeDescRegistry(structTypeDesc, typeDefName);
+
+    }
+}
+
+/// Clear any struct type definitions loaded
+void ShaderGenerator::clearStructTypeDefs()
+{
+    StructTypeDesc::clear();
+}
+
+
+
 namespace
 {
 

@@ -10,6 +10,7 @@
 /// Type descriptor for a MaterialX data type.
 
 #include <MaterialXGenShader/Export.h>
+#include <MaterialXCore/Value.h>
 
 #include <string_view>
 
@@ -84,6 +85,9 @@ public:
     /// Return the semantic for the type.
     unsigned char getSemantic() const { return _semantic; }
 
+    /// Return the index for the struct member information in StructTypeDesc
+    unsigned int getStructIndex() const { return _structIndex; }
+
     /// Return the number of elements the type is composed of.
     /// Will return 1 for scalar types and a size greater than 1 for aggregate type.
     /// For array types 0 is returned since the number of elements is undefined
@@ -142,6 +146,9 @@ public:
     /// If no type is found Type::NONE is returned.
     static TypeDesc get(const string& name);
 
+    /// Remove a type description by name, if it exists.
+    static void remove(const string& name);
+
     static const string NONE_TYPE_NAME;
 
 private:
@@ -167,6 +174,9 @@ public:
     TypeDescRegistry(TypeDesc type, const string& name);
 };
 
+
+
+
 // TODO - complete documentation
 
 /// @class StructTypeDesc
@@ -189,13 +199,25 @@ class MX_GENSHADER_API StructTypeDesc
 {
   public:
     /// Empty constructor.
-    constexpr StructTypeDesc() noexcept : {}
+     StructTypeDesc() noexcept {}
+
+    void addMember(const std::string& name, TypeDesc type, ValuePtr defaultValue)
+    {
+        _memberNames.emplace_back(name);
+        _memberTypes.emplace_back(type);
+        _memberDefaultValues.emplace_back(defaultValue);
+    }
+
+    /// Return a type description by index.
+    static StructTypeDesc get(unsigned int index);
+    static unsigned int emplace_back(StructTypeDesc structTypeDesc);
+    static void clear();
 
   private:
 
     std::vector<std::string> _memberNames;
     std::vector<TypeDesc> _memberTypes;
-    std::vector<std::string> _memberDefaultValues;
+    std::vector<ValuePtr> _memberDefaultValues;
 };
 
 

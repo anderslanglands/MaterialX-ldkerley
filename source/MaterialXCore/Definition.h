@@ -415,11 +415,11 @@ class MX_CORE_API TargetDef : public TypedElement
 
 /// @class Member
 /// A member element within a TypeDef.
-class MX_CORE_API Member : public TypedElement
+class MX_CORE_API Member : public ValueElement
 {
   public:
     Member(ElementPtr parent, const string& name) :
-        TypedElement(parent, CATEGORY, name)
+        ValueElement(parent, CATEGORY, name)
     {
     }
     virtual ~Member() { }

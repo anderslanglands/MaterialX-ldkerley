@@ -27,6 +27,13 @@ namespace
         return map;
     }
 
+    using StructTypeDescStorage = std::vector<StructTypeDesc>;
+    StructTypeDescStorage& structTypeStorage()
+    {
+        static StructTypeDescStorage  storage;
+        return storage;
+    }
+
 } // anonymous namespace
 
 const string TypeDesc::NONE_TYPE_NAME = "none";
@@ -43,6 +50,52 @@ TypeDesc TypeDesc::get(const string& name)
     TypeDescMap& types = typeMap();
     auto it = types.find(name);
     return it != types.end() ? it->second : Type::NONE;
+}
+
+void TypeDesc::remove(const string& name)
+{
+    TypeDescNameMap& typenames = typeNameMap();
+
+    TypeDescMap& types = typeMap();
+
+    auto it = types.find(name);
+    if (it == types.end())
+        return;
+
+    typenames.erase(it->second.typeId());
+    types.erase(name);
+
+}
+
+StructTypeDesc StructTypeDesc::get(unsigned int index)
+{
+    StructTypeDescStorage& structs = structTypeStorage();
+    return structs[index];
+
+    // TODO - come back and see if we want to return a NONE type object.
+//    if (index < structs.size())
+//        return structs[index]
+//
+//    return (index < structs.size()) ? structs[index] : S
+}
+
+unsigned int StructTypeDesc::emplace_back(StructTypeDesc structTypeDesc)
+{
+    StructTypeDescStorage& structs = structTypeStorage();
+    structs.emplace_back(structTypeDesc);
+    return structs.size()-1;
+}
+
+void StructTypeDesc::clear()
+{
+    StructTypeDescStorage& structs = structTypeStorage();
+    for (const auto& structType: structs)
+    {
+        // need to add typeID to structTypeDesc - and use it here to reference back to typeDesc obj and remove it.
+
+        TypeDesc::remove(structType.
+    }
+    structs.clear();
 }
 
 TypeDescRegistry::TypeDescRegistry(TypeDesc type, const std::string& name)
@@ -97,5 +150,6 @@ TYPEDESC_REGISTER_TYPE(MATERIAL, "material")
 TYPEDESC_REGISTER_TYPE(TEXCOORD, "texcoord")
 
 }
+
 
 MATERIALX_NAMESPACE_END
