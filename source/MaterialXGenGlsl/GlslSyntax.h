@@ -33,7 +33,6 @@ class MX_GENGLSL_API GlslSyntax : public Syntax
 
     void registerStructTypeDescSyntax() override;
 
-
     /// Given an input specification attempt to remap this to an enumeration which is accepted by
     /// the shader generator. The enumeration may be converted to a different type than the input.
     bool remapEnumeration(const string& value, TypeDesc type, const string& enumNames, std::pair<TypeDesc, ValuePtr>& result) const override;

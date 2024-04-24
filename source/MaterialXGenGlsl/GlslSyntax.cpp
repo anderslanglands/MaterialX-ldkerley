@@ -349,6 +349,7 @@ GlslSyntax::GlslSyntax()
             "#define material surfaceshader"));
 }
 
+
 void GlslSyntax::registerStructTypeDescSyntax()
 {
 
@@ -388,6 +389,7 @@ void GlslSyntax::registerStructTypeDescSyntax()
                 typeDefinition));
     }
 }
+
 
 bool GlslSyntax::typeSupported(const TypeDesc* type) const
 {

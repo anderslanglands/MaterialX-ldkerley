@@ -24,6 +24,8 @@ class MX_GENOSL_API OslSyntax : public Syntax
 
     static SyntaxPtr create() { return std::make_shared<OslSyntax>(); }
 
+    void registerStructTypeDescSyntax() override;
+
     const string& getOutputQualifier() const override;
     const string& getConstantQualifier() const override { return EMPTY_STRING; };
     const string& getSourceFileExtension() const override { return SOURCE_FILE_EXTENSION; };
