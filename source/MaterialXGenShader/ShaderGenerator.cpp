@@ -13,6 +13,8 @@
 #include <MaterialXGenShader/Nodes/ClosureSourceCodeNode.h>
 #include <MaterialXGenShader/Util.h>
 
+#include <MaterialXGenShader/StructTypeDesc.h>
+
 #include <MaterialXFormat/File.h>
 
 #include <MaterialXCore/Document.h>
@@ -367,7 +369,7 @@ void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc)
             auto memberName = member->getName();
             auto memberTypeName = member->getType();
             auto memberType = TypeDesc::get(memberTypeName);
-            auto memberDefaultValue = member->getDefaultValue();
+            auto memberDefaultValue = member->getValueString();
 
             newStructTypeDesc.addMember(memberName, memberType, memberDefaultValue);
         }
@@ -375,6 +377,7 @@ void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc)
         auto structIndex = StructTypeDesc::emplace_back(newStructTypeDesc);
 
         TypeDesc structTypeDesc(typeDefName, TypeDesc::BASETYPE_STRUCT, TypeDesc::SEMANTIC_NONE, 1, structIndex);
+
 
 //
 //        /// Constructor.
@@ -389,7 +392,15 @@ void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc)
 
         TypeDescRegistry(structTypeDesc, typeDefName);
 
+        auto typeDesc = TypeDesc::get(typeDefName);
+
+        auto& structTD = StructTypeDesc::get(structIndex);
+        structTD.setTypeDesc(typeDesc);
+
     }
+
+    _syntax->registerStructTypeDescSyntax();
+
 }
 
 /// Clear any struct type definitions loaded

@@ -4,6 +4,7 @@
 //
 
 #include <MaterialXGenShader/TypeDesc.h>
+#include <MaterialXGenShader/StructTypeDesc.h>
 
 #include <MaterialXCore/Exception.h>
 
@@ -27,12 +28,17 @@ namespace
         return map;
     }
 
+
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+
     using StructTypeDescStorage = std::vector<StructTypeDesc>;
     StructTypeDescStorage& structTypeStorage()
     {
         static StructTypeDescStorage  storage;
         return storage;
     }
+
 
 } // anonymous namespace
 
@@ -63,7 +69,7 @@ void TypeDesc::remove(const string& name)
         return;
 
     typenames.erase(it->second.typeId());
-    types.erase(name);
+    types.erase(it);
 
 }
 
@@ -107,6 +113,96 @@ TYPEDESC_REGISTER_TYPE(MATERIAL, "material")
 
 TYPEDESC_REGISTER_TYPE(TEXCOORD, "texcoord")
 
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+
+
+void StructTypeDesc::addMember(const std::string& name, TypeDesc type, std::string defaultValueStr)
+{
+    _members.emplace_back( StructTypeDesc::StructMemberTypeDesc(name, type, defaultValueStr) );
+}
+
+std::vector<std::string> StructTypeDesc::getStructTypeNames()
+{
+    StructTypeDescStorage& structs = structTypeStorage();
+    std::vector<std::string> structNames;
+    for (const auto& x : structs) {
+        structNames.emplace_back( x.typeDesc().getName() );
+    }
+    return structNames;
+}
+
+//
+//StructTypeDesc StructTypeDesc::get(unsigned int index)
+//{
+//    StructTypeDescStorage& structs = structTypeStorage();
+//    return structs[index];
+//
+//    // TODO - come back and see if we want to return a NONE type object.
+//    //    if (index < structs.size())
+//    //        return structs[index]
+//    //
+//    //    return (index < structs.size()) ? structs[index] : S
+//}
+
+StructTypeDesc& StructTypeDesc::get(unsigned int index)
+{
+    StructTypeDescStorage& structs = structTypeStorage();
+    return structs[index];
+
+    // TODO - come back and see if we want to return a NONE type object.
+    //    if (index < structs.size())
+    //        return structs[index]
+    //
+    //    return (index < structs.size()) ? structs[index] : S
+}
+
+unsigned int StructTypeDesc::emplace_back(StructTypeDesc structTypeDesc)
+{
+    StructTypeDescStorage& structs = structTypeStorage();
+    structs.emplace_back(structTypeDesc);
+    return structs.size()-1;
+}
+
+void StructTypeDesc::clear()
+{
+    StructTypeDescStorage& structs = structTypeStorage();
+    for (const auto& structType: structs)
+    {
+        // need to add typeID to structTypeDesc - and use it here to reference back to typeDesc obj and remove it.
+
+        TypeDesc::remove(structType.typeDesc().getName());
+    }
+    structs.clear();
+}
+
+const string& StructTypeDesc::getName() const
+    {
+        return _typedesc.getName();
+    }
+
+    const std::vector<StructTypeDesc::StructMemberTypeDesc>& StructTypeDesc::getMembers() const
+    {
+        return _members;
+    }
+
+
+
+TypeDesc createStructTypeDesc(std::string_view name)
+{
+    return {name, TypeDesc::BASETYPE_STRUCT};
+}
+
+void registerStructTypeDesc(std::string_view name)
+{
+    auto structTypeDesc = createStructTypeDesc(name);
+    TypeDescRegistry register_struct(structTypeDesc, std::string(name));
 }
 
 

@@ -174,8 +174,6 @@ public:
     TypeDescRegistry(TypeDesc type, const string& name);
 };
 
-
-
 /// Macro to define global type descriptions for commonly used types.
 #define TYPEDESC_DEFINE_TYPE(T, name, basetype, semantic, size) \
     static constexpr TypeDesc T(name, basetype, semantic, size);
@@ -218,6 +216,75 @@ TYPEDESC_DEFINE_TYPE(MATERIAL, "material", TypeDesc::BASETYPE_NONE, TypeDesc::SE
 TYPEDESC_DEFINE_TYPE(TEXCOORD, "texcoord", TypeDesc::BASETYPE_STRUCT, TypeDesc::SEMANTIC_NONE, 1)
 
 } // namespace Type
+
+
+
+
+
+// TODO - complete documentation
+
+/// @class StructTypeDesc
+/// A type descriptor for MaterialX struct types.
+///
+/// All types need to have a type descriptor registered in order for shader generators
+/// to know about the type. It can be used for type comparisons as well as getting more
+/// information about the type. Type descriptors for all standard library data types are
+/// registered by default and can be accessed from the Type namespace, e.g. Type::FLOAT.
+///
+/// To register custom types use the macro TYPEDESC_DEFINE_TYPE to define it in a header
+/// and the macro TYPEDESC_REGISTER_TYPE to register it in the type registry. Registration
+/// must be done in order to access the type's name later using getName() and to find the
+/// type by name using TypeDesc::get().
+///
+/// The class is a POD type of 64-bits and can efficiently be stored and passed by value.
+/// Type compare operations and hash operations are done using a precomputed hash value.
+///
+class MX_GENSHADER_API StructTypeDesc
+{
+  public:
+
+    struct StructMemberTypeDesc {
+        StructMemberTypeDesc(std::string name, TypeDesc typeDesc, std::string defaultValueStr) : _name(name), _typeDesc(typeDesc), _defaultValueStr(defaultValueStr) {}
+        std::string _name;
+        TypeDesc _typeDesc;
+        std::string _defaultValueStr;
+    };
+
+
+    /// Empty constructor.
+    StructTypeDesc() noexcept{}
+
+    void addMember(const std::string& name, TypeDesc type, std::string defaultValueStr);
+    void setTypeDesc(TypeDesc typedesc) { _typedesc = typedesc; }
+
+    /// Return a type description by index.
+//    static StructTypeDesc get(unsigned int index);
+    static StructTypeDesc& get(unsigned int index);
+    static std::vector<std::string> getStructTypeNames();
+    static unsigned int emplace_back(StructTypeDesc structTypeDesc);
+    static void clear();
+
+    TypeDesc typeDesc() const { return _typedesc; }
+
+    const string& getName() const;
+
+    const std::vector<StructMemberTypeDesc>& getMembers() const;
+
+
+  private:
+
+    TypeDesc _typedesc;
+    std::vector<StructMemberTypeDesc> _members;
+};
+
+
+class MX_GENSHADER_API StructTypeDescRegistry
+{
+  public:
+    StructTypeDescRegistry();
+};
+
+
 
 MATERIALX_NAMESPACE_END
 

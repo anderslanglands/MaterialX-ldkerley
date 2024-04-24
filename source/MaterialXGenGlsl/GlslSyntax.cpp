@@ -6,6 +6,7 @@
 #include <MaterialXGenGlsl/GlslSyntax.h>
 
 #include <MaterialXGenShader/ShaderGenerator.h>
+#include <MaterialXGenShader/StructTypeDesc.h>
 
 MATERIALX_NAMESPACE_BEGIN
 
@@ -346,6 +347,46 @@ GlslSyntax::GlslSyntax()
             EMPTY_STRING,
             "surfaceshader",
             "#define material surfaceshader"));
+}
+
+void GlslSyntax::registerStructTypeDescSyntax()
+{
+
+
+    for (const auto& typeName : StructTypeDesc::getStructTypeNames())
+    {
+        const auto& typeDesc = TypeDesc::get(typeName);
+        const auto& structTypeDesc = StructTypeDesc::get(typeDesc.getStructIndex());
+
+        std::string structTypeName = typeDesc.getName();
+        std::string defaultValue = typeName+"( ";
+        std::string uniformDefaultValue = EMPTY_STRING;
+        std::string typeAlias = EMPTY_STRING;
+        std::string typeDefinition = "struct "+typeName+" { ";
+
+        for (const auto& x : structTypeDesc.getMembers())
+        {
+            std::string memberName = x._name;
+            std::string memberType = x._typeDesc.getName();
+            std::string memberDefaultValue = x._defaultValueStr;
+
+            defaultValue += memberDefaultValue+", ";
+            typeDefinition += memberType + " " + memberName+"; ";
+        }
+
+        typeDefinition += " };";
+        defaultValue += " )";
+
+
+        registerTypeSyntax(
+            typeDesc,
+            std::make_shared<StructTypeSyntax>(
+                structTypeName,
+                defaultValue,
+                uniformDefaultValue,
+                typeAlias,
+                typeDefinition));
+    }
 }
 
 bool GlslSyntax::typeSupported(const TypeDesc* type) const
