@@ -408,7 +408,7 @@ void MslShaderGenerator::emitGlobalVariables(GenContext& context,
                     }
 
                     if (globalContextInit || globalContextConstructorParams || globalContextConstructorInit)
-                        separator = ", ";
+                        separator = ",\n";
                     else if (globalContextMembers)
                         separator = "\n";
                 }
@@ -419,27 +419,27 @@ void MslShaderGenerator::emitGlobalVariables(GenContext& context,
                 if (globalContextInit)
                 {
                     emitString(vertex_inputs.getInstance(), stage);
-                    separator = ", ";
+                    separator = ",\n";
                 }
                 else if (globalContextMembers || globalContextConstructorParams)
                 {
                     emitLine(vertex_inputs.getName() + " " + vertex_inputs.getInstance(), stage, !globalContextConstructorParams);
                     if (globalContextConstructorParams)
-                        separator = ", ";
+                        separator = ",\n";
                     else
                         separator = "\n";
                 }
                 else if (globalContextConstructorInit)
                 {
                     emitLine(vertex_inputs.getInstance() + "(" + vertex_inputs.getInstance() + ")", stage, false);
-                    separator = ", ";
+                    separator = ",\n";
                 }
             }
         }
         else
         {
             emitString(vertex_inputs.getName() + " " + vertex_inputs.getInstance() + " [[ stage_in ]]", stage);
-            separator = ", ";
+            separator = ",\n";
         }
     }
 
@@ -543,7 +543,7 @@ void MslShaderGenerator::emitGlobalVariables(GenContext& context,
                         }
 
                         if (globalContextInit || globalContextConstructorParams || globalContextConstructorInit)
-                            separator = ", ";
+                            separator = ",\n";
                         else if (globalContextMembers)
                             separator = "\n";
                     }
@@ -560,10 +560,9 @@ void MslShaderGenerator::emitGlobalVariables(GenContext& context,
                         {
                             emitString(separator, stage);
                             emitString("texture2d<float> " + TEXTURE_NAME(uniform->getVariable()), stage);
-                            emitString(" [[texture(" + std::to_string(tex_slot) + ")]], ", stage);
+                            emitString(" [[ texture(" + std::to_string(tex_slot) + ") ]],\n", stage);
                             emitString("sampler " + SAMPLER_NAME(uniform->getVariable()), stage);
-                            emitString(" [[sampler(" + std::to_string(tex_slot++) + ")]]", stage);
-                            emitLineEnd(stage, false);
+                            emitString(" [[ sampler(" + std::to_string(tex_slot++) + ") ]]", stage);
                         }
                         else
                         {
@@ -577,7 +576,7 @@ void MslShaderGenerator::emitGlobalVariables(GenContext& context,
                         emitString(_syntax->getUniformQualifier() + " " +
                                        uniforms.getName() + "& " +
                                        uniforms.getInstance() +
-                                       "[[ buffer(" + std::to_string(buffer_slot++) + ") ]]",
+                                       " [[ buffer(" + std::to_string(buffer_slot++) + ") ]]",
                                    stage);
                     }
                 }
@@ -585,7 +584,7 @@ void MslShaderGenerator::emitGlobalVariables(GenContext& context,
         }
 
         if (globalContextInit || entryFunctionArgs || globalContextConstructorParams || globalContextConstructorInit)
-            separator = ", ";
+            separator = ",\n";
         else
             separator = "\n";
     }
@@ -1179,12 +1178,15 @@ void MslShaderGenerator::emitPixelStage(const ShaderGraph& graph, GenContext& co
     {
         setFunctionName("FragmentMain", stage);
         const VariableBlock& outputs = stage.getOutputBlock(HW::PIXEL_OUTPUTS);
+        emitLineBreak(stage);
         emitLine("fragment " + outputs.getName() + " FragmentMain(", stage, false);
         emitGlobalVariables(context, stage, EMIT_GLOBAL_SCOPE_CONTEXT_ENTRY_FUNCTION_RESOURCES, false, needsLightBuffer);
+        emitLineBreak(stage);
         emitLine(")", stage, false);
         emitScopeBegin(stage);
         {
             emitString("\tGlobalContext ctx {", stage);
+            emitLineBreak(stage);
             emitGlobalVariables(context, stage, EMIT_GLOBAL_SCOPE_CONTEXT_MEMBER_INIT, false, needsLightBuffer);
             emitLine("}", stage, true);
             emitLine("return ctx.FragmentMain()", stage, true);

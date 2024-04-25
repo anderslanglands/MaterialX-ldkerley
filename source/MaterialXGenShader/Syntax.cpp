@@ -410,8 +410,34 @@ string AggregateTypeSyntax::getValue(const StringVec& values, bool /*uniform*/) 
 
 string StructTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
 {
-    const string valueString = value.getValueString();
-    return valueString.empty() ? valueString : getName() + "{" + valueString + "}";
+    const string valueString = trimSpaces(value.getValueString());
+
+    // not sure if this parsing should be done elsewhere....
+    // struct values should be enclosed within a pair of braces - { }
+    // and separated by semi-colons
+
+    if (valueString.empty())
+        return "";
+
+    if (!(stringStartsWith(valueString, "{") && stringEndsWith(valueString, "}"))) {
+        printf("ERROR = struct value needs to be wrapped in { }\n");
+        return "";
+    }
+
+    // strip off the braces
+    std::string trimmedValueString = valueString.substr(1, valueString.size()-1);
+
+
+    auto valueStringParts = splitString(trimmedValueString, ";");
+
+    // TODO - add any per-member processing to the value string here.
+    // potentially recursively evaluating for structs inside structs.
+
+    std::string result = joinStrings(valueStringParts, ",");
+
+
+    return "{" + result + "}";
+
 }
 
 string StructTypeSyntax::getValue(const StringVec& values, bool /*uniform*/) const
