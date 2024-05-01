@@ -1038,15 +1038,47 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                     auto structTypeDesc = StructTypeDesc::get(v->getType().getStructIndex());
 
                     std::string structValueStr = v->getValue()->getValueString();
-
-
-
-                    for (const auto& structMember : structTypeDesc.getMembers())
+                    std::vector<std::string> structValueStrParts;
                     {
-                        MTLDataType subResourceType = mapTypeToMetalType(structMember._typeDesc);
+
+                        if (!structValueStr.empty())
+                        {
+
+                            if (stringStartsWith(structValueStr, "{") && stringEndsWith(structValueStr, "}"))
+                            {
+
+                                // strip off the braces
+                                std::string trimmedValueString = structValueStr.substr(1, structValueStr.size() - 2);
+
+                                structValueStrParts = splitString(trimmedValueString, ";");
+                            } else {
+                                printf("RENDER ERROR = struct value needs to be wrapped in { }\n");
+
+                            }
+
+                        }
+
+                    }
+
+                    for (unsigned int i = 0; i < 5; ++i) {
+
+                    }
+
+                    const auto& members = structTypeDesc.getMembers();
+
+//                    for (const auto& structMember : members)
+
+                    auto structMember = members.begin();
+                    auto structValueStrPart = structValueStrParts.begin();
+
+                    for (;
+                         (structMember != members.end() && structValueStrPart != structValueStrParts.end());
+                         structMember++, structValueStrPart++)
+                    {
+                        MTLDataType subResourceType = mapTypeToMetalType(structMember->_typeDesc);
 
 
-                        auto vvar = v->getVariable()+"."+structMember._name;
+                        auto vvar = v->getVariable()+"."+structMember->_name;
                         auto inputIt = _uniformList.find(vvar);
 
                         if (inputIt == _uniformList.end()) {
@@ -1065,8 +1097,8 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                             Input* input = inputIt->second.get();
                             input->path = v->getPath();
 
-                            std::string subValueStr;
-                            TypeDesc subValueTypeDesc = structMember._typeDesc;
+                            std::string subValueStr = *structValueStrPart;
+                            TypeDesc subValueTypeDesc = structMember->_typeDesc;
 
                             ValuePtr subValue = Value::createValueFromStrings(subValueStr, subValueTypeDesc.getName());
 
@@ -1081,7 +1113,7 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                             if (input->resourceType == subResourceType)
                             {
                                 input->typeString = subValueTypeDesc.getName();
-                                input->typeDesc = TypeDesc::get(subValueTypeDesc);
+                                input->typeDesc = subValueTypeDesc;
                             }
                             else
                             {
