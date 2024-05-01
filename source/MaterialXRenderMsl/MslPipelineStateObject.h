@@ -97,6 +97,7 @@ class MX_RENDERMSL_API MslProgram
         int size;
         /// Input type string. Will only be non-empty if initialized stages with a HwShader
         string typeString;
+        TypeDesc typeDesc;
         /// Input value. Will only be non-empty if initialized stages with a HwShader and a value was set during
         /// shader generation.
         MaterialX::ValuePtr value;

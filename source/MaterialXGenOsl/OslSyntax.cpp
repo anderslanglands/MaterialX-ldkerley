@@ -561,7 +561,6 @@ void OslSyntax::registerStructTypeDescSyntax()
         typeDefinition += " };";
         defaultValue += " )";
 
-
         registerTypeSyntax(
             typeDesc,
             std::make_shared<StructTypeSyntax>(

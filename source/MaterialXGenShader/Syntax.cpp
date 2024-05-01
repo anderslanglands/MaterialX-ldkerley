@@ -419,13 +419,14 @@ string StructTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
     if (valueString.empty())
         return "";
 
+
     if (!(stringStartsWith(valueString, "{") && stringEndsWith(valueString, "}"))) {
         printf("ERROR = struct value needs to be wrapped in { }\n");
         return "";
     }
 
     // strip off the braces
-    std::string trimmedValueString = valueString.substr(1, valueString.size()-1);
+    std::string trimmedValueString = valueString.substr(1, valueString.size()-2);
 
 
     auto valueStringParts = splitString(trimmedValueString, ";");
