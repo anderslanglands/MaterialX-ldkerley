@@ -381,7 +381,7 @@ void GlslSyntax::registerStructTypeDescSyntax()
 
         registerTypeSyntax(
             typeDesc,
-            std::make_shared<StructTypeSyntax>(
+            std::make_shared<GlslStructTypeSyntax>(
                 structTypeName,
                 defaultValue,
                 uniformDefaultValue,
@@ -434,5 +434,40 @@ bool GlslSyntax::remapEnumeration(const string& value, TypeDesc type, const stri
 
     return true;
 }
+
+
+
+string GlslStructTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
+{
+    const string valueString = trimSpaces(value.getValueString());
+
+    // not sure if this parsing should be done elsewhere....
+    // struct values should be enclosed within a pair of braces - { }
+    // and separated by semi-colons
+
+    if (valueString.empty())
+        return "";
+
+
+    if (!(stringStartsWith(valueString, "{") && stringEndsWith(valueString, "}"))) {
+        printf("ERROR = struct value needs to be wrapped in { }\n");
+        return "";
+    }
+
+    // strip off the braces
+    std::string trimmedValueString = valueString.substr(1, valueString.size()-2);
+
+
+    auto valueStringParts = splitString(trimmedValueString, ";");
+
+    // TODO - add any per-member processing to the value string here.
+    // potentially recursively evaluating for structs inside structs.
+
+    std::string result = joinStrings(valueStringParts, ",");
+
+
+    return _name + "(" + result + ")";
+}
+
 
 MATERIALX_NAMESPACE_END

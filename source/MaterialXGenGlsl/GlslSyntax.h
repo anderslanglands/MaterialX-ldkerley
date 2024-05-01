@@ -49,6 +49,17 @@ class MX_GENGLSL_API GlslSyntax : public Syntax
     static const StringVec VEC4_MEMBERS;
 };
 
+
+/// Specialization of TypeSyntax for aggregate types.
+class MX_GENSHADER_API GlslStructTypeSyntax : public StructTypeSyntax
+{
+  public:
+    using StructTypeSyntax::StructTypeSyntax;
+
+    string getValue(const Value& value, bool uniform) const override;
+};
+
+
 MATERIALX_NAMESPACE_END
 
 #endif
