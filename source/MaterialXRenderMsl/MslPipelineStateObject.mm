@@ -30,7 +30,7 @@ const float PI = std::acos(-1.0f);
 // Metal Constants
 unsigned int MslProgram::UNDEFINED_METAL_RESOURCE_ID = 0;
 int MslProgram::UNDEFINED_METAL_PROGRAM_LOCATION = -1;
-int MslProgram::Input::INVALID_METAL_TYPE = -1;
+MTLDataType MslProgram::Input::INVALID_METAL_TYPE = MTLDataTypeNone;
 
 //
 // MslProgram methods
@@ -970,7 +970,7 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
             if(HW::ENV_RADIANCE != arg.name.UTF8String && HW::ENV_IRRADIANCE != arg.name.UTF8String)
             {
                 std::string texture_name = arg.name.UTF8String;
-                InputPtr inputPtr = std::make_shared<Input>(arg.index, 58, -1, EMPTY_STRING);
+                InputPtr inputPtr = std::make_shared<Input>(arg.index, MTLDataTypeTexture, -1, EMPTY_STRING);
                 _uniformList[texture_name] = inputPtr;
             }
         }
@@ -997,7 +997,7 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
             }
 
             // TODO: Shoud we really create new ones here each update?
-            InputPtr inputPtr = std::make_shared<Input>(-1, -1, int(v->getType().getSize()), EMPTY_STRING);
+            InputPtr inputPtr = std::make_shared<Input>(-1, MTLDataTypeNone, int(v->getType().getSize()), EMPTY_STRING);
             _uniformList[v->getVariable()] = inputPtr;
             inputPtr->isConstant = true;
             inputPtr->value = v->getValue();
@@ -1034,51 +1034,72 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                 }
 
                 if (resourceType == MTLDataTypeStruct) {
-//
-//                    auto structTypeDesc = StructTypeDesc::get(v->getType().getStructIndex());
-//
-//                    for (const auto& structMember : structTypeDesc.getMembers())
-//                    {
-//
-//                        auto vvar = v->getVariable()+"."+structMember._name;
-//                        auto inputIt = _uniformList.find(vvar);
-//
-//                        if (inputIt == _uniformList.end()) {
-//                            if(v->getType() == Type::FILENAME)
-//                            {
-//                                inputIt = _uniformList.find(TEXTURE_NAME(v->getVariable()));
-//                            }
-//                            else
-//                            {
-//                                inputIt = _uniformList.find(uniforms.getInstance() + "." + v->getVariable());
-//                            }
-//                        }
-//
-//                        if (inputIt != _uniformList.end())
-//                        {
-//                            Input* input = inputIt->second.get();
-//                            input->path = v->getPath();
-//                            input->value = v->getValue();
-//                            if (input->resourceType == resourceType)
-//                            {
-//                                input->typeString = v->getType().getName();
-//                                input->typeDesc = TypeDesc::get(input->typeString);
-//                            }
-//                            else
-//                            {
-//                                errors.push_back(
-//                                    "Pixel shader uniform block type mismatch [" + uniforms.getName() + "]. "
-//                                    + "Name: \"" + v->getVariable()
-//                                    + "\". Type: \"" + v->getType().getName()
-//                                    + "\". Semantic: \"" + v->getSemantic()
-//                                    + "\". Value: \"" + (v->getValue() ? v->getValue()->getValueString() : "<none>")
-//                                    + "\". resourceType: " + std::to_string(mapTypeToMetalType(v->getType()))
-//                                );
-//                                uniformTypeMismatchFound = true;
-//                            }
-//                        }
-//                    }
-                } else {
+
+                    auto structTypeDesc = StructTypeDesc::get(v->getType().getStructIndex());
+
+                    std::string structValueStr = v->getValue()->getValueString();
+
+
+
+                    for (const auto& structMember : structTypeDesc.getMembers())
+                    {
+                        MTLDataType subResourceType = mapTypeToMetalType(structMember._typeDesc);
+
+
+                        auto vvar = v->getVariable()+"."+structMember._name;
+                        auto inputIt = _uniformList.find(vvar);
+
+                        if (inputIt == _uniformList.end()) {
+                            if(v->getType() == Type::FILENAME)
+                            {
+                                inputIt = _uniformList.find(TEXTURE_NAME(vvar));
+                            }
+                            else
+                            {
+                                inputIt = _uniformList.find(uniforms.getInstance() + "." + vvar);
+                            }
+                        }
+
+                        if (inputIt != _uniformList.end())
+                        {
+                            Input* input = inputIt->second.get();
+                            input->path = v->getPath();
+
+                            std::string subValueStr;
+                            TypeDesc subValueTypeDesc = structMember._typeDesc;
+
+                            ValuePtr subValue = Value::createValueFromStrings(subValueStr, subValueTypeDesc.getName());
+
+                            input->value = subValue;
+
+                            if (input->value) {
+                                auto valStr = input->value->getValueString();
+                                auto typeStr = input->value->getTypeString();
+                                int a = 0;
+                            }
+
+                            if (input->resourceType == subResourceType)
+                            {
+                                input->typeString = subValueTypeDesc.getName();
+                                input->typeDesc = TypeDesc::get(subValueTypeDesc);
+                            }
+                            else
+                            {
+                                errors.push_back(
+                                    "Pixel shader uniform block type mismatch [" + uniforms.getName() + "]. "
+                                    + "Name: \"" + v->getVariable()
+                                    + "\". Type: \"" + v->getType().getName()
+                                    + "\". Semantic: \"" + v->getSemantic()
+                                    + "\". Value: \"" + (v->getValue() ? v->getValue()->getValueString() : "<none>")
+                                    + "\". resourceType: " + std::to_string(mapTypeToMetalType(v->getType()))
+                                );
+                                uniformTypeMismatchFound = true;
+                            }
+                        }
+                    }
+                }
+                else
+                {
 
                     auto vvar = v->getVariable();
                     auto inputIt = _uniformList.find(vvar);
@@ -1086,11 +1107,11 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                     if (inputIt == _uniformList.end()) {
                         if(v->getType() == Type::FILENAME)
                         {
-                            inputIt = _uniformList.find(TEXTURE_NAME(v->getVariable()));
+                            inputIt = _uniformList.find(TEXTURE_NAME(vvar));
                         }
                         else
                         {
-                            inputIt = _uniformList.find(uniforms.getInstance() + "." + v->getVariable());
+                            inputIt = _uniformList.find(uniforms.getInstance() + "." + vvar);
                         }
                     }
 
@@ -1590,7 +1611,7 @@ void MslProgram::bindUniformBuffers(id<MTLRenderCommandEncoder> renderCmdEncoder
                             TypeDesc typeDesc = uniformInfo->second->typeDesc;
                             if(value)
                             {
-                                setValue(value, typeDesc, uniformBufferData, member.offset);
+                                setValue(value, typeDesc, uniformBufferData, member.offset+subMember.offset);
                             }
                         }
                         else

@@ -43,5 +43,6 @@ void bindPyMslProgram(py::module& mod)
         .def_readwrite("value", &mx::MslProgram::Input::value)
         .def_readwrite("isConstant", &mx::MslProgram::Input::isConstant)
         .def_readwrite("path", &mx::MslProgram::Input::path)
-        .def(py::init<int, int, int, std::string>());
+//        .def(py::init<int, int, int, std::string>())
+        ;
 }
