@@ -7,6 +7,6 @@
       GLSL Implementations of experimental nodes
     -->
 
-    <implementation name="IM_extract_s_texcoord_genglsl" nodedef="ND_extract_s_texcoord" target="genglsl" sourcecode="{{in}}.ss" />
+    <implementation name="IM_extract_s_texcoord_genglsl" nodedef="ND_extract_s_texcoord" target="genglsl" sourcecode="{{in}}.ss + {{in}}.tt" />
 
 </materialx>

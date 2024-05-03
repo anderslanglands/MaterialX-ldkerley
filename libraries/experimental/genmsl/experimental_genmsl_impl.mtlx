@@ -7,6 +7,6 @@
       MSL Implementations of experimental nodes
     -->
 
-    <implementation name="IM_extract_s_texcoord_genmsl" nodedef="ND_extract_s_texcoord" target="genmsl" sourcecode="{{in}}.ss" />
+    <implementation name="IM_extract_s_texcoord_genmsl" nodedef="ND_extract_s_texcoord" target="genmsl" sourcecode="{{in}}.ss + {{in}}.tt" />
 
 </materialx>

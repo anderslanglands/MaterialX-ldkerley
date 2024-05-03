@@ -946,45 +946,134 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
             for (size_t i = 0; i < uniforms.size(); ++i)
             {
                 const ShaderPort* v = uniforms[i];
-                int glType = mapTypeToOpenGLType(v->getType());
+                auto typedesc = v->getType();
 
-                // There is no way to match with an unnamed variable
-                if (v->getVariable().empty())
+                if (typedesc.getBaseType() == TypeDesc::BASETYPE_STRUCT)
                 {
-                    continue;
-                }
+                    // if we're a struct - we need to loop over each member
 
-                // Ignore types which are unsupported in GLSL.
-                if (glType == Input::INVALID_OPENGL_TYPE)
-                {
-                    continue;
-                }
+                    auto structTypeDesc = StructTypeDesc::get( typedesc.getStructIndex());
 
-                auto inputIt = _uniformList.find(v->getVariable());
-                if (inputIt != _uniformList.end())
-                {
-                    Input* input = inputIt->second.get();
-                    input->path = v->getPath();
-                    input->unit = v->getUnit();
-                    input->colorspace = v->getColorSpace();
-                    input->value = v->getValue();
-                    if (input->gltype == glType)
+                    std::string structValueStr = v->getValue()->getValueString();
+                    std::vector<std::string> structValueStrParts;
+                    if (!structValueStr.empty())
                     {
-                        input->typeString = v->getType().getName();
+                        if (stringStartsWith(structValueStr, "{") && stringEndsWith(structValueStr, "}"))
+                        {
+                            std::string trimmedValueString = structValueStr.substr(1, structValueStr.size()-2);
+
+                            structValueStrParts  = splitString(trimmedValueString, ";");
+                        } else {
+                            printf("RENDER ERROR _ OOPS struct needs { } around it.\n");
+                        }
                     }
-                    else
+
+
+                    const auto& members = structTypeDesc.getMembers();
+
+//                    for (const auto& structMember : members)
+
+                    auto structMember = members.begin();
+                    auto structValueStrPart = structValueStrParts.begin();
+
+                    for (;
+                         (structMember != members.end() && structValueStrPart != structValueStrParts.end());
+                         structMember++, structValueStrPart++)
                     {
-                        errors.push_back(
-                            "Pixel shader uniform block type mismatch [" + uniforms.getName() + "]. "
-                            + "Name: \"" + v->getVariable()
-                            + "\". Type: \"" + v->getType().getName()
-                            + "\". Semantic: \"" + v->getSemantic()
-                            + "\". Value: \"" + (v->getValue() ? v->getValue()->getValueString() : "<none>")
-                            + "\". Unit: \"" + (!v->getUnit().empty() ? v->getUnit() : "<none>")
-                            + "\". Colorspace: \"" + (!v->getColorSpace().empty() ? v->getColorSpace() : "<none>")
-                            + "\". GLType: " + std::to_string(mapTypeToOpenGLType(v->getType()))
-                        );
-                        uniformTypeMismatchFound = true;
+                        int subGlType = mapTypeToOpenGLType(structMember->_typeDesc);
+
+                        // Ignore types which are unsupported in GLSL.
+                        if (subGlType == Input::INVALID_OPENGL_TYPE)
+                        {
+                            continue;
+                        }
+
+
+                        auto vvar = v->getVariable()+"."+structMember->_name;
+                        auto inputIt = _uniformList.find(vvar);
+                        if (inputIt != _uniformList.end())
+                        {
+                            Input* input = inputIt->second.get();
+                            input->path = v->getPath();
+                            input->unit = v->getUnit();
+                            input->colorspace = v->getColorSpace();
+
+                            std::string subValueStr = *structValueStrPart;
+                            TypeDesc subValueTypeDesc = structMember->_typeDesc;
+
+                            ValuePtr subValue = Value::createValueFromStrings(subValueStr, subValueTypeDesc.getName());
+
+
+                            input->value = subValue;
+                            if (input->gltype == subGlType)
+                            {
+                                input->typeString = subValueTypeDesc.getName();
+                            }
+                            else
+                            {
+                                //TODO _ this should probably all refer to the struct members
+                                errors.push_back(
+                                    "Pixel shader uniform block type mismatch [" + uniforms.getName() + "]. "
+                                    + "Name: \"" + vvar
+                                    + "\". Type: \"" + v->getType().getName()
+                                    + "\". Semantic: \"" + v->getSemantic()
+                                    + "\". Value: \"" + (v->getValue() ? v->getValue()->getValueString() : "<none>")
+                                    + "\". Unit: \"" + (!v->getUnit().empty() ? v->getUnit() : "<none>")
+                                    + "\". Colorspace: \"" + (!v->getColorSpace().empty() ? v->getColorSpace() : "<none>")
+                                    + "\". GLType: " + std::to_string(mapTypeToOpenGLType(v->getType()))
+                                );
+                                uniformTypeMismatchFound = true;
+                            }
+                        }
+
+                    }
+
+                } 
+                else 
+                {
+                    // handle non-struct types
+
+                    int glType = mapTypeToOpenGLType(typedesc);
+                    auto vvar = v->getVariable();
+
+                    // There is no way to match with an unnamed variable
+                    if (vvar.empty())
+                    {
+                        continue;
+                    }
+
+                    // Ignore types which are unsupported in GLSL.
+                    if (glType == Input::INVALID_OPENGL_TYPE)
+                    {
+                        continue;
+                    }
+
+                    auto inputIt = _uniformList.find(vvar);
+                    if (inputIt != _uniformList.end())
+                    {
+                        Input* input = inputIt->second.get();
+                        input->path = v->getPath();
+                        input->unit = v->getUnit();
+                        input->colorspace = v->getColorSpace();
+                        input->value = v->getValue();
+                        if (input->gltype == glType)
+                        {
+                            input->typeString = v->getType().getName();
+                        }
+                        else
+                        {
+                            errors.push_back(
+                                "Pixel shader uniform block type mismatch [" + uniforms.getName() + "]. "
+                                + "Name: \"" + vvar
+                                + "\". Type: \"" + v->getType().getName()
+                                + "\". Semantic: \"" + v->getSemantic()
+                                + "\". Value: \"" + (v->getValue() ? v->getValue()->getValueString() : "<none>")
+                                + "\". Unit: \"" + (!v->getUnit().empty() ? v->getUnit() : "<none>")
+                                + "\". Colorspace: \"" + (!v->getColorSpace().empty() ? v->getColorSpace() : "<none>")
+                                + "\". GLType: " + std::to_string(mapTypeToOpenGLType(v->getType()))
+                            );
+                            uniformTypeMismatchFound = true;
+                        }
                     }
                 }
             }
