@@ -12,9 +12,13 @@
 #include <MaterialXGenShader/Export.h>
 #include <MaterialXCore/Value.h>
 
-#include <string_view>
-
 MATERIALX_NAMESPACE_BEGIN
+
+class StructMemberDesc;
+using StructMemberDescVec = vector<StructMemberDesc>;
+using ConstStructMemberDescVecPtr = shared_ptr<const StructMemberDescVec>;
+
+// TODO - update this documentation once the code has been reviewed...
 
 /// @class TypeDesc
 /// A type descriptor for MaterialX data types.
@@ -29,7 +33,7 @@ MATERIALX_NAMESPACE_BEGIN
 /// must be done in order to access the type's name later using getName() and to find the
 /// type by name using TypeDesc::get().
 ///
-/// The class is a POD type of 64-bits and can efficiently be stored and passed by value.
+/// The class is a POD type and can efficiently be stored and passed by value.
 /// Type compare operations and hash operations are done using a precomputed hash value.
 ///
 class MX_GENSHADER_API TypeDesc
@@ -60,32 +64,46 @@ class MX_GENSHADER_API TypeDesc
         SEMANTIC_LAST
     };
 
+    /// Data block holding large data needed by the type description.
+    class DataBlock
+    {
+      public:
+        DataBlock(const string& name, ConstStructMemberDescVecPtr mem = nullptr) noexcept : _name(name), _members(mem) {}
+        DataBlock(const DataBlock& dataBlock) noexcept : _name(dataBlock._name), _members(dataBlock._members) {}
+
+        ConstStructMemberDescVecPtr getStructMembers() const { return _members; }
+        const string& getName() const { return _name; }
+
+      private:
+        const string _name;
+        ConstStructMemberDescVecPtr _members;
+    };
+
     /// Empty constructor.
-    constexpr TypeDesc() noexcept :
+    TypeDesc() noexcept :
         _id(0),
         _basetype(BASETYPE_NONE),
         _semantic(SEMANTIC_NONE),
         _size(0),
-        _structIndex(0)
+        _data(nullptr)
     {
     }
 
     /// Constructor.
-    constexpr TypeDesc(std::string_view name, uint8_t basetype, uint8_t semantic = SEMANTIC_NONE, uint16_t size = 1, uint16_t structIndex = 0) noexcept :
-        _id(constexpr_hash(name)), // Note: We only store the hash to keep the class size minimal.
+    TypeDesc(const DataBlock* data, uint8_t basetype, uint8_t semantic = SEMANTIC_NONE, uint8_t size = 1) noexcept :
+        _id(constexpr_hash(data->getName())),
         _basetype(basetype),
         _semantic(semantic),
         _size(size),
-        _structIndex(structIndex)
+        _data(data)
     {
     }
-
     /// Return the unique id assigned to this type.
     /// The id is a hash of the given type name.
     uint32_t typeId() const { return _id; }
 
     /// Return the name of the type.
-    const string& getName() const;
+    const string& getName() const { return _data != nullptr ? _data->getName() : NONE_TYPE_NAME; }
 
     /// Return the basetype for the type.
     unsigned char getBaseType() const { return _basetype; }
@@ -123,8 +141,10 @@ class MX_GENSHADER_API TypeDesc
     /// Return true if the type represents a struct.
     bool isStruct() const { return _basetype == BASETYPE_STRUCT; }
 
-    /// Return the index for the struct member information in StructTypeDesc, the result is invalid if `isStruct()` returns false.
-    uint16_t getStructIndex() const { return _structIndex; }
+    const StructMemberDescVec* getStructMembers() const { return _data != nullptr ? _data->getStructMembers().get() : nullptr; }
+
+    const DataBlock* getDataBlockPtr() const { return _data; }
+    void setDataBlockPtr(const DataBlock* ptr) { _data = ptr; }
 
     /// Equality operator
     bool operator==(TypeDesc rhs) const
@@ -153,16 +173,9 @@ class MX_GENSHADER_API TypeDesc
         }
     };
 
-    /// Return a type description by name.
-    /// If no type is found Type::NONE is returned.
-    static TypeDesc get(const string& name);
-
-    /// Remove a type description by name, if it exists.
-    static void remove(const string& name);
-
     static const string NONE_TYPE_NAME;
 
-    /// Create a Value from a string for a given typeDesc
+    /// Create a Value from a string for this TypeDesc
     ValuePtr createValueFromStrings(const string& value) const;
 
   private:
@@ -177,25 +190,17 @@ class MX_GENSHADER_API TypeDesc
     uint8_t _basetype;
     uint8_t _semantic;
     uint16_t _size;
-    uint16_t _structIndex;
-};
-
-/// @class TypeDescRegistry
-/// Helper class for type registration.
-class MX_GENSHADER_API TypeDescRegistry
-{
-  public:
-    TypeDescRegistry(TypeDesc type, const string& name);
+    const DataBlock* _data;
 };
 
 /// Macro to define global type descriptions for commonly used types.
 #define TYPEDESC_DEFINE_TYPE(T, name, basetype, semantic, size) \
-    static constexpr TypeDesc T(name, basetype, semantic, size);
-
-/// Macro to register a previously defined type in the type registry.
-/// Registration must be done in order for the type to be searchable by name.
-#define TYPEDESC_REGISTER_TYPE(T, name) \
-    TypeDescRegistry register_##T(T, name);
+    static const TypeDesc::DataBlock* T##_dataBlock(const string& nameStr)       \
+    {                                                           \
+        static TypeDesc::DataBlock dataBlock(nameStr, nullptr);  \
+        return &dataBlock;\
+    }                                                            \
+    static const TypeDesc T(T##_dataBlock(name), basetype, semantic, size);
 
 namespace Type
 {
@@ -229,6 +234,7 @@ TYPEDESC_DEFINE_TYPE(MATERIAL, "material", TypeDesc::BASETYPE_NONE, TypeDesc::SE
 
 } // namespace Type
 
+// TODO - update this documentation once the code has been reviewed.
 
 /// @class StructTypeDesc
 /// A type descriptor for MaterialX struct types.
@@ -238,47 +244,27 @@ TYPEDESC_DEFINE_TYPE(MATERIAL, "material", TypeDesc::BASETYPE_NONE, TypeDesc::SE
 /// the type also needs to have an associated StructTypeDesc that describes the members
 /// of the struct.
 ///
-class MX_GENSHADER_API StructTypeDesc
+
+class StructMemberDesc
 {
   public:
-    struct StructMemberTypeDesc
+    StructMemberDesc(string name, TypeDesc typeDesc, string typeName, string defaultValueStr):
+        _name(name),
+        _typeDesc(typeDesc),
+        _typeName(typeName),
+        _defaultValueStr(defaultValueStr)
     {
-        StructMemberTypeDesc(string name, TypeDesc typeDesc, string defaultValueStr) :
-            _name(name), _typeDesc(typeDesc), _defaultValueStr(defaultValueStr)
-        {
-        }
-        string _name;
-        TypeDesc _typeDesc;
-        string _defaultValueStr;
-    };
-
-    /// Empty constructor.
-    StructTypeDesc() noexcept{}
-
-    void addMember(const string& name, TypeDesc type, const string& defaultValueStr);
-    void setTypeDesc(TypeDesc typedesc) { _typedesc = typedesc; }
-
-    /// Return a type description by index.
-    static StructTypeDesc& get(unsigned int index);
-    static vector<string> getStructTypeNames();
-    static uint16_t emplace_back(StructTypeDesc structTypeDesc);
-    static void clear();
-
-    TypeDesc typeDesc() const { return _typedesc; }
-
-    const string& getName() const;
-
-    const vector<StructMemberTypeDesc>& getMembers() const;
+    }
+    const string& getName() const { return _name; }
+    TypeDesc getTypeDesc() const { return _typeDesc; }
+    const string& getTypeName() const { return _typeName; }
+    const string& getDefaultValueStr() const { return _defaultValueStr; }
 
   private:
-    TypeDesc _typedesc;
-    vector<StructMemberTypeDesc> _members;
-};
-
-class MX_GENSHADER_API StructTypeDescRegistry
-{
-  public:
-    StructTypeDescRegistry();
+    string _name;
+    TypeDesc _typeDesc;
+    string _typeName;
+    string _defaultValueStr;
 };
 
 MATERIALX_NAMESPACE_END

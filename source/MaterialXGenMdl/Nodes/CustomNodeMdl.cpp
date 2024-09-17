@@ -194,7 +194,7 @@ void CustomCodeNodeMdl::emitFunctionDefinition(const ShaderNode& node, GenContex
         outputs.push_back({
             name,
             syntax.getTypeName(type),
-            defaultValue ? syntax.getValue(type, *defaultValue.get()) : syntax.getDefaultValue(type)
+            defaultValue ? syntax.getValue(type, *defaultValue.get(), context) : syntax.getDefaultValue(type)
         });
         ++i;
     }

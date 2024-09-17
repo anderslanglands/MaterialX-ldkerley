@@ -138,7 +138,7 @@ class MX_GENSHADER_API ShaderPort : public std::enable_shared_from_this<ShaderPo
     const ShaderNode* getNode() const { return _node; }
 
     /// Set the data type for this port.
-    void setType(TypeDesc type) { _type = type; }
+    void setType(TypeDesc type);
 
     /// Return the data type for this port.
     TypeDesc getType() const { return _type; }
@@ -246,6 +246,7 @@ class MX_GENSHADER_API ShaderPort : public std::enable_shared_from_this<ShaderPo
   protected:
     ShaderNode* _node;
     TypeDesc _type;
+    shared_ptr<const TypeDesc::DataBlock> _typeDataBlock{nullptr};
     string _name;
     string _path;
     string _semantic;

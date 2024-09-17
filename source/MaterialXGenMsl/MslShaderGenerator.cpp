@@ -1096,7 +1096,7 @@ void MslShaderGenerator::emitPixelStage(const ShaderGraph& graph, GenContext& co
             else
             {
                 string outputValue = outputSocket->getValue() ?
-                                    _syntax->getValue(outputSocket->getType(), *outputSocket->getValue()) :
+                                    _syntax->getValue(outputSocket->getType(), *outputSocket->getValue(), context) :
                                     _syntax->getDefaultValue(outputSocket->getType());
                 if (!outputSocket->getType().isFloat4())
                 {
@@ -1203,7 +1203,7 @@ void MslShaderGenerator::toVec4(TypeDesc type, string& variable)
 }
 
 void MslShaderGenerator::emitVariableDeclaration(const ShaderPort* variable, const string& qualifier,
-                                                 GenContext&, ShaderStage& stage,
+                                                 GenContext& context, ShaderStage& stage,
                                                  bool assignValue) const
 {
     // A file texture input needs special handling on MSL
@@ -1240,7 +1240,7 @@ void MslShaderGenerator::emitVariableDeclaration(const ShaderPort* variable, con
         if (assignValue)
         {
             const string valueStr = (variable->getValue() ?
-                                    _syntax->getValue(variable->getType(), *variable->getValue(), true) :
+                                    _syntax->getValue(variable->getType(), *variable->getValue(), context, true) :
                                     _syntax->getDefaultValue(variable->getType(), true));
             str += valueStr.empty() ? EMPTY_STRING : " = " + valueStr;
         }
@@ -1272,7 +1272,7 @@ ShaderNodeImplPtr MslShaderGenerator::getImplementation(const NodeDef& nodedef, 
         throw ExceptionShaderGenError("NodeDef '" + nodedef.getName() + "' has no outputs defined");
     }
 
-    const TypeDesc outputType = TypeDesc::get(outputs[0]->getType());
+    const TypeDesc outputType = context.getTypeDesc(outputs[0]->getType());
 
     if (implElement->isA<NodeGraph>())
     {

@@ -109,6 +109,61 @@ void GenContext::getOutputSuffix(const ShaderOutput* output, string& suffix) con
     }
 }
 
+//
+// TypeDesc storage methods
+//
+
+void GenContext::registerTypeDefs(const DocumentPtr doc)
+{
+    getShaderGenerator().registerTypeDefs(doc, *this);
+}
+
+void GenContext::registerTypeDesc(TypeDesc typeDesc)
+{
+    const string name = typeDesc.getName();
+    _typeDescMap[name] = typeDesc;
+
+    // TODO - decide if we need to make this more threadsafe
+    // typeID is just a hash of the string value - so while
+    // we might set this entry multiple times - it's always going to be
+    // the same value...
+    // TODO - consider using OIIO::ustring?
+
+    // TODO - decide what it means to re-register the same type over again.
+    // We could...
+    // 1) Just blindly register this type on top of the existing type name.
+    // 2) Ignore any types where the names are already registered
+    // 3) When a type is re-registered we could go compare the existing registered type against the
+    // new candidate type, and raise an error if they differ.
+
+}
+
+void GenContext::registerCustomTypeDesc(const string& name, uint8_t basetype, uint8_t semantic, uint8_t size, ConstStructMemberDescVecPtr structMembers)
+{
+    _typeDescDataBlockStorage.emplace_back(std::make_shared<TypeDesc::DataBlock>(name, structMembers));
+
+    const TypeDesc::DataBlock* dataBlockPtr = _typeDescDataBlockStorage.back().get();
+
+    const TypeDesc typeDesc(dataBlockPtr, basetype, semantic, size);
+    registerTypeDesc(typeDesc);
+
+    // It's important to record the order of the custom types and register their syntax entries in the order
+    // they were added.  This ensures that any struct types used for members of another struct are declared
+    // in the correct order in the generated shader code.
+    _customTypeDescOrder.emplace_back(name);
+}
+
+TypeDesc GenContext::getTypeDesc(const string& name) const
+{
+    auto it = _typeDescMap.find(name);
+    return it != _typeDescMap.end() ? it->second : Type::NONE;
+}
+
+const vector<string>& GenContext::getCustomTypeDescNames() const
+{
+    return _customTypeDescOrder;
+}
+
 ScopedSetClosureParams::ScopedSetClosureParams(const ClosureContext::ClosureParams* params, const ShaderNode* node, ClosureContext* cct) :
     _cct(cct),
     _node(node),
