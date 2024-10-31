@@ -367,7 +367,7 @@ void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc)
             newStructTypeDesc.addMember(memberName, memberType, memberDefaultValue);
         }
 
-        auto structIndex = StructTypeDesc::emplace_back(newStructTypeDesc);
+        auto structIndex = StructTypeDesc::_emplace_back(newStructTypeDesc);
 
         TypeDesc structTypeDesc(typeDefName, TypeDesc::BASETYPE_STRUCT, TypeDesc::SEMANTIC_NONE, 1, structIndex);
 

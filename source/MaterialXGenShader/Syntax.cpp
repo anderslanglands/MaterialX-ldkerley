@@ -192,7 +192,7 @@ bool Syntax::remapEnumeration(const string&, TypeDesc, const string&, std::pair<
 
 void Syntax::registerStructTypeDescSyntax()
 {
-    for (const auto& typeName : StructTypeDesc::getStructTypeNames())
+    for (const auto& typeName : StructTypeDesc::_getStructTypeNames())
     {
         const auto& typeDesc = TypeDesc::get(typeName);
         const auto& structTypeDesc = typeDesc.getStructTypeDesc();

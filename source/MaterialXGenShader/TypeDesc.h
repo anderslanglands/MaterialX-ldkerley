@@ -259,8 +259,8 @@ class MX_GENSHADER_API StructTypeDesc
 
     /// Return a type description by index.
     static StructTypeDesc& _get(unsigned int index);
-    static vector<string> getStructTypeNames();
-    static uint16_t emplace_back(StructTypeDesc structTypeDesc);
+    static vector<string> _getStructTypeNames();
+    static uint16_t _emplace_back(StructTypeDesc structTypeDesc);
 
     TypeDesc typeDesc() const { return _typedesc; }
 

@@ -143,7 +143,7 @@ void StructTypeDesc::addMember(const string& name, TypeDesc type, string default
     _members.emplace_back(StructTypeDesc::StructMemberTypeDesc(name, type, defaultValueStr));
 }
 
-vector<string> StructTypeDesc::getStructTypeNames()
+vector<string> StructTypeDesc::_getStructTypeNames()
 {
     StructTypeDescStorage& structs = structTypeStorage();
     vector<string> structNames;
@@ -160,7 +160,7 @@ StructTypeDesc& StructTypeDesc::_get(unsigned int index)
     return structs[index];
 }
 
-uint16_t StructTypeDesc::emplace_back(StructTypeDesc structTypeDesc)
+uint16_t StructTypeDesc::_emplace_back(StructTypeDesc structTypeDesc)
 {
     StructTypeDescStorage& structs = structTypeStorage();
     if (structs.size() >= std::numeric_limits<uint16_t>::max())
