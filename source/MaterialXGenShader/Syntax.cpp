@@ -195,7 +195,7 @@ void Syntax::registerStructTypeDescSyntax()
     for (const auto& typeName : StructTypeDesc::getStructTypeNames())
     {
         const auto& typeDesc = TypeDesc::get(typeName);
-        const auto& structTypeDesc = StructTypeDesc::get(typeDesc.getStructIndex());
+        const auto& structTypeDesc = typeDesc.getStructTypeDesc();
 
         string structTypeName = typeName;
         string defaultValue = typeName + "( ";
@@ -203,7 +203,7 @@ void Syntax::registerStructTypeDescSyntax()
         string typeAlias = EMPTY_STRING;
         string typeDefinition = "struct " + structTypeName + " { ";
 
-        for (const auto& x : structTypeDesc.getMembers())
+        for (const auto& x : structTypeDesc->getMembers())
         {
             string memberName = x._name;
             string memberType = x._typeDesc.getName();
@@ -285,9 +285,6 @@ StructTypeSyntax::StructTypeSyntax(const Syntax* parentSyntax, const string& nam
 string StructTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
 {
     const AggregateValue& aggValue = static_cast<const AggregateValue&>(value);
-
-    auto typeDesc = TypeDesc::get(aggValue.getTypeString());
-    auto structTypeDesc = StructTypeDesc::get(typeDesc.getStructIndex());
 
     string result = "{";
 

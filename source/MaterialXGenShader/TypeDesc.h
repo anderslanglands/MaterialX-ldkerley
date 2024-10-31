@@ -16,6 +16,8 @@
 
 MATERIALX_NAMESPACE_BEGIN
 
+class StructTypeDesc;
+
 /// @class TypeDesc
 /// A type descriptor for MaterialX data types.
 ///
@@ -123,8 +125,8 @@ class MX_GENSHADER_API TypeDesc
     /// Return true if the type represents a struct.
     bool isStruct() const { return _basetype == BASETYPE_STRUCT; }
 
-    /// Return the index for the struct member information in StructTypeDesc, the result is invalid if `isStruct()` returns false.
-    uint16_t getStructIndex() const { return _structIndex; }
+    /// Return a pointer to the StructTypeDesc if this is a struct type, otherwise return nullptr;
+    const StructTypeDesc* getStructTypeDesc() const;
 
     /// Equality operator
     bool operator==(TypeDesc rhs) const

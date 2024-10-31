@@ -1007,10 +1007,10 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
                         else
                         {
                             // If we're a struct - we need to loop over each member
-                            auto structTypeDesc = StructTypeDesc::get(typedesc.getStructIndex());
+                            auto structTypeDesc = typedesc.getStructTypeDesc();
                             auto aggregateValue = std::static_pointer_cast<const AggregateValue>(variableValue);
 
-                            const auto& members = structTypeDesc.getMembers();
+                            const auto& members = structTypeDesc->getMembers();
                             for (size_t i = 0, n = members.size(); i < n; ++i)
                             {
                                 const auto& member = members[i];

@@ -1094,10 +1094,10 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                         }
                         else
                         {
-                            auto structTypeDesc = StructTypeDesc::get(variableTypeDesc.getStructIndex());
+                            auto structTypeDesc = variableTypeDesc.getStructTypeDesc();
                             auto aggregateValue = std::static_pointer_cast<const AggregateValue>(variableValue);
 
-                            const auto& members = structTypeDesc.getMembers();
+                            const auto& members = structTypeDesc->getMembers();
                             for (size_t i = 0, n = members.size(); i < n; ++i)
                             {
                                 const auto& structMember = members[i];

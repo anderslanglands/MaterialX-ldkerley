@@ -83,8 +83,8 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value) const
     StringVec subValues = parseStructValueString(value);
 
     AggregateValuePtr  result = AggregateValue::createAggregateValue(getName());
-    auto structTypeDesc = StructTypeDesc::get(getStructIndex());
-    const auto& members = structTypeDesc.getMembers();
+    auto structTypeDesc = TypeDesc::getStructTypeDesc();
+    const auto& members = structTypeDesc->getMembers();
 
     if (subValues.size() != members.size())
     {
@@ -99,6 +99,13 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value) const
     }
 
     return result;
+}
+
+const StructTypeDesc* TypeDesc::getStructTypeDesc() const
+{
+    if (!isStruct())
+        return nullptr;
+    return &(StructTypeDesc::get(_structIndex));
 }
 
 TypeDescRegistry::TypeDescRegistry(TypeDesc type, const string& name)
