@@ -105,7 +105,7 @@ const StructTypeDesc* TypeDesc::getStructTypeDesc() const
 {
     if (!isStruct())
         return nullptr;
-    return &(StructTypeDesc::get(_structIndex));
+    return &(StructTypeDesc::_get(_structIndex));
 }
 
 TypeDescRegistry::TypeDescRegistry(TypeDesc type, const string& name)
@@ -168,7 +168,7 @@ vector<string> StructTypeDesc::getStructTypeNames()
     return structNames;
 }
 
-StructTypeDesc& StructTypeDesc::get(unsigned int index)
+StructTypeDesc& StructTypeDesc::_get(unsigned int index)
 {
     StructTypeDescStorage& structs = structTypeStorage();
     return structs[index];
