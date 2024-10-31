@@ -580,8 +580,9 @@ void ShaderGeneratorTester::findLights(mx::DocumentPtr doc, std::vector<mx::Node
     lights.clear();
     for (mx::NodePtr node : doc->getNodes())
     {
-        const mx::TypeDesc type = mx::TypeDesc::get(node->getType());
-        if (type == mx::Type::LIGHTSHADER)
+//        const mx::TypeDesc type = mx::TypeDesc::get(node->getType());
+//        if (type == mx::Type::LIGHTSHADER)
+        if (node->getType() == mx::Type::LIGHTSHADER.getName())
         {
             lights.push_back(node);
         }
@@ -649,9 +650,6 @@ void ShaderGeneratorTester::validate(const mx::GenOptions& generateOptions, cons
     addColorManagement();
     addUnitSystem();
 
-    // Register struct typedefs from the library files.
-    _shaderGenerator->loadStructTypeDefs(_dependLib);
-
     // Test suite setup
     addSkipFiles();
 
@@ -688,6 +686,9 @@ void ShaderGeneratorTester::validate(const mx::GenOptions& generateOptions, cons
     // Register shader metadata defined in the libraries.
     _shaderGenerator->registerShaderMetadata(_dependLib, context);
 
+    // Register struct typedefs from the library files.
+    _shaderGenerator->loadStructTypeDefs(_dependLib, context);
+
     // Define working unit if required
     if (context.getOptions().targetDistanceUnit.empty())
     {
@@ -708,7 +709,7 @@ void ShaderGeneratorTester::validate(const mx::GenOptions& generateOptions, cons
         preprocessDocument(doc);
         _shaderGenerator->registerShaderMetadata(doc, context);
 
-        _shaderGenerator->loadStructTypeDefs(doc);
+        _shaderGenerator->loadStructTypeDefs(doc, context);
 
         // For each new file clear the implementation cache.
         // Since the new file might contain implementations with names

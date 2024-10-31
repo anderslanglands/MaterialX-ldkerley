@@ -49,7 +49,7 @@ const string& TypeDesc::getName() const
     return it != typenames.end() ? it->second : NONE_TYPE_NAME;
 }
 
-TypeDesc TypeDesc::get(const string& name)
+TypeDesc TypeDesc::_get(const string& name)
 {
     TypeDescMap& types = typeMap();
     auto it = types.find(name);

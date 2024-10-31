@@ -401,7 +401,9 @@ string GlslStructTypeSyntax::getValue(const Value& value, bool /* uniform */) co
         separator = ",";
 
         auto memberTypeName = memberValue->getTypeString();
-        auto memberTypeDesc = TypeDesc::get(memberTypeName);
+
+        // todo - not sure what to do here
+        auto memberTypeDesc = TypeDesc::Xget(memberTypeName);
 
         // Recursively use the syntax to generate the output, so we can supported nested structs.
         result += _parentSyntax->getValue(memberTypeDesc, *memberValue, true);

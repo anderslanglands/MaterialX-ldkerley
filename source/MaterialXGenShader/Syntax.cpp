@@ -190,11 +190,11 @@ bool Syntax::remapEnumeration(const string&, TypeDesc, const string&, std::pair<
     return false;
 }
 
-void Syntax::registerStructTypeDescSyntax()
+void Syntax::registerStructTypeDescSyntax(GenContext& context)
 {
     for (const auto& typeName : StructTypeDesc::_getStructTypeNames())
     {
-        const auto& typeDesc = TypeDesc::get(typeName);
+        const auto& typeDesc = context.getTypeDesc(typeName);
         const auto& structTypeDesc = typeDesc.getStructTypeDesc();
 
         string structTypeName = typeName;
@@ -295,7 +295,7 @@ string StructTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
         separator = ";";
 
         auto memberTypeName = memberValue->getTypeString();
-        auto memberTypeDesc = TypeDesc::get(memberTypeName);
+        auto memberTypeDesc = TypeDesc::Xget(memberTypeName);
 
         // Recursively use the syntax to generate the output, so we can support nested structs.
         const string valueStr = _parentSyntax->getValue(memberTypeDesc, *memberValue, true);

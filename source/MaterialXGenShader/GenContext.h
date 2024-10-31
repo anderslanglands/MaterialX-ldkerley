@@ -220,6 +220,12 @@ class MX_GENSHADER_API GenContext
         return _applicationVariableHandler;
     }
 
+    // TypeDesc methods
+    TypeDesc getTypeDesc(const string& name) const
+    {
+        return TypeDesc::_get(name);
+    }
+
   protected:
     GenContext() = delete;
 

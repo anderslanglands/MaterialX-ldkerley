@@ -38,7 +38,7 @@ void ShaderGraph::addInputSockets(const InterfaceElement& elem, GenContext& cont
         const string& portValueString = portValue ? portValue->getValueString() : EMPTY_STRING;
         std::pair<TypeDesc, ValuePtr> enumResult;
         const string& enumNames = input->getAttribute(ValueElement::ENUM_ATTRIBUTE);
-        const TypeDesc portType = TypeDesc::get(input->getType());
+        const TypeDesc portType = context.getTypeDesc(input->getType());
         if (context.getShaderGenerator().getSyntax().remapEnumeration(portValueString, portType, enumNames, enumResult))
         {
             inputSocket = addInputSocket(input->getName(), enumResult.first);
@@ -68,11 +68,11 @@ void ShaderGraph::addOutputSockets(const InterfaceElement& elem)
 {
     for (const OutputPtr& output : elem.getActiveOutputs())
     {
-        addOutputSocket(output->getName(), TypeDesc::get(output->getType()));
+        addOutputSocket(output->getName(), TypeDesc::Xget(output->getType()));
     }
     if (numOutputSockets() == 0)
     {
-        addOutputSocket("out", TypeDesc::get(elem.getType()));
+        addOutputSocket("out", TypeDesc::Xget(elem.getType()));
     }
 }
 
@@ -238,7 +238,7 @@ void ShaderGraph::addDefaultGeomNode(ShaderInput* input, const GeomPropDef& geom
             {
                 std::pair<TypeDesc, ValuePtr> enumResult;
                 const string& enumNames = nodeDefSpaceInput->getAttribute(ValueElement::ENUM_ATTRIBUTE);
-                const TypeDesc portType = TypeDesc::get(nodeDefSpaceInput->getType());
+                const TypeDesc portType = context.getTypeDesc(nodeDefSpaceInput->getType());
                 if (context.getShaderGenerator().getSyntax().remapEnumeration(space, portType, enumNames, enumResult))
                 {
                     spaceInput->setValue(enumResult.second);
@@ -503,7 +503,7 @@ ShaderGraphPtr ShaderGraph::create(const ShaderGraph* parent, const string& name
         graph->addInputSockets(*interface, context);
 
         // Create the given output socket
-        ShaderGraphOutputSocket* outputSocket = graph->addOutputSocket(output->getName(), TypeDesc::get(output->getType()));
+        ShaderGraphOutputSocket* outputSocket = graph->addOutputSocket(output->getName(), context.getTypeDesc(output->getType()));
         outputSocket->setPath(output->getNamePath());
         const string& outputUnit = output->getUnit();
         if (!outputUnit.empty())
@@ -571,7 +571,7 @@ ShaderGraphPtr ShaderGraph::create(const ShaderGraph* parent, const string& name
                 {
                     const string& valueString = value->getValueString();
                     std::pair<TypeDesc, ValuePtr> enumResult;
-                    const TypeDesc type = TypeDesc::get(nodedefInput->getType());
+                    const TypeDesc type = context.getTypeDesc(nodedefInput->getType());
                     const string& enumNames = nodedefInput->getAttribute(ValueElement::ENUM_ATTRIBUTE);
                     if (context.getShaderGenerator().getSyntax().remapEnumeration(valueString, type, enumNames, enumResult))
                     {

@@ -157,7 +157,9 @@ class MX_GENSHADER_API TypeDesc
 
     /// Return a type description by name.
     /// If no type is found Type::NONE is returned.
-    static TypeDesc get(const string& name);
+    static TypeDesc _get(const string& name);
+    static TypeDesc Xget(const string& name) { return TypeDesc::_get(name); }
+    //    static TypeDesc get(const string& name) { return TypeDesc::_get(name); }
 
     static const string NONE_TYPE_NAME;
 

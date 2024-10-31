@@ -300,7 +300,7 @@ ShaderNodeImplPtr ShaderGenerator::getImplementation(const NodeDef& nodedef, Gen
         throw ExceptionShaderGenError("NodeDef '" + nodedef.getName() + "' has no outputs defined");
     }
 
-    const TypeDesc outputType = TypeDesc::get(outputs[0]->getType());
+    const TypeDesc outputType = context.getTypeDesc(outputs[0]->getType());
 
     if (implElement->isA<NodeGraph>())
     {
@@ -345,7 +345,7 @@ ShaderNodeImplPtr ShaderGenerator::getImplementation(const NodeDef& nodedef, Gen
 }
 
 /// Load any struct type definitions from the document in to the type cache.
-void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc)
+void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc, GenContext& context)
 {
     for (const auto& mxTypeDef : doc->getTypeDefs())
     {
@@ -361,7 +361,7 @@ void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc)
         {
             auto memberName = member->getName();
             auto memberTypeName = member->getType();
-            auto memberType = TypeDesc::get(memberTypeName);
+            auto memberType = context.getTypeDesc(memberTypeName);
             auto memberDefaultValue = member->getValueString();
 
             newStructTypeDesc.addMember(memberName, memberType, memberDefaultValue);
@@ -373,10 +373,10 @@ void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc)
 
         TypeDescRegistry(structTypeDesc, typeDefName);
 
-        StructTypeDesc::_get(structIndex).setTypeDesc(TypeDesc::get(typeDefName));
+        StructTypeDesc::_get(structIndex).setTypeDesc(context.getTypeDesc(typeDefName));
     }
 
-    _syntax->registerStructTypeDescSyntax();
+    _syntax->registerStructTypeDescSyntax(context);
 }
 
 namespace
@@ -430,7 +430,7 @@ void ShaderGenerator::registerShaderMetadata(const DocumentPtr& doc, GenContext&
         if (def->getExportable())
         {
             const string& attrName = def->getAttrName();
-            const TypeDesc type = TypeDesc::get(def->getType());
+            const TypeDesc type = context.getTypeDesc(def->getType());
             if (!attrName.empty() && type != Type::NONE)
             {
                 registry->addMetadata(attrName, type, def->getValue());

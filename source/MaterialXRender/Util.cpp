@@ -157,7 +157,7 @@ unsigned int getUIProperties(InputPtr input, const string& target, UIProperties&
         if (!enumValuesAttr.empty())
         {
             const string COMMA_SEPARATOR = ",";
-            const TypeDesc typeDesc = TypeDesc::get(input->getType());
+            const TypeDesc typeDesc = TypeDesc::Xget(input->getType());
             string valueString;
             size_t index = 0;
             for (const string& val : splitString(enumValuesAttr, COMMA_SEPARATOR))

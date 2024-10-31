@@ -1761,7 +1761,7 @@ void Viewer::initContext(mx::GenContext& context)
     context.getOptions().targetDistanceUnit = "meter";
 
     // Initialize the struct typedefs from the stdlib
-    context.getShaderGenerator().loadStructTypeDefs(_stdLib);
+    context.getShaderGenerator().loadStructTypeDefs(_stdLib, context);
 }
 
 void Viewer::loadStandardLibraries()
