@@ -159,9 +159,6 @@ class MX_GENSHADER_API TypeDesc
     /// If no type is found Type::NONE is returned.
     static TypeDesc get(const string& name);
 
-    /// Remove a type description by name, if it exists.
-    static void remove(const string& name);
-
     static const string NONE_TYPE_NAME;
 
     /// Create a Value from a string for a given typeDesc
@@ -264,7 +261,6 @@ class MX_GENSHADER_API StructTypeDesc
     static StructTypeDesc& _get(unsigned int index);
     static vector<string> getStructTypeNames();
     static uint16_t emplace_back(StructTypeDesc structTypeDesc);
-    static void clear();
 
     TypeDesc typeDesc() const { return _typedesc; }
 

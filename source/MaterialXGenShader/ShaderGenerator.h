@@ -194,9 +194,6 @@ class MX_GENSHADER_API ShaderGenerator
     /// Load any struct type definitions from the document in to the type cache.
     void loadStructTypeDefs(const DocumentPtr& doc);
 
-    /// Clear any struct type definitions loaded
-    void clearStructTypeDefs();
-
     /// Register metadata that should be exported to the generated shaders.
     /// Supported metadata includes standard UI attributes like "uiname", "uifolder",
     /// "uimin", "uimax", etc.

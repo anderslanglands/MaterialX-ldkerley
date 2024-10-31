@@ -379,12 +379,6 @@ void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc)
     _syntax->registerStructTypeDescSyntax();
 }
 
-/// Clear any struct type definitions loaded
-void ShaderGenerator::clearStructTypeDefs()
-{
-    StructTypeDesc::clear();
-}
-
 namespace
 {
 

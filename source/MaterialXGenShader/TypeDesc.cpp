@@ -56,20 +56,6 @@ TypeDesc TypeDesc::get(const string& name)
     return it != types.end() ? it->second : Type::NONE;
 }
 
-void TypeDesc::remove(const string& name)
-{
-    TypeDescNameMap& typenames = typeNameMap();
-
-    TypeDescMap& types = typeMap();
-
-    auto it = types.find(name);
-    if (it == types.end())
-        return;
-
-    typenames.erase(it->second.typeId());
-    types.erase(it);
-}
-
 ValuePtr TypeDesc::createValueFromStrings(const string& value) const
 {
     ValuePtr newValue = Value::createValueFromStrings(value, getName());
@@ -184,17 +170,6 @@ uint16_t StructTypeDesc::emplace_back(StructTypeDesc structTypeDesc)
     uint16_t index = static_cast<uint16_t>(structs.size());
     structs.emplace_back(structTypeDesc);
     return index;
-}
-
-void StructTypeDesc::clear()
-{
-    StructTypeDescStorage& structs = structTypeStorage();
-    for (const auto& structType: structs)
-    {
-        // Need to add typeID to structTypeDesc - and use it here to reference back to typeDesc obj and remove it.
-        TypeDesc::remove(structType.typeDesc().getName());
-    }
-    structs.clear();
 }
 
 const string& StructTypeDesc::getName() const
