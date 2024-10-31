@@ -170,7 +170,7 @@ unsigned int getUIProperties(InputPtr input, const string& target, UIProperties&
                 else
                 {
                     valueString += val;
-                    uiProperties.enumerationValues.push_back(typeDesc.createValueFromStrings(valueString));
+                    uiProperties.enumerationValues.push_back(Value::createValueFromStrings(valueString, input->getType()));
                     valueString.clear();
                     index = 0;
                 }
