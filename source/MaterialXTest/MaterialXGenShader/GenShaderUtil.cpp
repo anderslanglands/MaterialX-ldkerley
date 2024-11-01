@@ -686,6 +686,9 @@ void ShaderGeneratorTester::validate(const mx::GenOptions& generateOptions, cons
     // Register shader metadata defined in the libraries.
     _shaderGenerator->registerShaderMetadata(_dependLib, context);
 
+    // Register built in types
+    _shaderGenerator->registerBuiltinTypes(context);
+
     // Register struct typedefs from the library files.
     _shaderGenerator->loadStructTypeDefs(_dependLib, context);
 
@@ -708,6 +711,9 @@ void ShaderGeneratorTester::validate(const mx::GenOptions& generateOptions, cons
         // Apply optional preprocessing.
         preprocessDocument(doc);
         _shaderGenerator->registerShaderMetadata(doc, context);
+
+        // Register built in types
+        _shaderGenerator->registerBuiltinTypes(context);
 
         _shaderGenerator->loadStructTypeDefs(doc, context);
 
