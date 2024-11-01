@@ -224,7 +224,7 @@ class MX_GENSHADER_API GenContext
     // TypeDesc methods
     TypeDesc getTypeDesc(const string& name) const
     {
-        return TypeDesc::_get(name);
+        return _typeDescs.get(name);
     }
 
 

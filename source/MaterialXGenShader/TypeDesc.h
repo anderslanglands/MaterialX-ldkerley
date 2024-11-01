@@ -157,7 +157,7 @@ class MX_GENSHADER_API TypeDesc
 
     /// Return a type description by name.
     /// If no type is found Type::NONE is returned.
-    static TypeDesc _get(const string& name);
+//    static TypeDesc _get(const string& name);
 
     // eventually the uses of this function need to go away....
 //    static TypeDesc Xget(const string& name) { return TypeDesc::_get(name); }
@@ -184,11 +184,11 @@ class MX_GENSHADER_API TypeDesc
 
 /// @class TypeDescRegistry
 /// Helper class for type registration.
-class MX_GENSHADER_API TypeDescRegistry
-{
-  public:
-    TypeDescRegistry(TypeDesc type, const string& name);
-};
+//class MX_GENSHADER_API TypeDescRegistry
+//{
+//  public:
+//    TypeDescRegistry(TypeDesc type, const string& name);
+//};
 
 /// Macro to define global type descriptions for commonly used types.
 #define TYPEDESC_DEFINE_TYPE(T, name, basetype, semantic, size) \
@@ -294,11 +294,7 @@ class MX_GENSHADER_API TypeDescStorage
         return it != _typeMap.end() ? it->second : Type::NONE;
     }
 
-    void add(TypeDesc type, const string& name)
-    {
-        _typeMap[name] = type;
-        _typeNameMap[type.typeId()] = name;
-    }
+    void add(TypeDesc type, const string& name);
 
   private:
 
@@ -307,7 +303,7 @@ class MX_GENSHADER_API TypeDescStorage
 
     // Internal storage of registered type descriptors
     TypeDescMap _typeMap;
-    TypeDescNameMap _typeNameMap;
+//    TypeDescNameMap _typeNameMap;
 
 };
 

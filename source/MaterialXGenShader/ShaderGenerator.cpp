@@ -371,7 +371,8 @@ void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc, GenContext& con
 
         TypeDesc structTypeDesc(typeDefName, TypeDesc::BASETYPE_STRUCT, TypeDesc::SEMANTIC_NONE, 1, structIndex);
 
-        TypeDescRegistry(structTypeDesc, typeDefName);
+        // TODO _ reintroduce struct registration
+//        TypeDescRegistry(structTypeDesc, typeDefName);
 
         StructTypeDesc::_get(structIndex).setTypeDesc(context.getTypeDesc(typeDefName));
     }

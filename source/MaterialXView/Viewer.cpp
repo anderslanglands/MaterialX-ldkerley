@@ -1762,7 +1762,7 @@ void Viewer::initContext(mx::GenContext& context)
 
 
     // Register built in types
-    context.getShaderGenerator().registerBuiltinTypes(context);
+//    context.getShaderGenerator().registerBuiltinTypes(context);
 
     // Initialize the struct typedefs from the stdlib
     context.getShaderGenerator().loadStructTypeDefs(_stdLib, context);

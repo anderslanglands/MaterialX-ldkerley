@@ -12,15 +12,15 @@ MATERIALX_NAMESPACE_BEGIN
 namespace
 {
 
-using TypeDescMap = std::unordered_map<string, TypeDesc>;
+//using TypeDescMap = std::unordered_map<string, TypeDesc>;
 using TypeDescNameMap = std::unordered_map<uint32_t, string>;
 
-// Internal storage of registered type descriptors
-TypeDescMap& typeMap()
-{
-    static TypeDescMap map;
-    return map;
-}
+//// Internal storage of registered type descriptors
+//TypeDescMap& typeMap()
+//{
+//    static TypeDescMap map;
+//    return map;
+//}
 
 TypeDescNameMap& typeNameMap()
 {
@@ -48,13 +48,13 @@ const string& TypeDesc::getName() const
     auto it = typenames.find(_id);
     return it != typenames.end() ? it->second : NONE_TYPE_NAME;
 }
-
-TypeDesc TypeDesc::_get(const string& name)
-{
-    TypeDescMap& types = typeMap();
-    auto it = types.find(name);
-    return it != types.end() ? it->second : Type::NONE;
-}
+//
+//TypeDesc TypeDesc::_get(const string& name)
+//{
+//    TypeDescMap& types = typeMap();
+//    auto it = types.find(name);
+//    return it != types.end() ? it->second : Type::NONE;
+//}
 
 ValuePtr TypeDesc::createValueFromStrings(const string& value) const
 {
@@ -93,14 +93,14 @@ const StructTypeDesc* TypeDesc::getStructTypeDesc() const
         return nullptr;
     return &(StructTypeDesc::_get(_structIndex));
 }
-
-TypeDescRegistry::TypeDescRegistry(TypeDesc type, const string& name)
-{
-    TypeDescMap& types = typeMap();
-    TypeDescNameMap& typenames = typeNameMap();
-    types[name] = type;
-    typenames[type.typeId()] = name;
-}
+//
+//TypeDescRegistry::TypeDescRegistry(TypeDesc type, const string& name)
+//{
+//    TypeDescMap& types = typeMap();
+//    TypeDescNameMap& typenames = typeNameMap();
+//    types[name] = type;
+//    typenames[type.typeId()] = name;
+//}
 
 namespace Type
 {
@@ -187,10 +187,25 @@ TypeDesc createStructTypeDesc(std::string_view name)
     return {name, TypeDesc::BASETYPE_STRUCT};
 }
 
-void registerStructTypeDesc(std::string_view name)
+// TODO reintroduce this?
+//void registerStructTypeDesc(std::string_view name)
+//{
+//    auto structTypeDesc = createStructTypeDesc(name);
+//    TypeDescRegistry register_struct(structTypeDesc, string(name));
+//}
+
+
+void TypeDescStorage::add(TypeDesc type, const string& name)
 {
-    auto structTypeDesc = createStructTypeDesc(name);
-    TypeDescRegistry register_struct(structTypeDesc, string(name));
+    _typeMap[name] = type;
+    TypeDescNameMap& typenames = typeNameMap();
+
+    // TODO - decide if we need to make this more threadsafe
+    // typeID is just a hash of the string value - so while
+    // we might set this entry multiple times - it's always going to be
+    // the same value...
+    // TODO - consider using OIIO::ustring?
+    typenames[type.typeId()] = name;
 }
 
 MATERIALX_NAMESPACE_END
