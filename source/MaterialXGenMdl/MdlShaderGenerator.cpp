@@ -691,8 +691,10 @@ void MdlShaderGenerator::emitMdlVersionFilenameSuffix(GenContext& context, Shade
 
 void MdlShaderGenerator::registerBuiltinTypes(GenContext& context)
 {
-    // Custom types to handle enumeration output
 
+    ShaderGenerator::registerBuiltinTypes(context);
+
+    // Custom types to handle enumeration output
     context.registerTypeDesc(Type::MDL_COORDINATESPACE, "coordinatespace");
     context.registerTypeDesc(Type::MDL_ADDRESSMODE, "addressmode");
     context.registerTypeDesc(Type::MDL_FILTERLOOKUPMODE, "filterlookup");
