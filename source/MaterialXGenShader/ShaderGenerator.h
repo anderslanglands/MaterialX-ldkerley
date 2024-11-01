@@ -205,6 +205,9 @@ class MX_GENSHADER_API ShaderGenerator
     /// export of metadata.
     virtual void registerShaderMetadata(const DocumentPtr& doc, GenContext& context) const;
 
+    // TODO - decide if this belongs to ShaderGenerator or Syntax base class...
+    virtual void registerBuiltinTypes(GenContext& context);
+
   protected:
     /// Protected constructor
     ShaderGenerator(SyntaxPtr syntax);

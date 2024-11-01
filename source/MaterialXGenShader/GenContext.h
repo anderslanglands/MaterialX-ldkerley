@@ -65,6 +65,7 @@ class MX_GENSHADER_API GenContext
         _sourceCodeSearchPath.append(path);
     }
 
+
     /// Resolve a source code filename, first checking the given local path
     /// then checking any file paths registered by the user.
     FilePath resolveSourceFile(const FilePath& filename, const FilePath& localPath) const
@@ -226,6 +227,12 @@ class MX_GENSHADER_API GenContext
         return TypeDesc::_get(name);
     }
 
+
+    void registerTypeDesc(TypeDesc T, const string& name)
+    {
+        _typeDescs.add(T, name);
+    }
+
   protected:
     GenContext() = delete;
 
@@ -233,6 +240,7 @@ class MX_GENSHADER_API GenContext
     GenOptions _options;
     FileSearchPath _sourceCodeSearchPath;
     StringSet _reservedWords;
+    TypeDescStorage _typeDescs;
 
     std::unordered_map<string, ShaderNodeImplPtr> _nodeImpls;
     std::unordered_map<string, vector<GenUserDataPtr>> _userData;

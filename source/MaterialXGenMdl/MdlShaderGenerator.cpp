@@ -688,6 +688,22 @@ void MdlShaderGenerator::emitMdlVersionFilenameSuffix(GenContext& context, Shade
     emitString(getMdlVersionFilenameSuffix(context), stage);
 }
 
+
+void MdlShaderGenerator::registerBuiltinTypes(GenContext& context)
+{
+    // Custom types to handle enumeration output
+
+    context.registerTypeDesc(Type::MDL_COORDINATESPACE, "coordinatespace");
+    context.registerTypeDesc(Type::MDL_ADDRESSMODE, "addressmode");
+    context.registerTypeDesc(Type::MDL_FILTERLOOKUPMODE, "filterlookup");
+    context.registerTypeDesc(Type::MDL_FILTERTYPE, "filtertype");
+    context.registerTypeDesc(Type::MDL_DISTRIBUTIONTYPE, "distributiontype");
+    context.registerTypeDesc(Type::MDL_SCATTER_MODE, "scatter_mode");
+
+}
+
+
+
 namespace MDL
 {
 // Identifiers for MDL variable blocks

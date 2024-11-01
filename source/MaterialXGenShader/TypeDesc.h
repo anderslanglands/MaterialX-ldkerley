@@ -196,8 +196,8 @@ class MX_GENSHADER_API TypeDescRegistry
 
 /// Macro to register a previously defined type in the type registry.
 /// Registration must be done in order for the type to be searchable by name.
-#define TYPEDESC_REGISTER_TYPE(T, name) \
-    TypeDescRegistry register_##T(T, name);
+//#define TYPEDESC_REGISTER_TYPE(T, name) \
+//    TypeDescRegistry register_##T(T, name);
 
 namespace Type
 {
@@ -280,6 +280,35 @@ class MX_GENSHADER_API StructTypeDescRegistry
 {
   public:
     StructTypeDescRegistry();
+};
+
+
+class MX_GENSHADER_API TypeDescStorage
+{
+  public:
+    TypeDescStorage() noexcept {}
+
+    TypeDesc get(const string& name) const
+    {
+        auto it = _typeMap.find(name);
+        return it != _typeMap.end() ? it->second : Type::NONE;
+    }
+
+    void add(TypeDesc type, const string& name)
+    {
+        _typeMap[name] = type;
+        _typeNameMap[type.typeId()] = name;
+    }
+
+  private:
+
+    using TypeDescMap = std::unordered_map<string, TypeDesc>;
+    using TypeDescNameMap = std::unordered_map<uint32_t, string>;
+
+    // Internal storage of registered type descriptors
+    TypeDescMap _typeMap;
+    TypeDescNameMap _typeNameMap;
+
 };
 
 MATERIALX_NAMESPACE_END

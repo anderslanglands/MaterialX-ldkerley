@@ -159,4 +159,11 @@ ScopedSetVariableName::~ScopedSetVariableName()
     _port->setVariable(_oldName);
 }
 
+
+// TypeDesc additions
+
+
+
+
+
 MATERIALX_NAMESPACE_END

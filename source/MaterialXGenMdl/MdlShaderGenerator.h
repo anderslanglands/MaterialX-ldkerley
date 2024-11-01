@@ -53,6 +53,7 @@ class MX_GENMDL_API MdlShaderGenerator : public ShaderGenerator
 {
   public:
     MdlShaderGenerator();
+//    virtual ~MdlShaderGenerator() { }
 
     static ShaderGeneratorPtr create() { return std::make_shared<MdlShaderGenerator>(); }
 
@@ -84,6 +85,9 @@ class MX_GENMDL_API MdlShaderGenerator : public ShaderGenerator
 
     /// Get the version number suffix appended to MDL modules that use versions.
     const string& getMdlVersionFilenameSuffix(GenContext& context) const;
+
+    void registerBuiltinTypes(GenContext& context) override;
+
 
   protected:
     // Create and initialize a new MDL shader for shader generation.
