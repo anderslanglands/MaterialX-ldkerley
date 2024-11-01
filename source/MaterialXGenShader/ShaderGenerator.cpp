@@ -373,6 +373,7 @@ void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc, GenContext& con
 
         // TODO _ reintroduce struct registration
 //        TypeDescRegistry(structTypeDesc, typeDefName);
+        context.registerTypeDesc(structTypeDesc, typeDefName);
 
         StructTypeDesc::_get(structIndex).setTypeDesc(context.getTypeDesc(typeDefName));
     }
