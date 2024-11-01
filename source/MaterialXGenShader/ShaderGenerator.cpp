@@ -164,7 +164,7 @@ void ShaderGenerator::emitTypeDefinitions(GenContext&, ShaderStage& stage) const
 }
 
 void ShaderGenerator::emitVariableDeclaration(const ShaderPort* variable, const string& qualifier,
-                                              GenContext&, ShaderStage& stage,
+                                              GenContext& context, ShaderStage& stage,
                                               bool assignValue) const
 {
     string str = qualifier.empty() ? EMPTY_STRING : qualifier + " ";
@@ -187,7 +187,7 @@ void ShaderGenerator::emitVariableDeclaration(const ShaderPort* variable, const 
     if (assignValue)
     {
         const string valueStr = (variable->getValue() ?
-                                 _syntax->getValue(variable->getType(), *variable->getValue(), true) :
+                                 _syntax->getValue(variable->getType(), *variable->getValue(), context, true) :
                                  _syntax->getDefaultValue(variable->getType(), true));
         str += valueStr.empty() ? EMPTY_STRING : " = " + valueStr;
     }
@@ -243,7 +243,7 @@ string ShaderGenerator::getUpstreamResult(const ShaderInput* input, GenContext& 
 {
     if (!input->getConnection())
     {
-        return input->getValue() ? _syntax->getValue(input->getType(), *input->getValue()) : _syntax->getDefaultValue(input->getType());
+        return input->getValue() ? _syntax->getValue(input->getType(), *input->getValue(), context) : _syntax->getDefaultValue(input->getType());
     }
 
     string variable = input->getConnection()->getVariable();

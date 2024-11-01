@@ -614,7 +614,7 @@ void GlslShaderGenerator::emitPixelStage(const ShaderGraph& graph, GenContext& c
         else
         {
             string outputValue = outputSocket->getValue() ?
-                                 _syntax->getValue(outputSocket->getType(), *outputSocket->getValue()) :
+                                 _syntax->getValue(outputSocket->getType(), *outputSocket->getValue(), context) :
                                  _syntax->getDefaultValue(outputSocket->getType());
             if (!outputSocket->getType().isFloat4())
             {
@@ -689,7 +689,7 @@ void GlslShaderGenerator::toVec4(TypeDesc type, string& variable)
 }
 
 void GlslShaderGenerator::emitVariableDeclaration(const ShaderPort* variable, const string& qualifier,
-                                                  GenContext&, ShaderStage& stage,
+                                                  GenContext& context, ShaderStage& stage,
                                                   bool assignValue) const
 {
     // A file texture input needs special handling on GLSL
@@ -724,7 +724,7 @@ void GlslShaderGenerator::emitVariableDeclaration(const ShaderPort* variable, co
         if (assignValue)
         {
             const string valueStr = (variable->getValue() ?
-                                    _syntax->getValue(variable->getType(), *variable->getValue(), true) :
+                                    _syntax->getValue(variable->getType(), *variable->getValue(), context, true) :
                                     _syntax->getDefaultValue(variable->getType(), true));
             str += valueStr.empty() ? EMPTY_STRING : " = " + valueStr;
         }

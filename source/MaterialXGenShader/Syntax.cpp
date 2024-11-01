@@ -77,16 +77,16 @@ const TypeSyntax& Syntax::getTypeSyntax(TypeDesc type) const
     return *_typeSyntaxes[it->second];
 }
 
-string Syntax::getValue(const ShaderPort* port, bool uniform) const
+string Syntax::getValue(const ShaderPort* port, const GenContext& context, bool uniform) const
 {
     const TypeSyntax& syntax = getTypeSyntax(port->getType());
-    return syntax.getValue(port, uniform);
+    return syntax.getValue(port, context, uniform);
 }
 
-string Syntax::getValue(TypeDesc type, const Value& value, bool uniform) const
+string Syntax::getValue(TypeDesc type, const Value& value, const GenContext& context, bool uniform) const
 {
     const TypeSyntax& syntax = getTypeSyntax(type);
-    return syntax.getValue(value, uniform);
+    return syntax.getValue(value, context, uniform);
 }
 
 const string& Syntax::getDefaultValue(TypeDesc type, bool uniform) const
@@ -233,13 +233,13 @@ TypeSyntax::TypeSyntax(const string& name, const string& defaultValue, const str
 {
 }
 
-string TypeSyntax::getValue(const ShaderPort* port, bool uniform) const
+string TypeSyntax::getValue(const ShaderPort* port, const GenContext& context, bool uniform) const
 {
     if (!port || !port->getValue())
     {
         return getDefaultValue(uniform);
     }
-    return getValue(*port->getValue(), uniform);
+    return getValue(*port->getValue(), context, uniform);
 }
 
 ScalarTypeSyntax::ScalarTypeSyntax(const string& name, const string& defaultValue, const string& uniformDefaultValue,
@@ -248,7 +248,7 @@ ScalarTypeSyntax::ScalarTypeSyntax(const string& name, const string& defaultValu
 {
 }
 
-string ScalarTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
+string ScalarTypeSyntax::getValue(const Value& value, const GenContext& /*context*/, bool /*uniform*/) const
 {
     return value.getValueString();
 }
@@ -259,7 +259,7 @@ StringTypeSyntax::StringTypeSyntax(const string& name, const string& defaultValu
 {
 }
 
-string StringTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
+string StringTypeSyntax::getValue(const Value& value, const GenContext& /*context*/, bool /*uniform*/) const
 {
     return "\"" + value.getValueString() + "\"";
 }
@@ -270,7 +270,7 @@ AggregateTypeSyntax::AggregateTypeSyntax(const string& name, const string& defau
 {
 }
 
-string AggregateTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
+string AggregateTypeSyntax::getValue(const Value& value, const GenContext& /*context*/, bool /*uniform*/) const
 {
     const string valueString = value.getValueString();
     return valueString.empty() ? valueString : getName() + "(" + valueString + ")";
@@ -282,7 +282,7 @@ StructTypeSyntax::StructTypeSyntax(const Syntax* parentSyntax, const string& nam
 {
 }
 
-string StructTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
+string StructTypeSyntax::getValue(const Value& value, const GenContext& context, bool /*uniform*/) const
 {
     const AggregateValue& aggValue = static_cast<const AggregateValue&>(value);
 
@@ -295,10 +295,10 @@ string StructTypeSyntax::getValue(const Value& value, bool /*uniform*/) const
         separator = ";";
 
         auto memberTypeName = memberValue->getTypeString();
-        auto memberTypeDesc = TypeDesc::Xget(memberTypeName);
+        auto memberTypeDesc = context.getTypeDesc(memberTypeName);
 
         // Recursively use the syntax to generate the output, so we can support nested structs.
-        const string valueStr = _parentSyntax->getValue(memberTypeDesc, *memberValue, true);
+        const string valueStr = _parentSyntax->getValue(memberTypeDesc, *memberValue, context, true);
 
         result += valueStr;
     }
