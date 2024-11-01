@@ -160,7 +160,7 @@ class MX_GENSHADER_API TypeDesc
     static TypeDesc _get(const string& name);
 
     // eventually the uses of this function need to go away....
-    static TypeDesc Xget(const string& name) { return TypeDesc::_get(name); }
+//    static TypeDesc Xget(const string& name) { return TypeDesc::_get(name); }
 
     static const string NONE_TYPE_NAME;
 
