@@ -12,15 +12,7 @@ MATERIALX_NAMESPACE_BEGIN
 namespace
 {
 
-//using TypeDescMap = std::unordered_map<string, TypeDesc>;
 using TypeDescNameMap = std::unordered_map<uint32_t, string>;
-
-//// Internal storage of registered type descriptors
-//TypeDescMap& typeMap()
-//{
-//    static TypeDescMap map;
-//    return map;
-//}
 
 TypeDescNameMap& typeNameMap()
 {
@@ -48,13 +40,6 @@ const string& TypeDesc::getName() const
     auto it = typenames.find(_id);
     return it != typenames.end() ? it->second : NONE_TYPE_NAME;
 }
-//
-//TypeDesc TypeDesc::_get(const string& name)
-//{
-//    TypeDescMap& types = typeMap();
-//    auto it = types.find(name);
-//    return it != types.end() ? it->second : Type::NONE;
-//}
 
 ValuePtr TypeDesc::createValueFromStrings(const string& value) const
 {
@@ -93,46 +78,6 @@ const StructTypeDesc* TypeDesc::getStructTypeDesc() const
         return nullptr;
     return &(StructTypeDesc::_get(_structIndex));
 }
-//
-//TypeDescRegistry::TypeDescRegistry(TypeDesc type, const string& name)
-//{
-//    TypeDescMap& types = typeMap();
-//    TypeDescNameMap& typenames = typeNameMap();
-//    types[name] = type;
-//    typenames[type.typeId()] = name;
-//}
-
-namespace Type
-{
-
-///
-/// Register type descriptors for standard types.
-///
-//TYPEDESC_REGISTER_TYPE(NONE, "none")
-//TYPEDESC_REGISTER_TYPE(BOOLEAN, "boolean")
-//TYPEDESC_REGISTER_TYPE(INTEGER, "integer")
-//TYPEDESC_REGISTER_TYPE(INTEGERARRAY, "integerarray")
-//TYPEDESC_REGISTER_TYPE(FLOAT, "float")
-//TYPEDESC_REGISTER_TYPE(FLOATARRAY, "floatarray")
-//TYPEDESC_REGISTER_TYPE(VECTOR2, "vector2")
-//TYPEDESC_REGISTER_TYPE(VECTOR3, "vector3")
-//TYPEDESC_REGISTER_TYPE(VECTOR4, "vector4")
-//TYPEDESC_REGISTER_TYPE(COLOR3, "color3")
-//TYPEDESC_REGISTER_TYPE(COLOR4, "color4")
-//TYPEDESC_REGISTER_TYPE(MATRIX33, "matrix33")
-//TYPEDESC_REGISTER_TYPE(MATRIX44, "matrix44")
-//TYPEDESC_REGISTER_TYPE(STRING, "string")
-//TYPEDESC_REGISTER_TYPE(FILENAME, "filename")
-//TYPEDESC_REGISTER_TYPE(BSDF, "BSDF")
-//TYPEDESC_REGISTER_TYPE(EDF, "EDF")
-//TYPEDESC_REGISTER_TYPE(VDF, "VDF")
-//TYPEDESC_REGISTER_TYPE(SURFACESHADER, "surfaceshader")
-//TYPEDESC_REGISTER_TYPE(VOLUMESHADER, "volumeshader")
-//TYPEDESC_REGISTER_TYPE(DISPLACEMENTSHADER, "displacementshader")
-//TYPEDESC_REGISTER_TYPE(LIGHTSHADER, "lightshader")
-//TYPEDESC_REGISTER_TYPE(MATERIAL, "material")
-
-} // namespace Type
 
 //
 // StructTypeDesc methods
@@ -181,19 +126,11 @@ const vector<StructTypeDesc::StructMemberTypeDesc>& StructTypeDesc::getMembers()
 {
     return _members;
 }
-
-TypeDesc createStructTypeDesc(std::string_view name)
-{
-    return {name, TypeDesc::BASETYPE_STRUCT};
-}
-
-// TODO reintroduce this?
-//void registerStructTypeDesc(std::string_view name)
+//
+//TypeDesc createStructTypeDesc(std::string_view name)
 //{
-//    auto structTypeDesc = createStructTypeDesc(name);
-//    TypeDescRegistry register_struct(structTypeDesc, string(name));
+//    return {name, TypeDesc::BASETYPE_STRUCT};
 //}
-
 
 void TypeDescStorage::add(TypeDesc type, const string& name)
 {
