@@ -168,7 +168,7 @@ bool ShaderRenderTester::validate(const mx::FilePath optionsFilePath)
     _shaderGenerator->registerShaderMetadata(dependLib, context);
 
     // load the struct typedefs from the libraries
-    _shaderGenerator->loadStructTypeDefs(dependLib, context);
+    _shaderGenerator->registerTypeDefs(dependLib, context);
 
     setupTime.endTimer();
 

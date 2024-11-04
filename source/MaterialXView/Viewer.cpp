@@ -1765,7 +1765,7 @@ void Viewer::initContext(mx::GenContext& context)
 //    context.getShaderGenerator().registerBuiltinTypes(context);
 
     // Initialize the struct typedefs from the stdlib
-    context.getShaderGenerator().loadStructTypeDefs(_stdLib, context);
+    context.getShaderGenerator().registerTypeDefs(_stdLib, context);
 }
 
 void Viewer::loadStandardLibraries()

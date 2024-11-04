@@ -209,6 +209,8 @@ void testDeterministicGeneration(mx::DocumentPtr libraries, mx::GenContext& cont
         mx::readFromXmlFile(testDoc, testFile);
         testDoc->setDataLibrary(libraries);
 
+        context.getShaderGenerator().registerTypeDefs(testDoc, context);
+
         // Keep the document alive to make sure
         // new memory is allocated for each run
         testDocs[i] = testDoc;
@@ -238,6 +240,7 @@ TEST_CASE("GenShader: Deterministic Generation", "[genshader]")
     {
         mx::GenContext context(mx::GlslShaderGenerator::create());
         context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
         testDeterministicGeneration(libraries, context);
     }
 #endif
@@ -245,6 +248,7 @@ TEST_CASE("GenShader: Deterministic Generation", "[genshader]")
     {
         mx::GenContext context(mx::OslShaderGenerator::create());
         context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
         testDeterministicGeneration(libraries, context);
     }
 #endif
@@ -252,6 +256,7 @@ TEST_CASE("GenShader: Deterministic Generation", "[genshader]")
     {
         mx::GenContext context(mx::MdlShaderGenerator::create());
         context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
         testDeterministicGeneration(libraries, context);
     }
 #endif
@@ -259,6 +264,7 @@ TEST_CASE("GenShader: Deterministic Generation", "[genshader]")
     {
         mx::GenContext context(mx::MslShaderGenerator::create());
         context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
         testDeterministicGeneration(libraries, context);
     }
 #endif
@@ -295,6 +301,7 @@ TEST_CASE("GenShader: Track Dependencies", "[genshader]")
     {
         mx::GenContext context(mx::GlslShaderGenerator::create());
         context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
         checkPixelDependencies(libraries, context);
     }
 #endif
@@ -302,6 +309,7 @@ TEST_CASE("GenShader: Track Dependencies", "[genshader]")
     {
         mx::GenContext context(mx::OslShaderGenerator::create());
         context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
         checkPixelDependencies(libraries, context);
     }
 #endif
@@ -309,6 +317,7 @@ TEST_CASE("GenShader: Track Dependencies", "[genshader]")
     {
         mx::GenContext context(mx::MdlShaderGenerator::create());
         context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
         checkPixelDependencies(libraries, context);
     }
 #endif
@@ -394,6 +403,7 @@ TEST_CASE("GenShader: Track Application Variables", "[genshader]")
     {
         mx::GenContext context(mx::GlslShaderGenerator::create());
         context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
         context.setApplicationVariableHandler(variableTracker);
         mx::ShaderPtr shader = context.getShaderGenerator().generate(testElement, element, context);
     }
@@ -402,6 +412,7 @@ TEST_CASE("GenShader: Track Application Variables", "[genshader]")
     {
         mx::GenContext context(mx::OslShaderGenerator::create());
         context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
         context.setApplicationVariableHandler(variableTracker);
         mx::ShaderPtr shader = context.getShaderGenerator().generate(testElement, element, context);
     }
@@ -410,6 +421,7 @@ TEST_CASE("GenShader: Track Application Variables", "[genshader]")
     {
         mx::GenContext context(mx::MdlShaderGenerator::create());
         context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
         context.setApplicationVariableHandler(variableTracker);
         mx::ShaderPtr shader = context.getShaderGenerator().generate(testElement, element, context);
     }

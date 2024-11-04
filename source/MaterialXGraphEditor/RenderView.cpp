@@ -635,7 +635,7 @@ void RenderView::initContext(mx::GenContext& context)
 //    context.getShaderGenerator().registerBuiltinTypes(context);
 
     // Register struct type definitions
-    context.getShaderGenerator().loadStructTypeDefs(_document, context);
+    context.getShaderGenerator().registerTypeDefs(_document, context);
 }
 
 void RenderView::drawContents()

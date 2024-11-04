@@ -280,6 +280,8 @@ void testUniqueNames(mx::GenContext& context, const std::string& stage)
     mx::FileSearchPath searchPath = mx::getDefaultDataSearchPath();
     loadLibraries({ "libraries/targets", "libraries/stdlib" }, searchPath, doc);
 
+    context.getShaderGenerator().registerTypeDefs(doc, context);
+
     const std::string exampleName = "unique_names";
 
     // Generate a shader with an internal node having the same name as the shader,
@@ -690,7 +692,7 @@ void ShaderGeneratorTester::validate(const mx::GenOptions& generateOptions, cons
 //    _shaderGenerator->registerBuiltinTypes(context);
 
     // Register struct typedefs from the library files.
-    _shaderGenerator->loadStructTypeDefs(_dependLib, context);
+    _shaderGenerator->registerTypeDefs(_dependLib, context);
 
     // Define working unit if required
     if (context.getOptions().targetDistanceUnit.empty())
@@ -715,7 +717,7 @@ void ShaderGeneratorTester::validate(const mx::GenOptions& generateOptions, cons
         // Register built in types
 //        _shaderGenerator->registerBuiltinTypes(context);
 
-        _shaderGenerator->loadStructTypeDefs(doc, context);
+        _shaderGenerator->registerTypeDefs(doc, context);
 
         // For each new file clear the implementation cache.
         // Since the new file might contain implementations with names

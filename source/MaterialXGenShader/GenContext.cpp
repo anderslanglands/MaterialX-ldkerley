@@ -39,7 +39,7 @@ GenContext::GenContext(ShaderGeneratorPtr sg) :
 
     _applicationVariableHandler = nullptr;
 
-    sg->registerBuiltinTypes(*this);
+//    sg->registerBuiltinTypes(*this);
 }
 
 void GenContext::addNodeImplementation(const string& name, ShaderNodeImplPtr impl)
