@@ -227,10 +227,29 @@ class MX_GENSHADER_API GenContext
         return _typeDescs.get(name);
     }
 
-
     void registerTypeDesc(TypeDesc T, const string& name)
     {
         _typeDescs.add(T, name);
+    }
+
+    uint16_t addStructType(StructTypeDescMemberVecPtr structTypeDesc)
+    {
+        return _typeDescs.addStructType(structTypeDesc);
+    }
+
+    ConstStructTypeDescMemberVecPtr getStructType(uint16_t index) const
+    {
+        return _typeDescs.getStructType(index);
+    }
+
+    StructTypeDescMemberVecPtr getStructType(uint16_t index)
+    {
+        return _typeDescs.getStructType(index);
+    }
+
+    vector<string> getStructNames() const
+    {
+        return _typeDescs.getStructNames();
     }
 
   protected:
@@ -240,7 +259,6 @@ class MX_GENSHADER_API GenContext
     GenOptions _options;
     FileSearchPath _sourceCodeSearchPath;
     StringSet _reservedWords;
-    TypeDescStorage _typeDescs;
 
     std::unordered_map<string, ShaderNodeImplPtr> _nodeImpls;
     std::unordered_map<string, vector<GenUserDataPtr>> _userData;
@@ -251,6 +269,10 @@ class MX_GENSHADER_API GenContext
     vector<ConstNodePtr> _parentNodes;
 
     ApplicationVariableHandler _applicationVariableHandler;
+
+  private:
+    TypeDescStorage _typeDescs;
+
 };
 
 /// @class ClosureContext

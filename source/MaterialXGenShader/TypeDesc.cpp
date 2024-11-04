@@ -6,6 +6,7 @@
 #include <MaterialXGenShader/TypeDesc.h>
 
 #include <MaterialXGenShader/ShaderGenerator.h>
+#include <MaterialXGenShader/GenContext.h>
 
 MATERIALX_NAMESPACE_BEGIN
 
@@ -19,16 +20,16 @@ TypeDescNameMap& typeNameMap()
     static TypeDescNameMap map;
     return map;
 }
-
-using StructTypeDescStorage = vector<StructTypeDesc>;
-StructTypeDescStorage& structTypeStorage()
-{
-    // TODO: Our use of the singleton pattern for TypeDescMap and StructTypeDestStorage
-    //       is not thread-safe, and we should consider replacing this with thread-local
-    //       data in the GenContext object.
-    static StructTypeDescStorage storage;
-    return storage;
-}
+//
+//using StructTypeDescStorage = vector<StructTypeDesc>;
+//StructTypeDescStorage& structTypeStorage()
+//{
+//    // TODO: Our use of the singleton pattern for TypeDescMap and StructTypeDestStorage
+//    //       is not thread-safe, and we should consider replacing this with thread-local
+//    //       data in the GenContext object.
+//    static StructTypeDescStorage storage;
+//    return storage;
+//}
 
 } // anonymous namespace
 
@@ -41,7 +42,7 @@ const string& TypeDesc::getName() const
     return it != typenames.end() ? it->second : NONE_TYPE_NAME;
 }
 
-ValuePtr TypeDesc::createValueFromStrings(const string& value) const
+ValuePtr TypeDesc::_createValueFromStrings(const string& value, const GenContext& context) const
 {
     ValuePtr newValue = Value::createValueFromStrings(value, getName());
     if (!isStruct())
@@ -54,8 +55,10 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value) const
     StringVec subValues = parseStructValueString(value);
 
     AggregateValuePtr  result = AggregateValue::createAggregateValue(getName());
-    auto structTypeDesc = TypeDesc::getStructTypeDesc();
-    const auto& members = structTypeDesc->getMembers();
+    auto structTypeDesc = context.getStructType(getStructIndex());
+
+    // todo - add guard for nullptr
+    const auto& members = *structTypeDesc;
 
     if (subValues.size() != members.size())
     {
@@ -66,65 +69,26 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value) const
 
     for (size_t i = 0; i < members.size(); ++i)
     {
-        result->appendValue( members[i]._typeDesc.createValueFromStrings(subValues[i]));
+        result->appendValue( members[i]._typeDesc._createValueFromStrings(subValues[i], context));
     }
 
     return result;
 }
 
-const StructTypeDesc* TypeDesc::getStructTypeDesc() const
-{
-    if (!isStruct())
-        return nullptr;
-    return &(StructTypeDesc::_get(_structIndex));
-}
 
 //
-// StructTypeDesc methods
+// TypeDescStorage methods
 //
 
-void StructTypeDesc::addMember(const string& name, TypeDesc type, string defaultValueStr)
+uint16_t TypeDescStorage::addStructType(StructTypeDescMemberVecPtr structTypeDesc)
 {
-    _members.emplace_back(StructTypeDesc::StructMemberTypeDesc(name, type, defaultValueStr));
-}
-
-vector<string> StructTypeDesc::_getStructTypeNames()
-{
-    StructTypeDescStorage& structs = structTypeStorage();
-    vector<string> structNames;
-    for (const auto& x : structs)
-    {
-        structNames.emplace_back(x.typeDesc().getName());
-    }
-    return structNames;
-}
-
-StructTypeDesc& StructTypeDesc::_get(unsigned int index)
-{
-    StructTypeDescStorage& structs = structTypeStorage();
-    return structs[index];
-}
-
-uint16_t StructTypeDesc::_emplace_back(StructTypeDesc structTypeDesc)
-{
-    StructTypeDescStorage& structs = structTypeStorage();
-    if (structs.size() >= std::numeric_limits<uint16_t>::max())
+    if (_structTypeStorage.size() >= std::numeric_limits<uint16_t>::max())
     {
         throw ExceptionShaderGenError("Maximum number of custom struct types has been exceeded.");
     }
-    uint16_t index = static_cast<uint16_t>(structs.size());
-    structs.emplace_back(structTypeDesc);
+    uint16_t index = static_cast<uint16_t>(_structTypeStorage.size());
+    _structTypeStorage.emplace_back(structTypeDesc);
     return index;
-}
-
-const string& StructTypeDesc::getName() const
-{
-    return _typedesc.getName();
-}
-
-const vector<StructTypeDesc::StructMemberTypeDesc>& StructTypeDesc::getMembers() const
-{
-    return _members;
 }
 
 void TypeDescStorage::add(TypeDesc type, const string& name)

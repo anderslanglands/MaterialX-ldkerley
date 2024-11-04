@@ -511,10 +511,10 @@ void OslShaderGenerator::emitMetadata(const ShaderPort* port, const GenContext& 
 {
     static const std::unordered_map<TypeDesc, ShaderMetadata, TypeDesc::Hasher> UI_WIDGET_METADATA =
     {
-        { Type::FLOAT, ShaderMetadata("widget", Type::STRING,  Type::STRING.createValueFromStrings("number")) },
-        { Type::INTEGER, ShaderMetadata("widget", Type::STRING,  Type::STRING.createValueFromStrings("number")) },
-        { Type::FILENAME, ShaderMetadata("widget", Type::STRING,  Type::STRING.createValueFromStrings("filename")) },
-        { Type::BOOLEAN, ShaderMetadata("widget", Type::STRING,  Type::STRING.createValueFromStrings("checkBox")) }
+        { Type::FLOAT, ShaderMetadata("widget", Type::STRING,  Type::STRING._createValueFromStrings("number", context)) },
+        { Type::INTEGER, ShaderMetadata("widget", Type::STRING,  Type::STRING._createValueFromStrings("number", context)) },
+        { Type::FILENAME, ShaderMetadata("widget", Type::STRING,  Type::STRING._createValueFromStrings("filename", context)) },
+        { Type::BOOLEAN, ShaderMetadata("widget", Type::STRING,  Type::STRING._createValueFromStrings("checkBox", context)) }
     };
 
     static const std::set<TypeDesc> METADATA_TYPE_BLACKLIST =

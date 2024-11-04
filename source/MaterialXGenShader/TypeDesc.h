@@ -126,7 +126,11 @@ class MX_GENSHADER_API TypeDesc
     bool isStruct() const { return _basetype == BASETYPE_STRUCT; }
 
     /// Return a pointer to the StructTypeDesc if this is a struct type, otherwise return nullptr;
-    const StructTypeDesc* getStructTypeDesc() const;
+//    const StructTypeDesc* getStructTypeDesc() const;
+    uint16_t getStructIndex() const
+    {
+        return _structIndex;
+    }
 
     /// Equality operator
     bool operator==(TypeDesc rhs) const
@@ -158,7 +162,7 @@ class MX_GENSHADER_API TypeDesc
     static const string NONE_TYPE_NAME;
 
     /// Create a Value from a string for a given typeDesc
-    ValuePtr createValueFromStrings(const string& value) const;
+    ValuePtr _createValueFromStrings(const string& value, const GenContext& context) const;
 
   private:
     /// Simple constexpr hash function, good enough for the small set of short strings that
@@ -220,46 +224,57 @@ TYPEDESC_DEFINE_TYPE(MATERIAL, "material", TypeDesc::BASETYPE_NONE, TypeDesc::SE
 /// the type also needs to have an associated StructTypeDesc that describes the members
 /// of the struct.
 ///
-class MX_GENSHADER_API StructTypeDesc
+
+
+
+//
+//class MX_GENSHADER_API StructTypeDesc
+//{
+//  public:
+//    /// Empty constructor.
+//    StructTypeDesc() noexcept {}
+//
+//    void addMember(const string& name, TypeDesc type, string defaultValueStr)
+//    {
+//        _members.emplace_back(StructMemberTypeDesc(name, type, defaultValueStr));
+//    }
+//
+//    const vector<StructMemberTypeDesc>& getMembers() const
+//    {
+//        return _members;
+//    }
+//
+//  private:
+//    vector<StructMemberTypeDesc> _members;
+//};
+
+struct StructMemberTypeDesc;
+
+using StructTypeDescMemberVec = vector<StructMemberTypeDesc>;
+using StructTypeDescMemberVecPtr = shared_ptr<StructTypeDescMemberVec>;
+using ConstStructTypeDescMemberVecPtr = shared_ptr<const StructTypeDescMemberVec>;
+//
+//class MX_GENSHADER_API StructTypeDescRegistry
+//{
+//  public:
+//    StructTypeDescRegistry();
+//};
+
+
+
+struct StructMemberTypeDesc
 {
-  public:
-    struct StructMemberTypeDesc
+    StructMemberTypeDesc(string name, TypeDesc typeDesc, string defaultValueStr) :
+        _name(name),
+        _typeDesc(typeDesc),
+        _defaultValueStr(defaultValueStr),
+        _subMembers(nullptr)
     {
-        StructMemberTypeDesc(string name, TypeDesc typeDesc, string defaultValueStr) :
-            _name(name), _typeDesc(typeDesc), _defaultValueStr(defaultValueStr)
-        {
-        }
-        string _name;
-        TypeDesc _typeDesc;
-        string _defaultValueStr;
-    };
-
-    /// Empty constructor.
-    StructTypeDesc() noexcept{}
-
-    void addMember(const string& name, TypeDesc type, string defaultValueStr);
-    void setTypeDesc(TypeDesc typedesc) { _typedesc = typedesc; }
-
-    /// Return a type description by index.
-    static StructTypeDesc& _get(unsigned int index);
-    static vector<string> _getStructTypeNames();
-    static uint16_t _emplace_back(StructTypeDesc structTypeDesc);
-
-    TypeDesc typeDesc() const { return _typedesc; }
-
-    const string& getName() const;
-
-    const vector<StructMemberTypeDesc>& getMembers() const;
-
-  private:
-    TypeDesc _typedesc;
-    vector<StructMemberTypeDesc> _members;
-};
-
-class MX_GENSHADER_API StructTypeDescRegistry
-{
-  public:
-    StructTypeDescRegistry();
+    }
+    string _name;
+    TypeDesc _typeDesc;
+    string _defaultValueStr;
+    ConstStructTypeDescMemberVecPtr _subMembers;
 };
 
 
@@ -276,11 +291,35 @@ class MX_GENSHADER_API TypeDescStorage
 
     void add(TypeDesc type, const string& name);
 
+    uint16_t addStructType(StructTypeDescMemberVecPtr structTypeDesc);
+    ConstStructTypeDescMemberVecPtr getStructType(uint16_t index) const
+    {
+        return _structTypeStorage[index];
+    }
+    StructTypeDescMemberVecPtr getStructType(uint16_t index)
+    {
+        return _structTypeStorage[index];
+    }
+    vector<string> getStructNames() const
+    {
+        vector<string> structNames;
+        for (const auto& x : _typeMap)
+        {
+            if (!x.second.isStruct())
+                continue;
+
+            structNames.emplace_back(x.first);
+        }
+        return structNames;
+    }
+
   private:
     using TypeDescMap = std::unordered_map<string, TypeDesc>;
+    using StructTypeDescStorage = vector<StructTypeDescMemberVecPtr>;
 
     // Internal storage of registered type descriptors
     TypeDescMap _typeMap;
+    StructTypeDescStorage _structTypeStorage;
 };
 
 MATERIALX_NAMESPACE_END

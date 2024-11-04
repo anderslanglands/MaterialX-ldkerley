@@ -192,10 +192,10 @@ bool Syntax::remapEnumeration(const string&, TypeDesc, const string&, std::pair<
 
 void Syntax::registerStructTypeDescSyntax(GenContext& context)
 {
-    for (const auto& typeName : StructTypeDesc::_getStructTypeNames())
+    for (const auto& typeName : context.getStructNames())
     {
         const auto& typeDesc = context.getTypeDesc(typeName);
-        const auto& structTypeDesc = typeDesc.getStructTypeDesc();
+        const auto& structTypeDesc = context.getStructType(typeDesc.getStructIndex());
 
         string structTypeName = typeName;
         string defaultValue = typeName + "( ";
@@ -203,7 +203,8 @@ void Syntax::registerStructTypeDescSyntax(GenContext& context)
         string typeAlias = EMPTY_STRING;
         string typeDefinition = "struct " + structTypeName + " { ";
 
-        for (const auto& x : structTypeDesc->getMembers())
+        // todo - add guard for nullptr;
+        for (const auto& x : *structTypeDesc)
         {
             string memberName = x._name;
             string memberType = x._typeDesc.getName();

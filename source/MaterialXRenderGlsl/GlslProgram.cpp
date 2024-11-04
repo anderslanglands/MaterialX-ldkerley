@@ -1006,6 +1006,9 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
                         }
                         else
                         {
+
+                            // TODO come back once we've extended ShaderPort
+                            /*
                             // If we're a struct - we need to loop over each member
                             auto structTypeDesc = typedesc.getStructTypeDesc();
                             auto aggregateValue = std::static_pointer_cast<const AggregateValue>(variableValue);
@@ -1020,6 +1023,8 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
 
                                 populateUniformInput_ref(memberTypeDesc, memberVariableName, memberVariableValue, populateUniformInput_ref);
                             }
+
+                            */
                         }
                     };
 
@@ -1140,12 +1145,14 @@ const GlslProgram::InputMap& GlslProgram::updateAttributesList()
             if (string::npos != sattributeName.find(colorSet))
             {
                 string setNumber = sattributeName.substr(colorSet.size(), sattributeName.size());
-                inputPtr->value = Type::INTEGER.createValueFromStrings(setNumber);
+//                inputPtr->value = Type::INTEGER.createValueFromStrings(setNumber);
+                inputPtr->value = Value::createValueFromStrings(setNumber, getTypeString<int>());
             }
             else if (string::npos != sattributeName.find(uvSet))
             {
                 string setNumber = sattributeName.substr(uvSet.size(), sattributeName.size());
-                inputPtr->value = Type::INTEGER.createValueFromStrings(setNumber);
+//                inputPtr->value = Type::INTEGER.createValueFromStrings(setNumber);
+                inputPtr->value = Value::createValueFromStrings(setNumber, getTypeString<int>());
             }
 
             _attributeList[sattributeName] = inputPtr;
