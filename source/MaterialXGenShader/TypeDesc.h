@@ -277,9 +277,7 @@ class MX_GENSHADER_API TypeDescStorage
     void add(TypeDesc type, const string& name);
 
   private:
-
     using TypeDescMap = std::unordered_map<string, TypeDesc>;
-    using TypeDescNameMap = std::unordered_map<uint32_t, string>;
 
     // Internal storage of registered type descriptors
     TypeDescMap _typeMap;
