@@ -126,11 +126,6 @@ const vector<StructTypeDesc::StructMemberTypeDesc>& StructTypeDesc::getMembers()
 {
     return _members;
 }
-//
-//TypeDesc createStructTypeDesc(std::string_view name)
-//{
-//    return {name, TypeDesc::BASETYPE_STRUCT};
-//}
 
 void TypeDescStorage::add(TypeDesc type, const string& name)
 {
