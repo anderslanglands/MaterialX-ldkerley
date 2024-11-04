@@ -206,10 +206,10 @@ class MX_GENSHADER_API ShaderGenerator
 
   private:
     /// Load any struct type definitions from the document in to the type cache.
-    void loadStructTypeDefs(const DocumentPtr& doc, GenContext& context);
+    void registerStructTypeDefs(const DocumentPtr& doc, GenContext& context);
 
   protected:
-    // TODO - decide if this belongs to ShaderGenerator or Syntax base class...
+    /// protected so that subclasses can add additional builtin types. (MDL needs this).
     virtual void registerBuiltinTypes(GenContext& context);
 
   protected:

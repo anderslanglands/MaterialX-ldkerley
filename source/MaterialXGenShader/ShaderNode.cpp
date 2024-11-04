@@ -164,14 +164,6 @@ ShaderNode::ShaderNode(const ShaderGraph* parent, const string& name) :
 
 ShaderNodePtr ShaderNode::create(const ShaderGraph* parent, const string& name, const NodeDef& nodeDef, GenContext& context)
 {
-
-
-
-    if (name == "N_noise2d") {
-        int a = 0;
-    }
-
-
     ShaderNodePtr newNode = std::make_shared<ShaderNode>(parent, name);
 
     const ShaderGenerator& shadergen = context.getShaderGenerator();
@@ -187,12 +179,6 @@ ShaderNodePtr ShaderNode::create(const ShaderGraph* parent, const string& name, 
     // Create interface from nodedef
     for (const ValueElementPtr& port : nodeDef.getActiveValueElements())
     {
-
-        if (port->getName() == "texcoord") {
-            int b = 0;
-        }
-
-
         const TypeDesc portType = context.getTypeDesc(port->getType());
         if (port->isA<Output>())
         {

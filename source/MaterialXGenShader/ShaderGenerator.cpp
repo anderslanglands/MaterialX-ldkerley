@@ -347,12 +347,12 @@ ShaderNodeImplPtr ShaderGenerator::getImplementation(const NodeDef& nodedef, Gen
 void ShaderGenerator::registerTypeDefs(const DocumentPtr& doc, GenContext& context)
 {
     registerBuiltinTypes(context);
-    loadStructTypeDefs(doc, context);
+    registerStructTypeDefs(doc, context);
 }
 
 
 /// Load any struct type definitions from the document in to the type cache.
-void ShaderGenerator::loadStructTypeDefs(const DocumentPtr& doc, GenContext& context)
+void ShaderGenerator::registerStructTypeDefs(const DocumentPtr& doc, GenContext& context)
 {
     for (const auto& mxTypeDef : doc->getTypeDefs())
     {

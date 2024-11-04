@@ -402,8 +402,6 @@ string GlslStructTypeSyntax::getValue(const Value& value, const GenContext& cont
         separator = ",";
 
         auto memberTypeName = memberValue->getTypeString();
-
-        // todo - not sure what to do here
         auto memberTypeDesc = context.getTypeDesc(memberTypeName);
 
         // Recursively use the syntax to generate the output, so we can supported nested structs.
