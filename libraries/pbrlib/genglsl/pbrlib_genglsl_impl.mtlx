@@ -26,7 +26,7 @@
   <implementation name="IM_sheen_bsdf_genglsl" nodedef="ND_sheen_bsdf" file="mx_sheen_bsdf.glsl" function="mx_sheen_bsdf" target="genglsl" />
 
   <!-- <chiang_hair_bsdf> -->
-<!--  <implementation name="IM_chiang_hair_bsdf_genglsl" nodedef="ND_chiang_hair_bsdf" file="mx_chiang_hair_bsdf.glsl" function="mx_chiang_hair_bsdf" target="genglsl" />-->
+  <implementation name="IM_chiang_hair_bsdf_genglsl" nodedef="ND_chiang_hair_bsdf" file="mx_chiang_hair_bsdf.glsl" function="mx_chiang_hair_bsdf" target="genglsl" />
 
   <!-- <anisotropic_vdf> -->
   <implementation name="IM_anisotropic_vdf_genglsl" nodedef="ND_anisotropic_vdf" file="mx_anisotropic_vdf.glsl" function="mx_anisotropic_vdf" target="genglsl" />
