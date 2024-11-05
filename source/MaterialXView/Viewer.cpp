@@ -1760,10 +1760,6 @@ void Viewer::initContext(mx::GenContext& context)
     context.getShaderGenerator().setUnitSystem(unitSystem);
     context.getOptions().targetDistanceUnit = "meter";
 
-
-    // Register built in types
-//    context.getShaderGenerator().registerBuiltinTypes(context);
-
     // Initialize the struct typedefs from the stdlib
     context.getShaderGenerator().registerTypeDefs(_stdLib, context);
 }

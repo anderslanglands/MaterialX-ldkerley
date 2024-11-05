@@ -252,6 +252,7 @@ void testDeterministicGeneration(mx::DocumentPtr libraries, mx::GenContext& cont
         mx::readFromXmlFile(testDoc, testFile);
         testDoc->setDataLibrary(libraries);
 
+        // todo - decide what it means to re-register the same type over again.
         context.getShaderGenerator().registerTypeDefs(testDoc, context);
 
         // Keep the document alive to make sure
