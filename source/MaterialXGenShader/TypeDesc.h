@@ -226,55 +226,24 @@ TYPEDESC_DEFINE_TYPE(MATERIAL, "material", TypeDesc::BASETYPE_NONE, TypeDesc::SE
 ///
 
 
-
-//
-//class MX_GENSHADER_API StructTypeDesc
-//{
-//  public:
-//    /// Empty constructor.
-//    StructTypeDesc() noexcept {}
-//
-//    void addMember(const string& name, TypeDesc type, string defaultValueStr)
-//    {
-//        _members.emplace_back(StructMemberTypeDesc(name, type, defaultValueStr));
-//    }
-//
-//    const vector<StructMemberTypeDesc>& getMembers() const
-//    {
-//        return _members;
-//    }
-//
-//  private:
-//    vector<StructMemberTypeDesc> _members;
-//};
-
 struct StructMemberTypeDesc;
 
 using StructTypeDescMemberVec = vector<StructMemberTypeDesc>;
 using StructTypeDescMemberVecPtr = shared_ptr<StructTypeDescMemberVec>;
 using ConstStructTypeDescMemberVecPtr = shared_ptr<const StructTypeDescMemberVec>;
-//
-//class MX_GENSHADER_API StructTypeDescRegistry
-//{
-//  public:
-//    StructTypeDescRegistry();
-//};
-
-
 
 struct StructMemberTypeDesc
 {
-    StructMemberTypeDesc(string name, TypeDesc typeDesc, string defaultValueStr) :
+    StructMemberTypeDesc(string name, TypeDesc typeDesc, string defaultValueStr, ConstStructTypeDescMemberVecPtr submembers) :
         _name(name),
         _typeDesc(typeDesc),
         _defaultValueStr(defaultValueStr),
-        _subMembers(nullptr)
+        _subMembers(submembers)
     {
     }
     string _name;
     TypeDesc _typeDesc;
     string _defaultValueStr;
-    // TODO - figure out how to populate this....
     ConstStructTypeDescMemberVecPtr _subMembers;
 };
 
