@@ -164,10 +164,8 @@ bool ShaderRenderTester::validate(const mx::FilePath optionsFilePath)
     // Set target unit space
     context.getOptions().targetDistanceUnit = "meter";
 
-    // Register shader metadata defined in the libraries.
+    // Register shader metadata and types defined in the libraries.
     _shaderGenerator->registerShaderMetadata(dependLib, context);
-
-    // load the struct typedefs from the libraries
     _shaderGenerator->registerTypeDefs(dependLib, context);
 
     setupTime.endTimer();

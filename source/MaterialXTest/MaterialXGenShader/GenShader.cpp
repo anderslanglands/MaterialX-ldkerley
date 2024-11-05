@@ -73,35 +73,78 @@ TEST_CASE("GenShader: Valid Libraries", "[genshader]")
 
 TEST_CASE("GenShader: TypeDesc Check", "[genshader]")
 {
-    // Make sure the standard types are registered
-//    const mx::TypeDesc floatType = mx::TypeDesc::Xget("float");
-//    REQUIRE(floatType != mx::Type::NONE);
-//    REQUIRE(floatType.getBaseType() == mx::TypeDesc::BASETYPE_FLOAT);
-//    const mx::TypeDesc integerType = mx::TypeDesc::Xget("integer");
-//    REQUIRE(integerType != mx::Type::NONE);
-//    REQUIRE(integerType.getBaseType() == mx::TypeDesc::BASETYPE_INTEGER);
-//    const mx::TypeDesc booleanType = mx::TypeDesc::Xget("boolean");
-//    REQUIRE(booleanType != mx::Type::NONE);
-//    REQUIRE(booleanType.getBaseType() == mx::TypeDesc::BASETYPE_BOOLEAN);
-//    const mx::TypeDesc color3Type = mx::TypeDesc::Xget("color3");
-//    REQUIRE(color3Type != mx::Type::NONE);
-//    REQUIRE(color3Type.getBaseType() == mx::TypeDesc::BASETYPE_FLOAT);
-//    REQUIRE(color3Type.getSemantic() == mx::TypeDesc::SEMANTIC_COLOR);
-//    REQUIRE(color3Type.isFloat3());
-//    const mx::TypeDesc color4Type = mx::TypeDesc::Xget("color4");
-//    REQUIRE(color4Type != mx::Type::NONE);
-//    REQUIRE(color4Type.getBaseType() == mx::TypeDesc::BASETYPE_FLOAT);
-//    REQUIRE(color4Type.getSemantic() == mx::TypeDesc::SEMANTIC_COLOR);
-//    REQUIRE(color4Type.isFloat4());
-//
-//    // Make sure we can register a new custom type
-//    const std::string fooTypeName = "foo";
-//    mx::TypeDescRegistry reg(mx::TypeDesc(fooTypeName, mx::TypeDesc::BASETYPE_FLOAT, mx::TypeDesc::SEMANTIC_COLOR, 5), fooTypeName);
-//    const mx::TypeDesc fooType = mx::TypeDesc::Xget(fooTypeName);
-//    REQUIRE(fooType != mx::Type::NONE);
-//
-//    // Make sure we can't request an unknown type
-//    REQUIRE(mx::TypeDesc::Xget("bar") == mx::Type::NONE);
+
+    auto testTypeDescTypes = [](mx::GenContext& context) -> void
+    {
+        // Make sure the standard types are registered
+            const mx::TypeDesc floatType = context.getTypeDesc("float");
+            REQUIRE(floatType != mx::Type::NONE);
+            REQUIRE(floatType.getBaseType() == mx::TypeDesc::BASETYPE_FLOAT);
+            const mx::TypeDesc integerType = context.getTypeDesc("integer");
+            REQUIRE(integerType != mx::Type::NONE);
+            REQUIRE(integerType.getBaseType() == mx::TypeDesc::BASETYPE_INTEGER);
+            const mx::TypeDesc booleanType = context.getTypeDesc("boolean");
+            REQUIRE(booleanType != mx::Type::NONE);
+            REQUIRE(booleanType.getBaseType() == mx::TypeDesc::BASETYPE_BOOLEAN);
+            const mx::TypeDesc color3Type = context.getTypeDesc("color3");
+            REQUIRE(color3Type != mx::Type::NONE);
+            REQUIRE(color3Type.getBaseType() == mx::TypeDesc::BASETYPE_FLOAT);
+            REQUIRE(color3Type.getSemantic() == mx::TypeDesc::SEMANTIC_COLOR);
+            REQUIRE(color3Type.isFloat3());
+            const mx::TypeDesc color4Type = context.getTypeDesc("color4");
+            REQUIRE(color4Type != mx::Type::NONE);
+            REQUIRE(color4Type.getBaseType() == mx::TypeDesc::BASETYPE_FLOAT);
+            REQUIRE(color4Type.getSemantic() == mx::TypeDesc::SEMANTIC_COLOR);
+            REQUIRE(color4Type.isFloat4());
+
+            // Make sure we can register a new custom type
+            const std::string fooTypeName = "foo";
+            context.registerTypeDesc(mx::TypeDesc(fooTypeName, mx::TypeDesc::BASETYPE_FLOAT, mx::TypeDesc::SEMANTIC_COLOR, 5), fooTypeName);
+            const mx::TypeDesc fooType = context.getTypeDesc(fooTypeName);
+            REQUIRE(fooType != mx::Type::NONE);
+
+            // Make sure we can't request an unknown type
+            REQUIRE(context.getTypeDesc("bar") == mx::Type::NONE);
+    };
+
+
+    mx::FileSearchPath searchPath = mx::getDefaultDataSearchPath();
+    mx::DocumentPtr libraries = mx::createDocument();
+    mx::loadLibraries({ "libraries" }, searchPath, libraries);
+
+#ifdef MATERIALX_BUILD_GEN_GLSL
+    {
+        mx::GenContext context(mx::GlslShaderGenerator::create());
+        context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
+        testTypeDescTypes(context);
+    }
+#endif
+#ifdef MATERIALX_BUILD_GEN_OSL
+    {
+        mx::GenContext context(mx::OslShaderGenerator::create());
+        context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
+        testTypeDescTypes(context);
+    }
+#endif
+#ifdef MATERIALX_BUILD_GEN_MDL
+    {
+        mx::GenContext context(mx::MdlShaderGenerator::create());
+        context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
+        testTypeDescTypes(context);
+    }
+#endif
+#ifdef MATERIALX_BUILD_GEN_MSL
+    {
+        mx::GenContext context(mx::MslShaderGenerator::create());
+        context.registerSourceCodeSearchPath(searchPath);
+        context.getShaderGenerator().registerTypeDefs(libraries, context);
+        testTypeDescTypes(context);
+    }
+#endif
+
 }
 
 TEST_CASE("GenShader: Shader Translation", "[translate]")

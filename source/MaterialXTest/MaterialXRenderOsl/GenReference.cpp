@@ -50,7 +50,7 @@ TEST_CASE("GenReference: OSL Reference", "[genreference]")
     mx::GenContext context(generator);
     context.getOptions().addUpstreamDependencies = false;
     context.registerSourceCodeSearchPath(searchPath);
-    context.getShaderGenerator().registerTypeDefs(stdlib, context);
+    generator->registerTypeDefs(stdlib, context);
     context.getOptions().fileTextureVerticalFlip = true;
 
     // Create output directory.

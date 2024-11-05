@@ -582,8 +582,6 @@ void ShaderGeneratorTester::findLights(mx::DocumentPtr doc, std::vector<mx::Node
     lights.clear();
     for (mx::NodePtr node : doc->getNodes())
     {
-//        const mx::TypeDesc type = mx::TypeDesc::get(node->getType());
-//        if (type == mx::Type::LIGHTSHADER)
         if (node->getType() == mx::Type::LIGHTSHADER.getName())
         {
             lights.push_back(node);
@@ -685,13 +683,8 @@ void ShaderGeneratorTester::validate(const mx::GenOptions& generateOptions, cons
     context.getOptions() = generateOptions;
     context.registerSourceCodeSearchPath(_searchPath);
 
-    // Register shader metadata defined in the libraries.
+    // Register shader metadata and types defined in the libraries.
     _shaderGenerator->registerShaderMetadata(_dependLib, context);
-
-    // Register built in types
-//    _shaderGenerator->registerBuiltinTypes(context);
-
-    // Register struct typedefs from the library files.
     _shaderGenerator->registerTypeDefs(_dependLib, context);
 
     // Define working unit if required
@@ -713,10 +706,6 @@ void ShaderGeneratorTester::validate(const mx::GenOptions& generateOptions, cons
         // Apply optional preprocessing.
         preprocessDocument(doc);
         _shaderGenerator->registerShaderMetadata(doc, context);
-
-        // Register built in types
-//        _shaderGenerator->registerBuiltinTypes(context);
-
         _shaderGenerator->registerTypeDefs(doc, context);
 
         // For each new file clear the implementation cache.
