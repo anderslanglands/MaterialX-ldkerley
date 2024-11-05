@@ -1096,7 +1096,6 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                         }
                         else
                         {
-                            // TODO come back once we've extended ShaderPort
                             auto aggregateValue = std::static_pointer_cast<const AggregateValue>(variableValue);
 
                             // todo - add nullptr guard.
@@ -1107,7 +1106,7 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                                 auto memberVariableName = variableName+"."+structMember._name;
                                 auto memberVariableValue = aggregateValue->getMemberValue(i);
 
-                                populateUniformInput_ref(structMember._typeDesc, memberVariableName, memberVariableValue, populateUniformInput_ref);
+                                populateUniformInput_ref(structMember._typeDesc, structMember._subMembers.get(), memberVariableName, memberVariableValue, populateUniformInput_ref);
                             }
 
                         }

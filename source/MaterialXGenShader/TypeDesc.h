@@ -274,6 +274,7 @@ struct StructMemberTypeDesc
     string _name;
     TypeDesc _typeDesc;
     string _defaultValueStr;
+    // TODO - figure out how to populate this....
     ConstStructTypeDescMemberVecPtr _subMembers;
 };
 

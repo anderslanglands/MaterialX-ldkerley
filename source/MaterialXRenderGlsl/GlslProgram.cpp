@@ -954,11 +954,11 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
 
                 const auto populateUniformInput =
                     [this, variablePath, variableUnit, variableColorspace, variableSemantic, &errors, uniforms, &uniformTypeMismatchFound]
-                    (TypeDesc typedesc, const string& variableName, ConstValuePtr variableValue) -> void
+                    (TypeDesc typedesc, const StructTypeDescMemberVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue) -> void
                 {
                     auto populateUniformInput_impl =
                         [this, variablePath, variableUnit, variableColorspace, variableSemantic, &errors, uniforms, &uniformTypeMismatchFound]
-                        (TypeDesc typedesc, const string& variableName, ConstValuePtr variableValue, auto& populateUniformInput_ref) -> void
+                        (TypeDesc typedesc, const StructTypeDescMemberVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue, auto& populateUniformInput_ref) -> void
                     {
                         if (!typedesc.isStruct())
                         {
@@ -1007,31 +1007,29 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
                         else
                         {
 
-                            // TODO come back once we've extended ShaderPort
-                            /*
                             // If we're a struct - we need to loop over each member
-                            auto structTypeDesc = typedesc.getStructTypeDesc();
                             auto aggregateValue = std::static_pointer_cast<const AggregateValue>(variableValue);
 
-                            const auto& members = structTypeDesc->getMembers();
+                            // todo - add nullptr guard.
+                            const auto& members = *variableStructMembers;
                             for (size_t i = 0, n = members.size(); i < n; ++i)
                             {
-                                const auto& member = members[i];
-                                auto memberTypeDesc = member._typeDesc;
-                                auto memberVariableName = variableName + "." + member._name;
+                                const auto& structMember = members[i];
+                                auto memberTypeDesc = structMember._typeDesc;
+                                auto memberVariableName = variableName + "." + structMember._name;
                                 auto memberVariableValue = aggregateValue->getMemberValue(i);
 
-                                populateUniformInput_ref(memberTypeDesc, memberVariableName, memberVariableValue, populateUniformInput_ref);
+                                populateUniformInput_ref(memberTypeDesc, structMember._subMembers.get(), memberVariableName, memberVariableValue, populateUniformInput_ref);
                             }
 
-                            */
+
                         }
                     };
 
-                    return populateUniformInput_impl(typedesc, variableName, variableValue, populateUniformInput_impl);
+                    return populateUniformInput_impl(typedesc, variableStructMembers, variableName, variableValue, populateUniformInput_impl);
                 };
 
-                populateUniformInput(v->getType(), v->getVariable(), v->getValue());
+                populateUniformInput(v->getType(), v->getStructMembers(), v->getVariable(), v->getValue());
             }
         }
 

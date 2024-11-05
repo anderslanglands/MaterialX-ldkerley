@@ -248,6 +248,7 @@ class MX_GENSHADER_API ShaderPort : public std::enable_shared_from_this<ShaderPo
   protected:
     ShaderNode* _node;
     TypeDesc _type;
+    // TODO  - figure out all the places that this needs to be populated.
     ConstStructTypeDescMemberVecPtr _structMembers;
     string _name;
     string _path;
