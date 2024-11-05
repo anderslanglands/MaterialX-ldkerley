@@ -41,12 +41,12 @@ void ShaderGraph::addInputSockets(const InterfaceElement& elem, GenContext& cont
         const TypeDesc portType = context.getTypeDesc(input->getType());
         if (context.getShaderGenerator().getSyntax().remapEnumeration(portValueString, portType, enumNames, enumResult))
         {
-            inputSocket = addInputSocket(input->getName(), enumResult.first);
+            inputSocket = addInputSocket(input->getName(), enumResult.first, context);
             inputSocket->setValue(enumResult.second);
         }
         else
         {
-            inputSocket = addInputSocket(input->getName(), portType);
+            inputSocket = addInputSocket(input->getName(), portType, context);
             if (!portValueString.empty())
             {
                 inputSocket->setValue(portValue);
@@ -68,11 +68,11 @@ void ShaderGraph::addOutputSockets(const InterfaceElement& elem, const GenContex
 {
     for (const OutputPtr& output : elem.getActiveOutputs())
     {
-        addOutputSocket(output->getName(), context.getTypeDesc(output->getType()));
+        addOutputSocket(output->getName(), context.getTypeDesc(output->getType()), context);
     }
     if (numOutputSockets() == 0)
     {
-        addOutputSocket("out", context.getTypeDesc(elem.getType()));
+        addOutputSocket("out", context.getTypeDesc(elem.getType()), context);
     }
 }
 
@@ -503,7 +503,7 @@ ShaderGraphPtr ShaderGraph::create(const ShaderGraph* parent, const string& name
         graph->addInputSockets(*interface, context);
 
         // Create the given output socket
-        ShaderGraphOutputSocket* outputSocket = graph->addOutputSocket(output->getName(), context.getTypeDesc(output->getType()));
+        ShaderGraphOutputSocket* outputSocket = graph->addOutputSocket(output->getName(), context.getTypeDesc(output->getType()), context);
         outputSocket->setPath(output->getNamePath());
         const string& outputUnit = output->getUnit();
         if (!outputUnit.empty())
@@ -743,14 +743,14 @@ ShaderNode* ShaderGraph::createNode(ConstNodePtr node, GenContext& context)
     return newNode.get();
 }
 
-ShaderGraphInputSocket* ShaderGraph::addInputSocket(const string& name, TypeDesc type)
+ShaderGraphInputSocket* ShaderGraph::addInputSocket(const string& name, TypeDesc type, const GenContext& context)
 {
-    return ShaderNode::addOutput(name, type);
+    return ShaderNode::addOutput(name, type, context);
 }
 
-ShaderGraphOutputSocket* ShaderGraph::addOutputSocket(const string& name, TypeDesc type)
+ShaderGraphOutputSocket* ShaderGraph::addOutputSocket(const string& name, TypeDesc type, const GenContext& context)
 {
-    return ShaderNode::addInput(name, type);
+    return ShaderNode::addInput(name, type, context);
 }
 
 ShaderGraphEdgeIterator ShaderGraph::traverseUpstream(ShaderOutput* output)
@@ -845,7 +845,7 @@ void ShaderGraph::finalize(GenContext& context)
                         ShaderGraphInputSocket* inputSocket = getInputSocket(interfaceName);
                         if (!inputSocket)
                         {
-                            inputSocket = addInputSocket(interfaceName, input->getType());
+                            inputSocket = addInputSocket(interfaceName, input->getType(), context);
                             inputSocket->setPath(input->getPath());
                             inputSocket->setValue(input->getValue());
                             inputSocket->setUnit(input->getUnit());

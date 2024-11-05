@@ -17,9 +17,10 @@ const string ShaderMetadataRegistry::USER_DATA_NAME = "ShaderMetadataRegistry";
 // ShaderPort methods
 //
 
-ShaderPort::ShaderPort(ShaderNode* node, TypeDesc type, const string& name, ValuePtr value) :
+ShaderPort::ShaderPort(ShaderNode* node, TypeDesc type, const string& name, ConstStructTypeDescMemberVecPtr structMembers, ValuePtr value) :
     _node(node),
     _type(type),
+    _structMembers(structMembers),
     _name(name),
     _variable(name),
     _value(value),
@@ -41,8 +42,8 @@ string ShaderPort::getValueString() const
 // ShaderInput methods
 //
 
-ShaderInput::ShaderInput(ShaderNode* node, TypeDesc type, const string& name) :
-    ShaderPort(node, type, name),
+ShaderInput::ShaderInput(ShaderNode* node, TypeDesc type, const string& name, ConstStructTypeDescMemberVecPtr structMembers) :
+    ShaderPort(node, type, name, structMembers),
     _connection(nullptr)
 {
 }
@@ -92,8 +93,8 @@ ShaderNode* ShaderInput::getConnectedSibling() const
 // ShaderOutput methods
 //
 
-ShaderOutput::ShaderOutput(ShaderNode* node, TypeDesc type, const string& name) :
-    ShaderPort(node, type, name)
+ShaderOutput::ShaderOutput(ShaderNode* node, TypeDesc type, const string& name, ConstStructTypeDescMemberVecPtr structMembers) :
+    ShaderPort(node, type, name, structMembers)
 {
 }
 
@@ -182,7 +183,7 @@ ShaderNodePtr ShaderNode::create(const ShaderGraph* parent, const string& name, 
         const TypeDesc portType = context.getTypeDesc(port->getType());
         if (port->isA<Output>())
         {
-            newNode->addOutput(port->getName(), portType);
+            newNode->addOutput(port->getName(), portType, context);
         }
         else if (port->isA<Input>())
         {
@@ -192,12 +193,12 @@ ShaderNodePtr ShaderNode::create(const ShaderGraph* parent, const string& name, 
             const string& enumNames = port->getAttribute(ValueElement::ENUM_ATTRIBUTE);
             if (context.getShaderGenerator().getSyntax().remapEnumeration(portValue, portType, enumNames, enumResult))
             {
-                input = newNode->addInput(port->getName(), enumResult.first);
+                input = newNode->addInput(port->getName(), enumResult.first, context);
                 input->setValue(enumResult.second);
             }
             else
             {
-                input = newNode->addInput(port->getName(), portType);
+                input = newNode->addInput(port->getName(), portType, context);
                 if (!portValue.empty())
                 {
                     input->setValue(port->getResolvedValue());
@@ -216,7 +217,7 @@ ShaderNodePtr ShaderNode::create(const ShaderGraph* parent, const string& name, 
     // Add a default output if needed
     if (newNode->numOutputs() == 0)
     {
-        newNode->addOutput("out", context.getTypeDesc(nodeDef.getType()));
+        newNode->addOutput("out", context.getTypeDesc(nodeDef.getType()), context);
     }
 
     const string& nodeDefName = nodeDef.getName();
@@ -517,28 +518,40 @@ const ShaderOutput* ShaderNode::getOutput(const string& name) const
     return it != _outputMap.end() ? it->second.get() : nullptr;
 }
 
-ShaderInput* ShaderNode::addInput(const string& name, TypeDesc type)
+ShaderInput* ShaderNode::addInput(const string& name, TypeDesc type, const GenContext& context)
 {
     if (getInput(name))
     {
         throw ExceptionShaderGenError("An input named '" + name + "' already exists on node '" + _name + "'");
     }
 
-    ShaderInputPtr input = std::make_shared<ShaderInput>(this, type, name);
+    ConstStructTypeDescMemberVecPtr structMembers = nullptr;
+    if (type.isStruct())
+    {
+        structMembers = context.getStructType(type.getStructIndex());
+    }
+
+    ShaderInputPtr input = std::make_shared<ShaderInput>(this, type, name, structMembers);
     _inputMap[name] = input;
     _inputOrder.push_back(input.get());
 
     return input.get();
 }
 
-ShaderOutput* ShaderNode::addOutput(const string& name, TypeDesc type)
+ShaderOutput* ShaderNode::addOutput(const string& name, TypeDesc type, const GenContext& context)
 {
     if (getOutput(name))
     {
         throw ExceptionShaderGenError("An output named '" + name + "' already exists on node '" + _name + "'");
     }
 
-    ShaderOutputPtr output = std::make_shared<ShaderOutput>(this, type, name);
+    ConstStructTypeDescMemberVecPtr structMembers = nullptr;
+    if (type.isStruct())
+    {
+        structMembers = context.getStructType(type.getStructIndex());
+    }
+
+    ShaderOutputPtr output = std::make_shared<ShaderOutput>(this, type, name, structMembers);
     _outputMap[name] = output;
     _outputOrder.push_back(output.get());
 
