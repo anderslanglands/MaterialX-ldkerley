@@ -93,13 +93,13 @@
   <!-- <blackbody> -->
   <implementation name="IM_blackbody_genmdl" nodedef="ND_blackbody" sourcecode="materialx::pbrlib_{{MDL_VERSION_SUFFIX}}::mx_blackbody(mxp_temperature:{{temperature}})" target="genmdl" />
 
-<!--  &lt;!&ndash; <deon_hair_absorption_from_melanin> &ndash;&gt;-->
-<!--  <implementation name="IM_deon_hair_absorption_from_melanin_genmdl" nodedef="ND_deon_hair_absorption_from_melanin" sourcecode="materialx::pbrlib_{{MDL_VERSION_SUFFIX}}::mx_deon_hair_absorption_from_melanin(mxp_melanin_concentration:{{melanin_concentration}}, mxp_melanin_redness:{{melanin_redness}}, mxp_eumelanin_color:{{eumelanin_color}}, mxp_pheomelanin_color:{{pheomelanin_color}})" function="mx_deon_hair_absorption_from_melanin" target="genmdl" />-->
+  <!-- <deon_hair_absorption_from_melanin> -->
+  <implementation name="IM_deon_hair_absorption_from_melanin_genmdl" nodedef="ND_deon_hair_absorption_from_melanin" sourcecode="materialx::pbrlib_{{MDL_VERSION_SUFFIX}}::mx_deon_hair_absorption_from_melanin(mxp_melanin_concentration:{{melanin_concentration}}, mxp_melanin_redness:{{melanin_redness}}, mxp_eumelanin_color:{{eumelanin_color}}, mxp_pheomelanin_color:{{pheomelanin_color}})" function="mx_deon_hair_absorption_from_melanin" target="genmdl" />
 
-<!--  &lt;!&ndash; <chiang_hair_absorption_from_color> &ndash;&gt;-->
-<!--  <implementation name="IM_chiang_hair_absorption_from_color_genmdl" nodedef="ND_chiang_hair_absorption_from_color" sourcecode="materialx::pbrlib_{{MDL_VERSION_SUFFIX}}::mx_chiang_hair_absorption_from_color(mxp_color:{{color}}, mxp_azimuthal_roughness:{{azimuthal_roughness}})" function="mx_chiang_hair_absorption_from_color" target="genmdl" />-->
+  <!-- <chiang_hair_absorption_from_color> -->
+  <implementation name="IM_chiang_hair_absorption_from_color_genmdl" nodedef="ND_chiang_hair_absorption_from_color" sourcecode="materialx::pbrlib_{{MDL_VERSION_SUFFIX}}::mx_chiang_hair_absorption_from_color(mxp_color:{{color}}, mxp_azimuthal_roughness:{{azimuthal_roughness}})" function="mx_chiang_hair_absorption_from_color" target="genmdl" />
 
-<!--  &lt;!&ndash; <chiang_hair_roughness> &ndash;&gt;-->
-<!--  <implementation name="IM_chiang_hair_roughness_genmdl" nodedef="ND_chiang_hair_roughness" sourcecode="materialx::pbrlib_{{MDL_VERSION_SUFFIX}}::mx_chiang_hair_roughness(mxp_longitudinal:{{longitudinal}}, mxp_azimuthal:{{azimuthal}}, mxp_scale_TT:{{scale_TT}}, mxp_scale_TRT:{{scale_TRT}})" target="genmdl" />-->
+  <!-- <chiang_hair_roughness> -->
+  <implementation name="IM_chiang_hair_roughness_genmdl" nodedef="ND_chiang_hair_roughness" sourcecode="materialx::pbrlib_{{MDL_VERSION_SUFFIX}}::mx_chiang_hair_roughness(mxp_longitudinal:{{longitudinal}}, mxp_azimuthal:{{azimuthal}}, mxp_scale_TT:{{scale_TT}}, mxp_scale_TRT:{{scale_TRT}})" target="genmdl" />
 
 </materialx>

@@ -77,13 +77,13 @@
   <!-- <blackbody> -->
   <implementation name="IM_blackbody_genglsl" nodedef="ND_blackbody" file="mx_blackbody.glsl" function="mx_blackbody" target="genglsl" />
 
-<!--  &lt;!&ndash; <deon_hair_absorption_from_melanin &ndash;&gt;-->
-<!--  <implementation name="IM_deon_hair_absorption_from_melanin_genglsl" nodedef="ND_deon_hair_absorption_from_melanin" file="mx_chiang_hair_bsdf.glsl" function="mx_deon_hair_absorption_from_melanin" target="genglsl" />-->
+  <!-- <deon_hair_absorption_from_melanin -->
+  <implementation name="IM_deon_hair_absorption_from_melanin_genglsl" nodedef="ND_deon_hair_absorption_from_melanin" file="mx_chiang_hair_bsdf.glsl" function="mx_deon_hair_absorption_from_melanin" target="genglsl" />
 
-<!--  &lt;!&ndash; <chiang_hair_absorption_from_color &ndash;&gt;-->
-<!--  <implementation name="IM_chiang_hair_absorption_from_color_genglsl" nodedef="ND_chiang_hair_absorption_from_color" file="mx_chiang_hair_bsdf.glsl" function="mx_chiang_hair_absorption_from_color" target="genglsl" />-->
+  <!-- <chiang_hair_absorption_from_color -->
+  <implementation name="IM_chiang_hair_absorption_from_color_genglsl" nodedef="ND_chiang_hair_absorption_from_color" file="mx_chiang_hair_bsdf.glsl" function="mx_chiang_hair_absorption_from_color" target="genglsl" />
 
-<!--  &lt;!&ndash; <chiang_hair_roughness &ndash;&gt;-->
-<!--  <implementation name="IM_chiang_hair_roughness_genglsl" nodedef="ND_chiang_hair_roughness" file="mx_chiang_hair_bsdf.glsl" function="mx_chiang_hair_roughness" target="genglsl" />-->
+  <!-- <chiang_hair_roughness -->
+  <implementation name="IM_chiang_hair_roughness_genglsl" nodedef="ND_chiang_hair_roughness" file="mx_chiang_hair_bsdf.glsl" function="mx_chiang_hair_roughness" target="genglsl" />
 
 </materialx>
