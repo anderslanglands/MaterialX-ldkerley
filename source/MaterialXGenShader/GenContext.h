@@ -65,7 +65,6 @@ class MX_GENSHADER_API GenContext
         _sourceCodeSearchPath.append(path);
     }
 
-
     /// Resolve a source code filename, first checking the given local path
     /// then checking any file paths registered by the user.
     FilePath resolveSourceFile(const FilePath& filename, const FilePath& localPath) const
@@ -272,7 +271,6 @@ class MX_GENSHADER_API GenContext
 
   private:
     TypeDescStorage _typeDescs;
-
 };
 
 /// @class ClosureContext

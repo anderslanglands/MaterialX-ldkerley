@@ -386,9 +386,6 @@ void ShaderGenerator::registerBuiltinTypes(GenContext& context)
     context.registerTypeDesc(Type::MATERIAL, "material");
 }
 
-
-
-
 /// Load any struct type definitions from the document in to the type cache.
 void ShaderGenerator::registerStructTypeDefs(const DocumentPtr& doc, GenContext& context)
 {

@@ -42,7 +42,7 @@ const string& TypeDesc::getName() const
     return it != typenames.end() ? it->second : NONE_TYPE_NAME;
 }
 
-ValuePtr TypeDesc::_createValueFromStrings(const string& value, const GenContext& context) const
+ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext& context) const
 {
     ValuePtr newValue = Value::createValueFromStrings(value, getName());
     if (!isStruct())
@@ -69,7 +69,7 @@ ValuePtr TypeDesc::_createValueFromStrings(const string& value, const GenContext
 
     for (size_t i = 0; i < members.size(); ++i)
     {
-        result->appendValue( members[i]._typeDesc._createValueFromStrings(subValues[i], context));
+        result->appendValue( members[i]._typeDesc.createValueFromStrings(subValues[i], context));
     }
 
     return result;

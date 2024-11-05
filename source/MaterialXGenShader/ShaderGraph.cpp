@@ -64,8 +64,7 @@ void ShaderGraph::addInputSockets(const InterfaceElement& elem, GenContext& cont
     }
 }
 
-void ShaderGraph::addOutputSockets(const InterfaceElement& elem,
-                                   GenContext& context)
+void ShaderGraph::addOutputSockets(const InterfaceElement& elem, const GenContext& context)
 {
     for (const OutputPtr& output : elem.getActiveOutputs())
     {
@@ -695,7 +694,6 @@ ShaderNode* ShaderGraph::createNode(ConstNodePtr node, GenContext& context)
 
     // Create this node in the graph.
     context.pushParentNode(node);
-
     ShaderNodePtr newNode = ShaderNode::create(this, node->getName(), *nodeDef, context);
     newNode->initialize(*node, *nodeDef, context);
     _nodeMap[node->getName()] = newNode;

@@ -190,7 +190,7 @@ bool Syntax::remapEnumeration(const string&, TypeDesc, const string&, std::pair<
     return false;
 }
 
-void Syntax::registerStructTypeDescSyntax(GenContext& context)
+void Syntax::registerStructTypeDescSyntax(const GenContext& context)
 {
     for (const auto& typeName : context.getStructNames())
     {

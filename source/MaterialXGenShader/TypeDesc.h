@@ -125,8 +125,6 @@ class MX_GENSHADER_API TypeDesc
     /// Return true if the type represents a struct.
     bool isStruct() const { return _basetype == BASETYPE_STRUCT; }
 
-    /// Return a pointer to the StructTypeDesc if this is a struct type, otherwise return nullptr;
-//    const StructTypeDesc* getStructTypeDesc() const;
     uint16_t getStructIndex() const
     {
         return _structIndex;
@@ -162,7 +160,7 @@ class MX_GENSHADER_API TypeDesc
     static const string NONE_TYPE_NAME;
 
     /// Create a Value from a string for a given typeDesc
-    ValuePtr _createValueFromStrings(const string& value, const GenContext& context) const;
+    ValuePtr createValueFromStrings(const string& value, const GenContext& context) const;
 
   private:
     /// Simple constexpr hash function, good enough for the small set of short strings that
@@ -224,7 +222,6 @@ TYPEDESC_DEFINE_TYPE(MATERIAL, "material", TypeDesc::BASETYPE_NONE, TypeDesc::SE
 /// the type also needs to have an associated StructTypeDesc that describes the members
 /// of the struct.
 ///
-
 
 struct StructMemberTypeDesc;
 

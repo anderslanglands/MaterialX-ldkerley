@@ -688,10 +688,8 @@ void MdlShaderGenerator::emitMdlVersionFilenameSuffix(GenContext& context, Shade
     emitString(getMdlVersionFilenameSuffix(context), stage);
 }
 
-
 void MdlShaderGenerator::registerBuiltinTypes(GenContext& context)
 {
-
     ShaderGenerator::registerBuiltinTypes(context);
 
     // Custom types to handle enumeration output
@@ -701,10 +699,7 @@ void MdlShaderGenerator::registerBuiltinTypes(GenContext& context)
     context.registerTypeDesc(Type::MDL_FILTERTYPE, "filtertype");
     context.registerTypeDesc(Type::MDL_DISTRIBUTIONTYPE, "distributiontype");
     context.registerTypeDesc(Type::MDL_SCATTER_MODE, "scatter_mode");
-
 }
-
-
 
 namespace MDL
 {

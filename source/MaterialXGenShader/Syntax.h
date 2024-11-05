@@ -70,7 +70,7 @@ class MX_GENSHADER_API Syntax
     /// Multiple calls will add to the internal set of tokens.
     void registerInvalidTokens(const StringMap& tokens);
 
-    virtual void registerStructTypeDescSyntax(GenContext& context);
+    virtual void registerStructTypeDescSyntax(const GenContext& context);
 
     /// Returns a set of names that are reserved words for this language syntax.
     const StringSet& getReservedWords() const { return _reservedWords; }

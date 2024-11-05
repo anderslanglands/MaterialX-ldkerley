@@ -38,8 +38,6 @@ GenContext::GenContext(ShaderGeneratorPtr sg) :
     addReservedWords(reservedWords);
 
     _applicationVariableHandler = nullptr;
-
-//    sg->registerBuiltinTypes(*this);
 }
 
 void GenContext::addNodeImplementation(const string& name, ShaderNodeImplPtr impl)
@@ -160,12 +158,5 @@ ScopedSetVariableName::~ScopedSetVariableName()
 {
     _port->setVariable(_oldName);
 }
-
-
-// TypeDesc additions
-
-
-
-
 
 MATERIALX_NAMESPACE_END
