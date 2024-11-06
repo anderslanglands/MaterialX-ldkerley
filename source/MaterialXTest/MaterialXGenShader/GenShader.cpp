@@ -252,7 +252,12 @@ void testDeterministicGeneration(mx::DocumentPtr libraries, mx::GenContext& cont
         mx::readFromXmlFile(testDoc, testFile);
         testDoc->setDataLibrary(libraries);
 
-        // todo - decide what it means to re-register the same type over again.
+        // TODO - decide what it means to re-register the same type over again.
+        // We could...
+        // 1) Just blindly register this type on top of the existing type name.
+        // 2) Ignore any types where the names are already registered
+        // 3) When a type is re-registered we could go compare the existing registered type against the
+        // new candidate type, and raise an error if they differ.
         context.getShaderGenerator().registerTypeDefs(testDoc, context);
 
         // Keep the document alive to make sure
