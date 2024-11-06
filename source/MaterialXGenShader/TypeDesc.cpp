@@ -45,7 +45,8 @@ const string& TypeDesc::getName() const
 ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext& context) const
 {
     ValuePtr newValue = Value::createValueFromStrings(value, getName());
-    if (!isStruct())
+    auto structMemberDescs = context.getStructMembers(*this);
+    if (!isStruct() || !structMemberDescs)
         return newValue;
 
     // Value::createValueFromStrings() can only create a valid Value for a struct if it is passed
@@ -53,28 +54,22 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext&
     // So if this is a struct type we need to create a new AggregateValue.
 
     StringVec subValues = parseStructValueString(value);
+    AggregateValuePtr result = AggregateValue::createAggregateValue(getName());
 
-    AggregateValuePtr  result = AggregateValue::createAggregateValue(getName());
-    auto structTypeDesc = context.getStructMembers(*this);
-
-    // todo - add guard for nullptr
-    const auto& members = *structTypeDesc;
-
-    if (subValues.size() != members.size())
+    if (subValues.size() != structMemberDescs->size())
     {
         std::stringstream ss;
-        ss << "Wrong number of initializers - expect " << members.size();
+        ss << "Wrong number of initializers - expect " << structMemberDescs->size();
         throw ExceptionShaderGenError(ss.str());
     }
 
-    for (size_t i = 0; i < members.size(); ++i)
+    for (size_t i = 0; i < structMemberDescs->size(); ++i)
     {
-        result->appendValue( members[i]._typeDesc.createValueFromStrings(subValues[i], context));
+        result->appendValue( structMemberDescs->at(i)._typeDesc.createValueFromStrings(subValues[i], context));
     }
 
     return result;
 }
-
 
 //
 // TypeDescStorage methods
