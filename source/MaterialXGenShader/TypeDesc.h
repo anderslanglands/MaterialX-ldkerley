@@ -16,8 +16,6 @@
 
 MATERIALX_NAMESPACE_BEGIN
 
-class StructTypeDesc;
-
 // TODO - update this documentation once the code has been reviewed...
 
 /// @class TypeDesc
@@ -218,6 +216,7 @@ TYPEDESC_DEFINE_TYPE(MATERIAL, "material", TypeDesc::BASETYPE_NONE, TypeDesc::SE
 
 } // namespace Type
 
+// TODO - update this documentation once the code has been reviewed.
 
 /// @class StructTypeDesc
 /// A type descriptor for MaterialX struct types.
@@ -229,7 +228,6 @@ TYPEDESC_DEFINE_TYPE(MATERIAL, "material", TypeDesc::BASETYPE_NONE, TypeDesc::SE
 ///
 
 class StructMemberDesc;
-
 using StructMemberDescVec = vector<StructMemberDesc>;
 using ConstStructMemberDescVecPtr = shared_ptr<const StructMemberDescVec>;
 
@@ -253,6 +251,9 @@ class StructMemberDesc
     ConstStructMemberDescVecPtr _subMembers;
 };
 
+// TODO - this class is only used once inside GenContext.
+// we need to decide if we want to fold this inside GenContext.
+// One advantage of folding it in would be to reduce the API surface.
 
 class MX_GENSHADER_API TypeDescStorage
 {

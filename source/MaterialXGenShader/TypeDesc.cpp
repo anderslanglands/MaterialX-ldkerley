@@ -61,10 +61,6 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext&
     return result;
 }
 
-//
-// TypeDescStorage methods
-//
-
 uint16_t TypeDescStorage::registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc)
 {
     if (_structTypeStorage.size() >= std::numeric_limits<uint16_t>::max())
@@ -85,6 +81,14 @@ void TypeDescStorage::registerTypeDesc(TypeDesc type, const string& name)
     // we might set this entry multiple times - it's always going to be
     // the same value...
     // TODO - consider using OIIO::ustring?
+
+    // TODO - decide what it means to re-register the same type over again.
+    // We could...
+    // 1) Just blindly register this type on top of the existing type name.
+    // 2) Ignore any types where the names are already registered
+    // 3) When a type is re-registered we could go compare the existing registered type against the
+    // new candidate type, and raise an error if they differ.
+
     TypeDescNameMap& typenames = typeNameMap();
     typenames[type.typeId()] = name;
 }
