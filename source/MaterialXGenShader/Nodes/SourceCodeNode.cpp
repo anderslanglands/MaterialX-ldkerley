@@ -133,12 +133,7 @@ void SourceCodeNode::emitFunctionCall(const ShaderNode& node, GenContext& contex
                     string variableName = node.getName() + "_" + input->getName() + "_tmp";
                     if (!variableNames.count(variableName))
                     {
-                        ConstStructMemberDescVecPtr structMembers = nullptr;
-                        if (input->getType().isStruct())
-                        {
-                            structMembers = context.getStructMembers(input->getType().getStructIndex());
-                        }
-                        ShaderPort v(nullptr, input->getType(), variableName, structMembers, input->getValue());
+                        ShaderPort v(nullptr, input->getType(), variableName, context.getStructMembers(input->getType()), input->getValue());
                         shadergen.emitLineBegin(stage);
                         const Syntax& syntax = shadergen.getSyntax();
                         const string valueStr = (v.getValue() ? syntax.getValue(v.getType(), *v.getValue(), context) : syntax.getDefaultValue(v.getType()));

@@ -273,9 +273,12 @@ class MX_GENSHADER_API TypeDescStorage
     }
 
     uint16_t registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc);
-    ConstStructMemberDescVecPtr getStructMembers(uint16_t index) const
+    ConstStructMemberDescVecPtr getStructMembers(TypeDesc typeDesc) const
     {
-        return _structTypeStorage[index];
+        if (!typeDesc.isStruct())
+            return nullptr;
+
+        return _structTypeStorage[typeDesc.getStructIndex()];
     }
 
   private:

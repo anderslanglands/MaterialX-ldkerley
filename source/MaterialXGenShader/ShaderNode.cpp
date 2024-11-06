@@ -525,13 +525,7 @@ ShaderInput* ShaderNode::addInput(const string& name, TypeDesc type, const GenCo
         throw ExceptionShaderGenError("An input named '" + name + "' already exists on node '" + _name + "'");
     }
 
-    ConstStructMemberDescVecPtr structMembers = nullptr;
-    if (type.isStruct())
-    {
-        structMembers = context.getStructMembers(type.getStructIndex());
-    }
-
-    ShaderInputPtr input = std::make_shared<ShaderInput>(this, type, name, structMembers);
+    ShaderInputPtr input = std::make_shared<ShaderInput>(this, type, name, context.getStructMembers(type));
     _inputMap[name] = input;
     _inputOrder.push_back(input.get());
 
@@ -545,13 +539,7 @@ ShaderOutput* ShaderNode::addOutput(const string& name, TypeDesc type, const Gen
         throw ExceptionShaderGenError("An output named '" + name + "' already exists on node '" + _name + "'");
     }
 
-    ConstStructMemberDescVecPtr structMembers = nullptr;
-    if (type.isStruct())
-    {
-        structMembers = context.getStructMembers(type.getStructIndex());
-    }
-
-    ShaderOutputPtr output = std::make_shared<ShaderOutput>(this, type, name, structMembers);
+    ShaderOutputPtr output = std::make_shared<ShaderOutput>(this, type, name, context.getStructMembers(type));
     _outputMap[name] = output;
     _outputOrder.push_back(output.get());
 

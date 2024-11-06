@@ -55,7 +55,7 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext&
     StringVec subValues = parseStructValueString(value);
 
     AggregateValuePtr  result = AggregateValue::createAggregateValue(getName());
-    auto structTypeDesc = context.getStructMembers(getStructIndex());
+    auto structTypeDesc = context.getStructMembers(*this);
 
     // todo - add guard for nullptr
     const auto& members = *structTypeDesc;

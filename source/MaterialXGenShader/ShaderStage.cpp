@@ -88,13 +88,7 @@ ShaderPort* VariableBlock::add(TypeDesc type, const GenContext& context, const s
         return it->second.get();
     }
 
-    ConstStructMemberDescVecPtr structMembers = nullptr;
-    if (type.isStruct())
-    {
-        structMembers = context.getStructMembers(type.getStructIndex());
-    }
-
-    ShaderPortPtr port = std::make_shared<ShaderPort>(nullptr, type, name, structMembers, value);
+    ShaderPortPtr port = std::make_shared<ShaderPort>(nullptr, type, name, context.getStructMembers(type), value);
     _variableMap[name] = port;
     _variableOrder.push_back(port.get());
 

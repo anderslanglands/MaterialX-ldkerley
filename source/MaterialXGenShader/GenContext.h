@@ -236,9 +236,9 @@ class MX_GENSHADER_API GenContext
         return _typeDescs.registerStructMembers(structTypeDesc);
     }
 
-    ConstStructMemberDescVecPtr getStructMembers(uint16_t index) const
+    ConstStructMemberDescVecPtr getStructMembers(TypeDesc typeDesc) const
     {
-        return _typeDescs.getStructMembers(index);
+        return _typeDescs.getStructMembers(typeDesc);
     }
 
     const TypeDescStorage::TypeDescMap& getTypeDescs() const
