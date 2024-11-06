@@ -398,7 +398,7 @@ void ShaderGenerator::registerStructTypeDefs(const DocumentPtr& doc, GenContext&
         if (members.empty())
             continue;
 
-        StructTypeDescMemberVecPtr newStructTypeDesc = std::make_unique<StructTypeDescMemberVec>();
+        auto newStructTypeDesc = std::make_shared<StructTypeDescMemberVec>();
         for (const auto& member : members)
         {
             auto memberName = member->getName();
@@ -421,8 +421,6 @@ void ShaderGenerator::registerStructTypeDefs(const DocumentPtr& doc, GenContext&
         auto structIndex = context.addStructType(newStructTypeDesc);
 
         context.registerTypeDesc(TypeDesc(typeDefName, TypeDesc::BASETYPE_STRUCT, TypeDesc::SEMANTIC_NONE, 1, structIndex), typeDefName);
-
-//        context.getStructType(structIndex).setTypeDesc(context.getTypeDesc(typeDefName));
     }
 
     _syntax->registerStructTypeDescSyntax(context);

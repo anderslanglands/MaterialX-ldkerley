@@ -18,6 +18,8 @@ MATERIALX_NAMESPACE_BEGIN
 
 class StructTypeDesc;
 
+// TODO - update this documentation once the code has been reviewed...
+
 /// @class TypeDesc
 /// A type descriptor for MaterialX data types.
 ///
@@ -31,6 +33,9 @@ class StructTypeDesc;
 /// must be done in order to access the type's name later using getName() and to find the
 /// type by name using TypeDesc::get().
 ///
+
+// TODO - This is no longer true - should this be removed? or edited?
+
 /// The class is a POD type of 64-bits and can efficiently be stored and passed by value.
 /// Type compare operations and hash operations are done using a precomputed hash value.
 ///
@@ -226,7 +231,6 @@ TYPEDESC_DEFINE_TYPE(MATERIAL, "material", TypeDesc::BASETYPE_NONE, TypeDesc::SE
 struct StructMemberTypeDesc;
 
 using StructTypeDescMemberVec = vector<StructMemberTypeDesc>;
-using StructTypeDescMemberVecPtr = shared_ptr<StructTypeDescMemberVec>;
 using ConstStructTypeDescMemberVecPtr = shared_ptr<const StructTypeDescMemberVec>;
 
 struct StructMemberTypeDesc
@@ -248,41 +252,29 @@ struct StructMemberTypeDesc
 class MX_GENSHADER_API TypeDescStorage
 {
   public:
+    using TypeDescMap = std::unordered_map<string, TypeDesc>;
+
     TypeDescStorage() noexcept {}
 
-    TypeDesc get(const string& name) const
+    void registerTypeDesc(TypeDesc type, const string& name);
+    TypeDesc getTypeDesc(const string& name) const
     {
         auto it = _typeMap.find(name);
         return it != _typeMap.end() ? it->second : Type::NONE;
     }
+    const TypeDescMap& getTypeDescs() const
+    {
+        return _typeMap;
+    }
 
-    void add(TypeDesc type, const string& name);
-
-    uint16_t addStructType(StructTypeDescMemberVecPtr structTypeDesc);
+    uint16_t addStructType(ConstStructTypeDescMemberVecPtr structTypeDesc);
     ConstStructTypeDescMemberVecPtr getStructType(uint16_t index) const
     {
         return _structTypeStorage[index];
     }
-    StructTypeDescMemberVecPtr getStructType(uint16_t index)
-    {
-        return _structTypeStorage[index];
-    }
-    vector<string> getStructNames() const
-    {
-        vector<string> structNames;
-        for (const auto& x : _typeMap)
-        {
-            if (!x.second.isStruct())
-                continue;
-
-            structNames.emplace_back(x.first);
-        }
-        return structNames;
-    }
 
   private:
-    using TypeDescMap = std::unordered_map<string, TypeDesc>;
-    using StructTypeDescStorage = vector<StructTypeDescMemberVecPtr>;
+    using StructTypeDescStorage = vector<ConstStructTypeDescMemberVecPtr>;
 
     // Internal storage of registered type descriptors
     TypeDescMap _typeMap;

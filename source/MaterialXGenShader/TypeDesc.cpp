@@ -80,7 +80,7 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext&
 // TypeDescStorage methods
 //
 
-uint16_t TypeDescStorage::addStructType(StructTypeDescMemberVecPtr structTypeDesc)
+uint16_t TypeDescStorage::addStructType(ConstStructTypeDescMemberVecPtr structTypeDesc)
 {
     if (_structTypeStorage.size() >= std::numeric_limits<uint16_t>::max())
     {
@@ -91,16 +91,16 @@ uint16_t TypeDescStorage::addStructType(StructTypeDescMemberVecPtr structTypeDes
     return index;
 }
 
-void TypeDescStorage::add(TypeDesc type, const string& name)
+void TypeDescStorage::registerTypeDesc(TypeDesc type, const string& name)
 {
     _typeMap[name] = type;
-    TypeDescNameMap& typenames = typeNameMap();
 
     // TODO - decide if we need to make this more threadsafe
     // typeID is just a hash of the string value - so while
     // we might set this entry multiple times - it's always going to be
     // the same value...
     // TODO - consider using OIIO::ustring?
+    TypeDescNameMap& typenames = typeNameMap();
     typenames[type.typeId()] = name;
 }
 

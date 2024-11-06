@@ -223,15 +223,15 @@ class MX_GENSHADER_API GenContext
     // TypeDesc methods
     TypeDesc getTypeDesc(const string& name) const
     {
-        return _typeDescs.get(name);
+        return _typeDescs.getTypeDesc(name);
     }
 
     void registerTypeDesc(TypeDesc T, const string& name)
     {
-        _typeDescs.add(T, name);
+        _typeDescs.registerTypeDesc(T, name);
     }
 
-    uint16_t addStructType(StructTypeDescMemberVecPtr structTypeDesc)
+    uint16_t addStructType(ConstStructTypeDescMemberVecPtr structTypeDesc)
     {
         return _typeDescs.addStructType(structTypeDesc);
     }
@@ -241,14 +241,9 @@ class MX_GENSHADER_API GenContext
         return _typeDescs.getStructType(index);
     }
 
-    StructTypeDescMemberVecPtr getStructType(uint16_t index)
+    const TypeDescStorage::TypeDescMap& getTypeDescs() const
     {
-        return _typeDescs.getStructType(index);
-    }
-
-    vector<string> getStructNames() const
-    {
-        return _typeDescs.getStructNames();
+        return _typeDescs.getTypeDescs();
     }
 
   protected:
