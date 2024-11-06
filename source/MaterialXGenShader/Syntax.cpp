@@ -195,21 +195,17 @@ void Syntax::registerStructTypeDescSyntax(const GenContext& context)
     for (const auto& it : context.getTypeDescs())
     {
         const TypeDesc& typeDesc = it.second;
-        if (!typeDesc.isStruct())
+        ConstStructMemberDescVecPtr structMemberDescs = context.getStructMembers(typeDesc);
+        if (!typeDesc.isStruct() || !structMemberDescs)
             continue;
 
-        const string& typeName = it.first;
-
-
-        string structTypeName = typeName;
-        string defaultValue = typeName + "( ";
+        string structTypeName = it.first;
+        string defaultValue = it.first + "( ";
         string uniformDefaultValue = EMPTY_STRING;
         string typeAlias = EMPTY_STRING;
         string typeDefinition = "struct " + structTypeName + " { ";
 
-        ConstStructMemberDescVecPtr structTypeDesc = context.getStructMembers(typeDesc);
-        // todo - add guard for nullptr;
-        for (const auto& x : *structTypeDesc)
+        for (const auto& x : *structMemberDescs)
         {
             string memberName = x._name;
             string memberType = x._typeDesc.getName();
