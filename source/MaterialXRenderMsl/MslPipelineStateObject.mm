@@ -1056,7 +1056,7 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                             return;
                         }
 
-                        if (!variableTypeDesc.isStruct())
+                        if (!variableTypeDesc.isStruct() || !variableStructMembers)
                         {
                             auto inputIt = _uniformList.find(variableName);
 
@@ -1097,18 +1097,14 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                         else
                         {
                             auto aggregateValue = std::static_pointer_cast<const AggregateValue>(variableValue);
-
-                            // todo - add nullptr guard.
-                            const auto& members = *variableStructMembers;
-                            for (size_t i = 0, n = members.size(); i < n; ++i)
+                            for (size_t i = 0, n = variableStructMembers->size(); i < n; ++i)
                             {
-                                const auto& structMember = members[i];
+                                const auto& structMember = variableStructMembers->at(i);
                                 auto memberVariableName = variableName+"."+structMember._name;
                                 auto memberVariableValue = aggregateValue->getMemberValue(i);
 
                                 populateUniformInput_ref(structMember._typeDesc, structMember._subMembers.get(), memberVariableName, memberVariableValue, populateUniformInput_ref);
                             }
-
                         }
                     };
 

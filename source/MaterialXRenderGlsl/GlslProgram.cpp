@@ -960,7 +960,7 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
                         [this, variablePath, variableUnit, variableColorspace, variableSemantic, &errors, uniforms, &uniformTypeMismatchFound]
                         (TypeDesc typedesc, const StructMemberDescVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue, auto& populateUniformInput_ref) -> void
                     {
-                        if (!typedesc.isStruct())
+                        if (!typedesc.isStruct() || !variableStructMembers)
                         {
                             // Handle non-struct types
                             int glType = mapTypeToOpenGLType(typedesc);
@@ -1008,20 +1008,15 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
                         {
                             // If we're a struct - we need to loop over each member
                             auto aggregateValue = std::static_pointer_cast<const AggregateValue>(variableValue);
-
-                            // todo - add nullptr guard.
-                            const auto& members = *variableStructMembers;
-                            for (size_t i = 0, n = members.size(); i < n; ++i)
+                            for (size_t i = 0, n = variableStructMembers->size(); i < n; ++i)
                             {
-                                const auto& structMember = members[i];
+                                const auto& structMember = variableStructMembers->at(i);
                                 auto memberTypeDesc = structMember._typeDesc;
                                 auto memberVariableName = variableName + "." + structMember._name;
                                 auto memberVariableValue = aggregateValue->getMemberValue(i);
 
                                 populateUniformInput_ref(memberTypeDesc, structMember._subMembers.get(), memberVariableName, memberVariableValue, populateUniformInput_ref);
                             }
-
-
                         }
                     };
 
