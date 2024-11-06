@@ -1037,11 +1037,11 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
 
                 const auto populateUniformInput =
                     [this, uniforms, variablePath, variableSemantic, &errors, &uniformTypeMismatchFound]
-                    (TypeDesc variableTypeDesc, const StructTypeDescMemberVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue) -> void
+                    (TypeDesc variableTypeDesc, const StructMemberDescVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue) -> void
                 {
                     auto populateUniformInput_impl =
                         [this, uniforms, variablePath, variableSemantic, &errors, &uniformTypeMismatchFound]
-                        (TypeDesc variableTypeDesc, const StructTypeDescMemberVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue, auto& populateUniformInput_ref) -> void
+                        (TypeDesc variableTypeDesc, const StructMemberDescVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue, auto& populateUniformInput_ref) -> void
                     {
                         // There is no way to match with an unnamed variable
                         if (variableName.empty())

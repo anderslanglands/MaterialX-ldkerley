@@ -228,14 +228,15 @@ TYPEDESC_DEFINE_TYPE(MATERIAL, "material", TypeDesc::BASETYPE_NONE, TypeDesc::SE
 /// of the struct.
 ///
 
-struct StructMemberTypeDesc;
+class StructMemberDesc;
 
-using StructTypeDescMemberVec = vector<StructMemberTypeDesc>;
-using ConstStructTypeDescMemberVecPtr = shared_ptr<const StructTypeDescMemberVec>;
+using StructMemberDescVec = vector<StructMemberDesc>;
+using ConstStructMemberDescVecPtr = shared_ptr<const StructMemberDescVec>;
 
-struct StructMemberTypeDesc
+class StructMemberDesc
 {
-    StructMemberTypeDesc(string name, TypeDesc typeDesc, string defaultValueStr, ConstStructTypeDescMemberVecPtr submembers) :
+  public:
+    StructMemberDesc(string name, TypeDesc typeDesc, string defaultValueStr, ConstStructMemberDescVecPtr submembers) :
         _name(name),
         _typeDesc(typeDesc),
         _defaultValueStr(defaultValueStr),
@@ -245,7 +246,11 @@ struct StructMemberTypeDesc
     string _name;
     TypeDesc _typeDesc;
     string _defaultValueStr;
-    ConstStructTypeDescMemberVecPtr _subMembers;
+
+    // Its necessary for a member to recursively store its submembers to allow for
+    // downstream uses of the StructMemberTypeDesc when there is no type registry
+    // in GenContext object available.
+    ConstStructMemberDescVecPtr _subMembers;
 };
 
 
@@ -267,18 +272,18 @@ class MX_GENSHADER_API TypeDescStorage
         return _typeMap;
     }
 
-    uint16_t addStructType(ConstStructTypeDescMemberVecPtr structTypeDesc);
-    ConstStructTypeDescMemberVecPtr getStructType(uint16_t index) const
+    uint16_t registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc);
+    ConstStructMemberDescVecPtr getStructMembers(uint16_t index) const
     {
         return _structTypeStorage[index];
     }
 
   private:
-    using StructTypeDescStorage = vector<ConstStructTypeDescMemberVecPtr>;
+    using StructMemberDescVecStorage = vector<ConstStructMemberDescVecPtr>;
 
     // Internal storage of registered type descriptors
     TypeDescMap _typeMap;
-    StructTypeDescStorage _structTypeStorage;
+    StructMemberDescVecStorage _structTypeStorage;
 };
 
 MATERIALX_NAMESPACE_END

@@ -200,7 +200,7 @@ void Syntax::registerStructTypeDescSyntax(const GenContext& context)
 
         const string& typeName = it.first;
 
-        ConstStructTypeDescMemberVecPtr structTypeDesc = context.getStructType(typeDesc.getStructIndex());
+        ConstStructMemberDescVecPtr structTypeDesc = context.getStructMembers(typeDesc.getStructIndex());
 
         string structTypeName = typeName;
         string defaultValue = typeName + "( ";

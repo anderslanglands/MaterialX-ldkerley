@@ -231,14 +231,14 @@ class MX_GENSHADER_API GenContext
         _typeDescs.registerTypeDesc(T, name);
     }
 
-    uint16_t addStructType(ConstStructTypeDescMemberVecPtr structTypeDesc)
+    uint16_t registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc)
     {
-        return _typeDescs.addStructType(structTypeDesc);
+        return _typeDescs.registerStructMembers(structTypeDesc);
     }
 
-    ConstStructTypeDescMemberVecPtr getStructType(uint16_t index) const
+    ConstStructMemberDescVecPtr getStructMembers(uint16_t index) const
     {
-        return _typeDescs.getStructType(index);
+        return _typeDescs.getStructMembers(index);
     }
 
     const TypeDescStorage::TypeDescMap& getTypeDescs() const

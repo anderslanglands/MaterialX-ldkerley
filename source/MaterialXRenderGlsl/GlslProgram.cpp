@@ -954,11 +954,11 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
 
                 const auto populateUniformInput =
                     [this, variablePath, variableUnit, variableColorspace, variableSemantic, &errors, uniforms, &uniformTypeMismatchFound]
-                    (TypeDesc typedesc, const StructTypeDescMemberVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue) -> void
+                    (TypeDesc typedesc, const StructMemberDescVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue) -> void
                 {
                     auto populateUniformInput_impl =
                         [this, variablePath, variableUnit, variableColorspace, variableSemantic, &errors, uniforms, &uniformTypeMismatchFound]
-                        (TypeDesc typedesc, const StructTypeDescMemberVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue, auto& populateUniformInput_ref) -> void
+                        (TypeDesc typedesc, const StructMemberDescVec* variableStructMembers, const string& variableName, ConstValuePtr variableValue, auto& populateUniformInput_ref) -> void
                     {
                         if (!typedesc.isStruct())
                         {

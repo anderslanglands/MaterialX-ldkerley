@@ -398,7 +398,7 @@ void ShaderGenerator::registerStructTypeDefs(const DocumentPtr& doc, GenContext&
         if (members.empty())
             continue;
 
-        auto newStructTypeDesc = std::make_shared<StructTypeDescMemberVec>();
+        auto newStructTypeDesc = std::make_shared<StructMemberDescVec>();
         for (const auto& member : members)
         {
             auto memberName = member->getName();
@@ -406,19 +406,19 @@ void ShaderGenerator::registerStructTypeDefs(const DocumentPtr& doc, GenContext&
             auto memberType = context.getTypeDesc(memberTypeName);
             auto memberDefaultValue = member->getValueString();
 
-            ConstStructTypeDescMemberVecPtr submembers = nullptr;
+            ConstStructMemberDescVecPtr submembers = nullptr;
             if (memberType.isStruct())
             {
                 // if the member type is a struct itself - then we need to collect the submember information
                 // this is to ensure we can access it later in a context where the GenContext isn't available,
                 // such as the MaterialXRender.
-                submembers = context.getStructType(memberType.getStructIndex());
+                submembers = context.getStructMembers(memberType.getStructIndex());
             }
 
-            newStructTypeDesc->emplace_back( StructMemberTypeDesc(memberName, memberType, memberDefaultValue, submembers) );
+            newStructTypeDesc->emplace_back( StructMemberDesc(memberName, memberType, memberDefaultValue, submembers) );
         }
 
-        auto structIndex = context.addStructType(newStructTypeDesc);
+        auto structIndex = context.registerStructMembers(newStructTypeDesc);
 
         context.registerTypeDesc(TypeDesc(typeDefName, TypeDesc::BASETYPE_STRUCT, TypeDesc::SEMANTIC_NONE, 1, structIndex), typeDefName);
     }

@@ -55,7 +55,7 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext&
     StringVec subValues = parseStructValueString(value);
 
     AggregateValuePtr  result = AggregateValue::createAggregateValue(getName());
-    auto structTypeDesc = context.getStructType(getStructIndex());
+    auto structTypeDesc = context.getStructMembers(getStructIndex());
 
     // todo - add guard for nullptr
     const auto& members = *structTypeDesc;
@@ -80,7 +80,7 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext&
 // TypeDescStorage methods
 //
 
-uint16_t TypeDescStorage::addStructType(ConstStructTypeDescMemberVecPtr structTypeDesc)
+uint16_t TypeDescStorage::registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc)
 {
     if (_structTypeStorage.size() >= std::numeric_limits<uint16_t>::max())
     {
