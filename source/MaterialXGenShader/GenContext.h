@@ -265,6 +265,10 @@ class MX_GENSHADER_API GenContext
     ApplicationVariableHandler _applicationVariableHandler;
 
   private:
+    // TODO - Decide if we want to keep this object - or unfold its contents inside this class.
+    // This object contains all the TypeDesc and StructMemberDescs.
+    // The methods above just wrap and expose this storage.
+    // This is useful as a separate object if we ever think we might want to use it outside of Shader Generation.
     TypeDescStorage _typeDescs;
 };
 

@@ -265,13 +265,11 @@ id<MTLRenderPipelineState> MslProgram::build(id<MTLDevice> device, MetalFramebuf
             if (string::npos != sattributeName.find(colorSet))
             {
                 string setNumber = sattributeName.substr(colorSet.size(), sattributeName.size());
-//                inputPtr->value = Type::INTEGER.createValueFromStrings(setNumber);
                 inputPtr->value = Value::createValueFromStrings(setNumber, getTypeString<int>());
             }
             else if (string::npos != sattributeName.find(uvSet))
             {
                 string setNumber = sattributeName.substr(uvSet.size(), sattributeName.size());
-//                inputPtr->value = Type::INTEGER.createValueFromStrings(setNumber);
                 inputPtr->value = Value::createValueFromStrings(setNumber, getTypeString<int>());
             }
 

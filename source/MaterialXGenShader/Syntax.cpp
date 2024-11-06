@@ -205,11 +205,11 @@ void Syntax::registerStructTypeDescSyntax(const GenContext& context)
         string typeAlias = EMPTY_STRING;
         string typeDefinition = "struct " + structTypeName + " { ";
 
-        for (const auto& x : *structMemberDescs)
+        for (const auto& structMemberDesc : *structMemberDescs)
         {
-            string memberName = x._name;
-            string memberType = x._typeDesc.getName();
-            string memberDefaultValue = x._defaultValueStr;
+            string memberName = structMemberDesc._name;
+            string memberType = structMemberDesc._typeDesc.getName();
+            string memberDefaultValue = structMemberDesc._defaultValueStr;
 
             defaultValue += memberDefaultValue + ", ";
             typeDefinition += memberType + " " + memberName + "; ";
