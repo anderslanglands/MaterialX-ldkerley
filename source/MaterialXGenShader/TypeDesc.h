@@ -278,10 +278,6 @@ class MX_GENSHADER_API TypeDescStorage
                 result.emplace_back(it.second);
             }
         }
-        std::sort(result.begin(), result.end(), [](TypeDesc a, TypeDesc b)
-        {
-            return a.getStructIndex() < b.getStructIndex();
-        });
         return result;
     }
 

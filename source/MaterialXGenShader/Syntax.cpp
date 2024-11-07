@@ -192,9 +192,18 @@ bool Syntax::remapEnumeration(const string&, TypeDesc, const string&, std::pair<
 
 void Syntax::registerStructTypeDescSyntax(const GenContext& context)
 {
-    for (const auto& typeDesc : context.getStructTypeDescs())
+    // It's important to sort the struct types and register their syntax entries in the order
+    // they were added (this is reflected in the struct index).  This ensures that any struct
+    // types used for members of another struct are declared in the correct order in the
+    // generated shader code.
+    auto structTypeDescs = context.getStructTypeDescs();
+    std::sort(structTypeDescs.begin(), structTypeDescs.end(), [](TypeDesc a, TypeDesc b)
     {
-//        const TypeDesc& typeDesc = it.second;
+        return a.getStructIndex() < b.getStructIndex();
+    });
+
+    for (const auto& typeDesc : structTypeDescs)
+    {
         ConstStructMemberDescVecPtr structMemberDescs = context.getStructMembers(typeDesc);
         if (!typeDesc.isStruct() || !structMemberDescs)
             continue;
