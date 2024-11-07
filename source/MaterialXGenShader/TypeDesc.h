@@ -265,7 +265,7 @@ class StructMemberDesc
 // we need to decide if we want to fold this inside GenContext.
 // One advantage of folding it in would be to reduce the API surface.
 
-class TypeDescStorage
+class MX_GENSHADER_API TypeDescStorage
 {
   public:
     using TypeDescMap = std::unordered_map<string, TypeDesc>;
