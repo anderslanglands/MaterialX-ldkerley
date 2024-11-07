@@ -20,14 +20,10 @@
     <implementation name="IM_extract_s_texcoord_genmdl" nodedef="ND_extract_s_texcoord" target="genmdl" sourcecode="{{in}}.ss" />
     <implementation name="IM_extract_s_texcoord_genglsl" nodedef="ND_extract_s_texcoord" target="genglsl" sourcecode="{{in}}.ss" />
 
-
-
     <nodegraph name="test_struct_texcoord">
-
         <extracts name="extracts" type="float">
             <input name="in" type="texcoord_struct" value="{0.01;0.5}"/>
         </extracts>
-
         <convert name="float_to_color3" type="color3">
             <input name="in" type="float" nodename="extracts"/>
         </convert>
