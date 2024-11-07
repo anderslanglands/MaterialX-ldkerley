@@ -241,6 +241,12 @@ class StructMemberDesc
         _subMembers(submembers)
     {
     }
+    const string& getName() const { return _name; }
+    TypeDesc getTypeDesc() const { return _typeDesc; }
+    const string& getDefaultValueStr() const { return _defaultValueStr; }
+    ConstStructMemberDescVecPtr getSubMembers() const { return _subMembers; }
+
+  private:
     string _name;
     TypeDesc _typeDesc;
     string _defaultValueStr;
@@ -255,7 +261,7 @@ class StructMemberDesc
 // we need to decide if we want to fold this inside GenContext.
 // One advantage of folding it in would be to reduce the API surface.
 
-class MX_GENSHADER_API TypeDescStorage
+class TypeDescStorage
 {
   public:
     using TypeDescMap = std::unordered_map<string, TypeDesc>;

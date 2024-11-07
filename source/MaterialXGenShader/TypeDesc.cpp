@@ -15,6 +15,12 @@ namespace
 
 using TypeDescNameMap = std::unordered_map<uint32_t, string>;
 
+// We still need to keep a static map of the type names, because we don't want to store the
+// names inside the TypeDesc object, but we need to be able to implement TypeDesc::getName(),
+// without access to the GenContext object, and thus no access to TypeDescStorage.
+// We could perhaps consider using OIIO::ustring instead of a hash for TypeDesc::_id, this
+// wouldn't remove the static, but move it to OIIO, but the OIIO ustring implementation is
+// really robust and battle tested.
 TypeDescNameMap& typeNameMap()
 {
     static TypeDescNameMap map;
@@ -55,7 +61,7 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext&
 
     for (size_t i = 0; i < structMemberDescs->size(); ++i)
     {
-        result->appendValue( structMemberDescs->at(i)._typeDesc.createValueFromStrings(subValues[i], context));
+        result->appendValue( structMemberDescs->at(i).getTypeDesc().createValueFromStrings(subValues[i], context));
     }
 
     return result;

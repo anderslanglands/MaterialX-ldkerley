@@ -1011,11 +1011,11 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
                             for (size_t i = 0, n = variableStructMembers->size(); i < n; ++i)
                             {
                                 const auto& structMember = variableStructMembers->at(i);
-                                auto memberTypeDesc = structMember._typeDesc;
-                                auto memberVariableName = variableName + "." + structMember._name;
+                                auto memberTypeDesc = structMember.getTypeDesc();
+                                auto memberVariableName = variableName + "." + structMember.getName();
                                 auto memberVariableValue = aggregateValue->getMemberValue(i);
 
-                                populateUniformInput_ref(memberTypeDesc, structMember._subMembers.get(), memberVariableName, memberVariableValue, populateUniformInput_ref);
+                                populateUniformInput_ref(memberTypeDesc, structMember.getSubMembers().get(), memberVariableName, memberVariableValue, populateUniformInput_ref);
                             }
                         }
                     };
@@ -1137,13 +1137,11 @@ const GlslProgram::InputMap& GlslProgram::updateAttributesList()
             if (string::npos != sattributeName.find(colorSet))
             {
                 string setNumber = sattributeName.substr(colorSet.size(), sattributeName.size());
-//                inputPtr->value = Type::INTEGER.createValueFromStrings(setNumber);
                 inputPtr->value = Value::createValueFromStrings(setNumber, getTypeString<int>());
             }
             else if (string::npos != sattributeName.find(uvSet))
             {
                 string setNumber = sattributeName.substr(uvSet.size(), sattributeName.size());
-//                inputPtr->value = Type::INTEGER.createValueFromStrings(setNumber);
                 inputPtr->value = Value::createValueFromStrings(setNumber, getTypeString<int>());
             }
 

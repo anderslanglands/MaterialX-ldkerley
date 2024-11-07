@@ -216,9 +216,9 @@ void Syntax::registerStructTypeDescSyntax(const GenContext& context)
 
         for (const auto& structMemberDesc : *structMemberDescs)
         {
-            string memberName = structMemberDesc._name;
-            string memberType = structMemberDesc._typeDesc.getName();
-            string memberDefaultValue = structMemberDesc._defaultValueStr;
+            string memberName = structMemberDesc.getName();
+            string memberType = structMemberDesc.getTypeDesc().getName();
+            string memberDefaultValue = structMemberDesc.getDefaultValueStr();
 
             defaultValue += memberDefaultValue + ", ";
             typeDefinition += memberType + " " + memberName + "; ";

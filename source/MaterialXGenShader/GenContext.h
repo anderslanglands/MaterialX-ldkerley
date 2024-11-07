@@ -220,7 +220,10 @@ class MX_GENSHADER_API GenContext
         return _applicationVariableHandler;
     }
 
+    //
     // TypeDesc methods
+    //
+
     TypeDesc getTypeDesc(const string& name) const
     {
         return _typeDescs.getTypeDesc(name);

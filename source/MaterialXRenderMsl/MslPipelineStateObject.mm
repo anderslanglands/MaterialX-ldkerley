@@ -1098,10 +1098,10 @@ const MslProgram::InputMap& MslProgram::updateUniformsList()
                             for (size_t i = 0, n = variableStructMembers->size(); i < n; ++i)
                             {
                                 const auto& structMember = variableStructMembers->at(i);
-                                auto memberVariableName = variableName+"."+structMember._name;
+                                auto memberVariableName = variableName+"."+structMember.getName();
                                 auto memberVariableValue = aggregateValue->getMemberValue(i);
 
-                                populateUniformInput_ref(structMember._typeDesc, structMember._subMembers.get(), memberVariableName, memberVariableValue, populateUniformInput_ref);
+                                populateUniformInput_ref(structMember.getTypeDesc(), structMember.getSubMembers().get(), memberVariableName, memberVariableValue, populateUniformInput_ref);
                             }
                         }
                     };

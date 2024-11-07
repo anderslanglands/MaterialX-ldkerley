@@ -358,9 +358,7 @@ void ShaderGenerator::registerBuiltinTypes(GenContext& context)
     // <typedef> in the document against the TypeDesc object in Type::, later
     // we may consider fully specifying the type in the <typedef>
 
-    ///
-    /// Register type descriptors for standard types.
-    ///
+    // Register type descriptors for standard types.
     context.registerTypeDesc(Type::NONE, "none");
     context.registerTypeDesc(Type::BOOLEAN, "boolean");
     context.registerTypeDesc(Type::INTEGER, "integer");
