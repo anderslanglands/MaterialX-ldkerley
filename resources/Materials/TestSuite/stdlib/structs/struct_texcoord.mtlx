@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <materialx version="1.39">
 
+    <!-- TODO - decide if perhaps this structs test folder belongs in a different parent folder
+                its not really testing any stdlib node.
+                Its more like testing Core MaterialX features -->
+
     <typedef name="texcoord_struct">
         <member name="ss" type="float" value="0.5"/>
         <member name="tt" type="float" value="0.5"/>
