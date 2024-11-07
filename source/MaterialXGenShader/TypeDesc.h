@@ -268,9 +268,21 @@ class MX_GENSHADER_API TypeDescStorage
         auto it = _typeMap.find(name);
         return it != _typeMap.end() ? it->second : Type::NONE;
     }
-    const TypeDescMap& getTypeDescs() const
+    vector<TypeDesc> getStructTypeDescs() const
     {
-        return _typeMap;
+        vector<TypeDesc> result;
+        for (const auto& it : _typeMap)
+        {
+            if (it.second.isStruct())
+            {
+                result.emplace_back(it.second);
+            }
+        }
+        std::sort(result.begin(), result.end(), [](TypeDesc a, TypeDesc b)
+        {
+            return a.getStructIndex() < b.getStructIndex();
+        });
+        return result;
     }
 
     uint16_t registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc);

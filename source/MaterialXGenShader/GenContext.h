@@ -241,9 +241,9 @@ class MX_GENSHADER_API GenContext
         return _typeDescs.getStructMembers(typeDesc);
     }
 
-    const TypeDescStorage::TypeDescMap& getTypeDescs() const
+    vector<TypeDesc> getStructTypeDescs() const
     {
-        return _typeDescs.getTypeDescs();
+        return _typeDescs.getStructTypeDescs();
     }
 
   protected:

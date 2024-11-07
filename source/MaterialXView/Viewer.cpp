@@ -1309,6 +1309,9 @@ void Viewer::loadDocument(const mx::FilePath& filename, mx::DocumentPtr librarie
         // Store data library reference.
         doc->setDataLibrary(libraries);
 
+        // Load any additional type defs in the document
+        _genContext.getShaderGenerator().registerTypeDefs(doc, _genContext);
+
         // Apply direct lights.
         applyDirectLights(doc);
 

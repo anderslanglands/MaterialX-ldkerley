@@ -1,6 +1,35 @@
 <?xml version="1.0"?>
 <materialx version="1.38">
 
+    <typedef name="texcoord_struct">
+        <member name="ss" type="float" value="0.5"/>
+        <member name="tt" type="float" value="0.5"/>
+    </typedef>
+    <typedef name="texcoordGroup_struct">
+        <member name="st_0" type="texcoord_struct" value="{0.1;0.1}"/>
+        <member name="st_1" type="texcoord_struct" value="{0.5;0.5}"/>
+        <member name="st_2" type="texcoord_struct" value="{0.9;0.9}"/>
+    </typedef>
+
+    <nodedef name="ND_extract_s_texcoordGroup" node="extractsgroup" nodegroup="shader" >
+        <input name="in" type="texcoordGroup_struct" value="{{0.1;0.2};{0.3;0.4};{0.5;0.6}}"/>
+        <input name="index" type="integer" value="0"/>
+        <output name="out" type="float" value="0.0" />
+    </nodedef>
+
+    <implementation name="IM_extract_s_texcoordGroup_genglsl" nodedef="ND_extract_s_texcoordGroup" file="./mx_extractgroup.glsl" function="mx_extractGroup" target="genglsl">
+        <input name="in" type="texcoordGroup_struct" implname="data" />
+    </implementation>
+    <!-- TODO - figure out how to provide custom MDL implementation in a unit test - Kai asked  me to remove mx_extractGroup function -->
+    <!--    <implementation name="IM_extract_s_texcoordGroup_genmdl" nodedef="ND_extract_s_texcoordGroup" sourcecode="materialx::stdlib_{{MDL_VERSION_SUFFIX}}::mx_extractGroup({{in}}, {{index}})" target="genmdl" /> -->
+
+    <implementation name="IM_extract_s_texcoordGroup_genmsl" nodedef="ND_extract_s_texcoordGroup" file="./mx_extractgroup.glsl" function="mx_extractGroup" target="genmsl">
+        <input name="in" type="texcoordGroup_struct" implname="data" />
+    </implementation>
+    <implementation name="IM_extract_s_texcoordGroup_genosl" nodedef="ND_extract_s_texcoordGroup" file="./mx_extractgroup.osl" function="mx_extractGroup" target="genosl">
+        <input name="in" type="texcoordGroup_struct" implname="data" />
+    </implementation>
+
 
     <nodegraph name="test_struct_texcoord">
 

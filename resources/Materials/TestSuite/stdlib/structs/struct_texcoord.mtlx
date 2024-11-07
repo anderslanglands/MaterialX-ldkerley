@@ -1,5 +1,20 @@
 <?xml version="1.0"?>
-<materialx version="1.38">
+<materialx version="1.39">
+
+    <typedef name="texcoord_struct">
+        <member name="ss" type="float" value="0.5"/>
+        <member name="tt" type="float" value="0.5"/>
+    </typedef>
+
+    <nodedef name="ND_extract_s_texcoord" node="extracts" nodegroup="shader" >
+        <input name="in" type="texcoord_struct" value="{0.1;0.1}" />
+        <output name="out" type="float" value="0.0" />
+    </nodedef>
+
+    <implementation name="IM_extract_s_texcoord_genmsl" nodedef="ND_extract_s_texcoord" target="genmsl" sourcecode="{{in}}.ss" />
+    <implementation name="IM_extract_s_texcoord_genosl" nodedef="ND_extract_s_texcoord" target="genosl" sourcecode="{{in}}.ss" />
+    <implementation name="IM_extract_s_texcoord_genmdl" nodedef="ND_extract_s_texcoord" target="genmdl" sourcecode="{{in}}.ss" />
+    <implementation name="IM_extract_s_texcoord_genglsl" nodedef="ND_extract_s_texcoord" target="genglsl" sourcecode="{{in}}.ss" />
 
 
 
