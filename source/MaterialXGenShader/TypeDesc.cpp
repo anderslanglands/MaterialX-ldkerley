@@ -47,41 +47,41 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext&
     return result;
 }
 
-uint16_t TypeDescStorage::registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc)
-{
-    if (_structTypeStorage.size() >= std::numeric_limits<uint16_t>::max())
-    {
-        throw ExceptionShaderGenError("Maximum number of custom struct types has been exceeded.");
-    }
-    uint16_t index = static_cast<uint16_t>(_structTypeStorage.size());
-    _structTypeStorage.emplace_back(structTypeDesc);
-    return index;
-}
-
-void TypeDescStorage::registerTypeDesc(TypeDesc type, const string& name)
-{
-    _typeMap[name] = type;
-
-    // TODO - decide if we need to make this more threadsafe
-    // typeID is just a hash of the string value - so while
-    // we might set this entry multiple times - it's always going to be
-    // the same value...
-    // TODO - consider using OIIO::ustring?
-
-    // TODO - decide what it means to re-register the same type over again.
-    // We could...
-    // 1) Just blindly register this type on top of the existing type name.
-    // 2) Ignore any types where the names are already registered
-    // 3) When a type is re-registered we could go compare the existing registered type against the
-    // new candidate type, and raise an error if they differ.
-
-    _typeNameMap[type.typeId()] = name;
-}
-
-const string& TypeDescStorage::getTypeDescName(TypeDesc typeDesc) const
-{
-    auto it = _typeNameMap.find(typeDesc.typeId());
-    return it != _typeNameMap.end() ? it->second : TypeDesc::NONE_TYPE_NAME;
-}
+//uint16_t TypeDescStorage::registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc)
+//{
+//    if (_structTypeStorage.size() >= std::numeric_limits<uint16_t>::max())
+//    {
+//        throw ExceptionShaderGenError("Maximum number of custom struct types has been exceeded.");
+//    }
+//    uint16_t index = static_cast<uint16_t>(_structTypeStorage.size());
+//    _structTypeStorage.emplace_back(structTypeDesc);
+//    return index;
+//}
+//
+//void TypeDescStorage::registerTypeDesc(TypeDesc type, const string& name)
+//{
+//    _typeMap[name] = type;
+//
+//    // TODO - decide if we need to make this more threadsafe
+//    // typeID is just a hash of the string value - so while
+//    // we might set this entry multiple times - it's always going to be
+//    // the same value...
+//    // TODO - consider using OIIO::ustring?
+//
+//    // TODO - decide what it means to re-register the same type over again.
+//    // We could...
+//    // 1) Just blindly register this type on top of the existing type name.
+//    // 2) Ignore any types where the names are already registered
+//    // 3) When a type is re-registered we could go compare the existing registered type against the
+//    // new candidate type, and raise an error if they differ.
+//
+//    _typeNameMap[type.typeId()] = name;
+//}
+//
+//const string& TypeDescStorage::getTypeDescName(TypeDesc typeDesc) const
+//{
+//    auto it = _typeNameMap.find(typeDesc.typeId());
+//    return it != _typeNameMap.end() ? it->second : TypeDesc::NONE_TYPE_NAME;
+//}
 
 MATERIALX_NAMESPACE_END

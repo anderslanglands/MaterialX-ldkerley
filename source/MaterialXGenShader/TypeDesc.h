@@ -257,57 +257,57 @@ class StructMemberDesc
     // in GenContext object available.
     ConstStructMemberDescVecPtr _subMembers;
 };
-
-// TODO - this class is only used once inside GenContext.
-// we need to decide if we want to fold this inside GenContext.
-// One advantage of folding it in would be to reduce the API surface.
-
-class MX_GENSHADER_API TypeDescStorage
-{
-  public:
-
-    TypeDescStorage() noexcept {}
-
-    void registerTypeDesc(TypeDesc type, const string& name);
-    TypeDesc getTypeDesc(const string& name) const
-    {
-        auto it = _typeMap.find(name);
-        return it != _typeMap.end() ? it->second : Type::NONE;
-    }
-    const string& getTypeDescName(TypeDesc typeDesc) const;
-
-    vector<TypeDesc> getStructTypeDescs() const
-    {
-        vector<TypeDesc> result;
-        for (const auto& it : _typeMap)
-        {
-            if (it.second.isStruct())
-            {
-                result.emplace_back(it.second);
-            }
-        }
-        return result;
-    }
-
-    uint16_t registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc);
-    ConstStructMemberDescVecPtr getStructMembers(TypeDesc typeDesc) const
-    {
-        if (!typeDesc.isStruct())
-            return nullptr;
-
-        return _structTypeStorage[typeDesc.getStructIndex()];
-    }
-
-  private:
-    using TypeDescMap = std::unordered_map<string, TypeDesc>;
-    using TypeDescNameMap = std::unordered_map<uint32_t, string>;
-    using StructMemberDescVecStorage = vector<ConstStructMemberDescVecPtr>;
-
-    // Internal storage of registered type descriptors
-    TypeDescMap _typeMap;
-    TypeDescNameMap _typeNameMap;
-    StructMemberDescVecStorage _structTypeStorage;
-};
+//
+//// TODO - this class is only used once inside GenContext.
+//// we need to decide if we want to fold this inside GenContext.
+//// One advantage of folding it in would be to reduce the API surface.
+//
+//class MX_GENSHADER_API TypeDescStorage
+//{
+//  public:
+//
+//    TypeDescStorage() noexcept {}
+//
+//    void registerTypeDesc(TypeDesc type, const string& name);
+//    TypeDesc getTypeDesc(const string& name) const
+//    {
+//        auto it = _typeMap.find(name);
+//        return it != _typeMap.end() ? it->second : Type::NONE;
+//    }
+//    const string& getTypeDescName(TypeDesc typeDesc) const;
+//
+//    vector<TypeDesc> getStructTypeDescs() const
+//    {
+//        vector<TypeDesc> result;
+//        for (const auto& it : _typeMap)
+//        {
+//            if (it.second.isStruct())
+//            {
+//                result.emplace_back(it.second);
+//            }
+//        }
+//        return result;
+//    }
+//
+//    uint16_t registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc);
+//    ConstStructMemberDescVecPtr getStructMembers(TypeDesc typeDesc) const
+//    {
+//        if (!typeDesc.isStruct())
+//            return nullptr;
+//
+//        return _structTypeStorage[typeDesc.getStructIndex()];
+//    }
+//
+//  private:
+//    using TypeDescMap = std::unordered_map<string, TypeDesc>;
+//    using TypeDescNameMap = std::unordered_map<uint32_t, string>;
+//    using StructMemberDescVecStorage = vector<ConstStructMemberDescVecPtr>;
+//
+//    // Internal storage of registered type descriptors
+//    TypeDescMap _typeMap;
+//    TypeDescNameMap _typeNameMap;
+//    StructMemberDescVecStorage _structTypeStorage;
+//};
 
 MATERIALX_NAMESPACE_END
 

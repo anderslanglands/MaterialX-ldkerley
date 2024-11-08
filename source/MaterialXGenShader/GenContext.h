@@ -229,35 +229,18 @@ class MX_GENSHADER_API GenContext
 
     void registerTypeDefs(const DocumentPtr doc);
 
-    TypeDesc getTypeDesc(const string& name) const
-    {
-        return _typeDescs.getTypeDesc(name);
-    }
+    void registerTypeDesc(TypeDesc typeDesc, const string& name);
 
-    void registerTypeDesc(TypeDesc T, const string& name)
-    {
-        _typeDescs.registerTypeDesc(T, name);
-    }
+    TypeDesc getTypeDesc(const string& name) const;
 
-    uint16_t registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc)
-    {
-        return _typeDescs.registerStructMembers(structTypeDesc);
-    }
+    const string& getTypeDescName(TypeDesc typeDesc) const;
 
-    ConstStructMemberDescVecPtr getStructMembers(TypeDesc typeDesc) const
-    {
-        return _typeDescs.getStructMembers(typeDesc);
-    }
+    uint16_t registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc);
 
-    vector<TypeDesc> getStructTypeDescs() const
-    {
-        return _typeDescs.getStructTypeDescs();
-    }
+    ConstStructMemberDescVecPtr getStructMembers(TypeDesc typeDesc) const;
 
-    const string& getTypeDescName(TypeDesc typeDesc) const
-    {
-        return _typeDescs.getTypeDescName(typeDesc);
-    }
+    vector<TypeDesc> getStructTypeDescs() const;
+
 
   protected:
     GenContext() = delete;
@@ -282,7 +265,14 @@ class MX_GENSHADER_API GenContext
     // This object contains all the TypeDesc and StructMemberDescs.
     // The methods above just wrap and expose this storage.
     // This is useful as a separate object if we ever think we might want to use it outside of Shader Generation.
-    TypeDescStorage _typeDescs;
+    using TypeDescMap = std::unordered_map<string, TypeDesc>;
+    using TypeDescNameMap = std::unordered_map<uint32_t, string>;
+    using StructMemberDescVecStorage = vector<ConstStructMemberDescVecPtr>;
+
+    // Internal storage of registered type descriptors
+    TypeDescMap _typeDescMap;
+    TypeDescNameMap _typeDescNameMap;
+    StructMemberDescVecStorage _structMemberDescStorage;
 };
 
 /// @class ClosureContext
