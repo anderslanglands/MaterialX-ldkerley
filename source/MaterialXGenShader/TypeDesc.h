@@ -284,7 +284,7 @@ class MX_GENSHADER_API TypeDescStorage
             if (it.second.isStruct())
             {
 
-                printf("getStructTypeDescs() - %d %d '%s'\n", it.second.typeId(), it.first, it.second.getName().c_str());
+                printf("getStructTypeDescs() - %d '%s' '%s'\n", it.second.typeId(), it.first.c_str(), it.second.getName().c_str());
 
 
                 result.emplace_back(it.second);
