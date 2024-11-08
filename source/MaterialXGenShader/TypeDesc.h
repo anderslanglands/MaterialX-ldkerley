@@ -90,7 +90,7 @@ class MX_GENSHADER_API TypeDesc
     uint32_t typeId() const { return _id; }
 
     /// Return the name of the type.
-    const string& getName() const;
+    const string& getName(const GenContext& context) const;
 
     /// Return the basetype for the type.
     unsigned char getBaseType() const { return _basetype; }
@@ -180,9 +180,11 @@ class MX_GENSHADER_API TypeDesc
     uint16_t _structIndex;
 };
 
+
 /// Macro to define global type descriptions for commonly used types.
 #define TYPEDESC_DEFINE_TYPE(T, name, basetype, semantic, size) \
-    static constexpr TypeDesc T(name, basetype, semantic, size);
+    static constexpr TypeDesc T(name, basetype, semantic, size);\
+    inline const string& T##_typeName() { static string typeName = name; return typeName; }
 
 namespace Type
 {
@@ -234,21 +236,24 @@ using ConstStructMemberDescVecPtr = shared_ptr<const StructMemberDescVec>;
 class StructMemberDesc
 {
   public:
-    StructMemberDesc(string name, TypeDesc typeDesc, string defaultValueStr, ConstStructMemberDescVecPtr submembers) :
+    StructMemberDesc(string name, TypeDesc typeDesc, string typeName, string defaultValueStr, ConstStructMemberDescVecPtr submembers) :
         _name(name),
         _typeDesc(typeDesc),
+        _typeName(typeName),
         _defaultValueStr(defaultValueStr),
         _subMembers(submembers)
     {
     }
     const string& getName() const { return _name; }
     TypeDesc getTypeDesc() const { return _typeDesc; }
+    const string& getTypeName() const { return _typeName; }
     const string& getDefaultValueStr() const { return _defaultValueStr; }
     ConstStructMemberDescVecPtr getSubMembers() const { return _subMembers; }
 
   private:
     string _name;
     TypeDesc _typeDesc;
+    string _typeName;
     string _defaultValueStr;
 
     // Its necessary for a member to recursively store its submembers to allow for
@@ -274,9 +279,12 @@ class MX_GENSHADER_API TypeDescStorage
         auto it = _typeMap.find(name);
         return it != _typeMap.end() ? it->second : Type::NONE;
     }
+    const string& getTypeDescName(TypeDesc typeDesc) const;
+
+
     vector<TypeDesc> getStructTypeDescs() const
     {
-        printf("getStructTypeDescs() - START\n");
+//        printf("getStructTypeDescs() - START\n");
         vector<TypeDesc> result;
         for (const auto& it : _typeMap)
         {
@@ -285,13 +293,13 @@ class MX_GENSHADER_API TypeDescStorage
             if (it.second.isStruct())
             {
 
-                printf("getStructTypeDescs() - %d '%s' '%s'\n", it.second.typeId(), it.first.c_str(), it.second.getName().c_str());
+//                printf("getStructTypeDescs() - %d '%s' '%s'\n", it.second.typeId(), it.first.c_str(), it.second.getName().c_str());
 
 
                 result.emplace_back(it.second);
             }
         }
-        printf("getStructTypeDescs() - END\n");
+//        printf("getStructTypeDescs() - END\n");
         return result;
     }
 
@@ -306,9 +314,11 @@ class MX_GENSHADER_API TypeDescStorage
 
   private:
     using StructMemberDescVecStorage = vector<ConstStructMemberDescVecPtr>;
+    using TypeDescNameMap = std::unordered_map<uint32_t, string>;
 
     // Internal storage of registered type descriptors
     TypeDescMap _typeMap;
+    TypeDescNameMap _typeNameMap;
     StructMemberDescVecStorage _structTypeStorage;
 };
 

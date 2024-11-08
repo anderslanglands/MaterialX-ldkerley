@@ -10,56 +10,38 @@
 
 MATERIALX_NAMESPACE_BEGIN
 
-namespace
-{
-
-using TypeDescNameMap = std::unordered_map<uint32_t, string>;
-
-// We still need to keep a static map of the type names, because we don't want to store the
-// names inside the TypeDesc object, but we need to be able to implement TypeDesc::getName(),
-// without access to the GenContext object, and thus no access to TypeDescStorage.
-// We could perhaps consider using OIIO::ustring instead of a hash for TypeDesc::_id, this
-// wouldn't remove the static, but move it to OIIO, but the OIIO ustring implementation is
-// really robust and battle tested.
-TypeDescNameMap& typeNameMap()
-{
-    static TypeDescNameMap map;
-    printf("typeNameMap() - %p\n", &map);
-    return map;
-}
-
-} // anonymous namespace
-
 const string TypeDesc::NONE_TYPE_NAME = "none";
 
-const string& TypeDesc::getName() const
+const string& TypeDesc::getName(const GenContext& context) const
 {
-    TypeDescNameMap& typenames = typeNameMap();
-
-    printf("getName() - START - %d\n", _id);
-
-    printf("typenamemap %zu %p\n", typenames.size(), &typenames);
-    for (const auto& it : typenames) {
-        printf("XXX %d '%s' \n", it.first, it.second.c_str());
-    }
-
-
-    auto it = typenames.find(_id);
-
-    const string& result = it != typenames.end() ? it->second : NONE_TYPE_NAME;
-
-
-        printf("TypeDesc::getName() - %d - '%s'\n", _id, result.c_str());
-
-        printf("getName() - END - %d\n", _id);
-
-        return result;
+    return context.getTypeDescName(*this);
+//    TypeDescNameMap& typenames = typeNameMap();
+//
+//    printf("getName() - START - %d\n", _id);
+//
+//    printf("typenamemap %zu %p\n", typenames.size(), &typenames);
+//    for (const auto& it : typenames) {
+//        printf("XXX %d '%s' \n", it.first, it.second.c_str());
+//    }
+//
+//
+//    auto it = typenames.find(_id);
+//
+//    const string& result = it != typenames.end() ? it->second : NONE_TYPE_NAME;
+//
+//
+//        printf("TypeDesc::getName() - %d - '%s'\n", _id, result.c_str());
+//
+//        printf("getName() - END - %d\n", _id);
+//
+//        return result;
 
 }
 
 ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext& context) const
 {
-    ValuePtr newValue = Value::createValueFromStrings(value, getName());
+    auto typeName = getName(context);
+    ValuePtr newValue = Value::createValueFromStrings(value, typeName);
     auto structMemberDescs = context.getStructMembers(*this);
     if (!isStruct() || !structMemberDescs)
         return newValue;
@@ -69,7 +51,7 @@ ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext&
     // So if this is a struct type we need to create a new AggregateValue.
 
     StringVec subValues = parseStructValueString(value);
-    AggregateValuePtr result = AggregateValue::createAggregateValue(getName());
+    AggregateValuePtr result = AggregateValue::createAggregateValue(typeName);
 
     if (subValues.size() != structMemberDescs->size())
     {
@@ -114,11 +96,34 @@ void TypeDescStorage::registerTypeDesc(TypeDesc type, const string& name)
     // 3) When a type is re-registered we could go compare the existing registered type against the
     // new candidate type, and raise an error if they differ.
 
-    TypeDescNameMap& typenames = typeNameMap();
+//    TypeDescNameMap& typenames = typeNameMap();
 
-    printf("registerTypeDesc('%s') - %d %p\n", name.c_str(), type.typeId(), &typenames);
+//    printf("registerTypeDesc('%s') - %d %p\n", name.c_str(), type.typeId(), &typenames);
 
-    typenames[type.typeId()] = name;
+    _typeNameMap[type.typeId()] = name;
+}
+
+const string& TypeDescStorage::getTypeDescName(TypeDesc typeDesc) const
+{
+//    TypeDescNameMap& typenames = typeNameMap();
+//
+//    printf("getName() - START - %d\n", _id);
+//
+//    printf("typenamemap %zu %p\n", typenames.size(), &typenames);
+//    for (const auto& it : typenames)
+//    {
+//        printf("XXX %d '%s' \n", it.first, it.second.c_str());
+//    }
+
+    auto it = _typeNameMap.find(typeDesc.typeId());
+
+    const string& result = it != _typeNameMap.end() ? it->second : TypeDesc::NONE_TYPE_NAME;
+//
+//    printf("TypeDesc::getName() - %d - '%s'\n", _id, result.c_str());
+//
+//    printf("getName() - END - %d\n", _id);
+
+    return result;
 }
 
 MATERIALX_NAMESPACE_END

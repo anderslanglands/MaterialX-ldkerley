@@ -16,7 +16,7 @@ void bindPyTypeDesc(py::module& mod)
     // by the container they are stored in and should not be destroyed when 
     // garbage collected by the python interpreter
     py::class_<mx::TypeDesc, std::unique_ptr<MaterialX::TypeDesc, py::nodelete>>(mod, "TypeDesc")
-        .def("getName", &mx::TypeDesc::getName)
+//        .def("getName", &mx::TypeDesc::_getName)
         .def("getBaseType", &mx::TypeDesc::getBaseType)
         .def("getSemantic", &mx::TypeDesc::getSemantic)
         .def("getSize", &mx::TypeDesc::getSize)

@@ -249,6 +249,11 @@ class MX_GENSHADER_API GenContext
         return _typeDescs.getStructTypeDescs();
     }
 
+    const string& getTypeDescName(TypeDesc typeDesc) const
+    {
+        return _typeDescs.getTypeDescName(typeDesc);
+    }
+
   protected:
     GenContext() = delete;
 

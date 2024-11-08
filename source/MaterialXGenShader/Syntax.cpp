@@ -72,7 +72,8 @@ const TypeSyntax& Syntax::getTypeSyntax(TypeDesc type) const
     auto it = _typeSyntaxIndexByType.find(type);
     if (it == _typeSyntaxIndexByType.end())
     {
-        throw ExceptionShaderGenError("No syntax is defined for the given type '" + type.getName() + "'.");
+        // todo - decide if we want to add a GenContext here report the type name in the error
+        throw ExceptionShaderGenError("No syntax is defined for the given type '" + std::to_string(type.typeId()) + "'.");
     }
     return *_typeSyntaxes[it->second];
 }
@@ -198,20 +199,20 @@ void Syntax::registerStructTypeDescSyntax(const GenContext& context)
     // generated shader code.
     auto structTypeDescs = context.getStructTypeDescs();
 
-
-    for (const auto& it : structTypeDescs) {
-        printf("RST before : %d '%s'\n", it.typeId(), it.getName().c_str());
-    }
+//
+//    for (const auto& it : structTypeDescs) {
+//        printf("RST before : %d '%s'\n", it.typeId(), it.getName(context).c_str());
+//    }
 
 
     std::sort(structTypeDescs.begin(), structTypeDescs.end(), [](TypeDesc a, TypeDesc b)
     {
         return a.getStructIndex() < b.getStructIndex();
     });
-
-    for (const auto& it : structTypeDescs) {
-        printf("RST after : %d '%s'\n", it.typeId(), it.getName().c_str());
-    }
+//
+//    for (const auto& it : structTypeDescs) {
+//        printf("RST after : %d '%s'\n", it.typeId(), it.getName(context).c_str());
+//    }
 
     for (const auto& typeDesc : structTypeDescs)
     {
@@ -220,18 +221,18 @@ void Syntax::registerStructTypeDescSyntax(const GenContext& context)
             continue;
 
 
-        string structTypeName = typeDesc.getName();
+        string structTypeName = typeDesc.getName(context);
         string defaultValue = structTypeName + "( ";
         string uniformDefaultValue = EMPTY_STRING;
         string typeAlias = EMPTY_STRING;
         string typeDefinition = "struct " + structTypeName + " { ";
 
-        printf("REGISTER STRUCT SYNTAX - '%s'\n", structTypeName.c_str() );
+//        printf("REGISTER STRUCT SYNTAX - '%s'\n", structTypeName.c_str() );
 
         for (const auto& structMemberDesc : *structMemberDescs)
         {
             string memberName = structMemberDesc.getName();
-            string memberType = structMemberDesc.getTypeDesc().getName();
+            string memberType = structMemberDesc.getTypeDesc().getName(context);
             string memberDefaultValue = structMemberDesc.getDefaultValueStr();
 
             defaultValue += memberDefaultValue + ", ";
@@ -256,7 +257,7 @@ TypeSyntax::TypeSyntax(const string& name, const string& defaultValue, const str
     _typeDefinition(typeDefinition),
     _members(members)
 {
-    printf("CREATE TypeSyntax('%s')\n", name.c_str());
+//    printf("CREATE TypeSyntax('%s')\n", name.c_str());
 }
 
 string TypeSyntax::getValue(const ShaderPort* port, const GenContext& context, bool uniform) const

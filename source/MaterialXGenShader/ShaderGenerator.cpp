@@ -409,35 +409,35 @@ void ShaderGenerator::registerStructTypeDefs(const DocumentPtr& doc, GenContext&
             // such as the MaterialXRender.
             ConstStructMemberDescVecPtr submembers = context.getStructMembers(memberType);
 
-            structMemberDescs->emplace_back( StructMemberDesc(memberName, memberType, memberDefaultValue, submembers) );
+            structMemberDescs->emplace_back( StructMemberDesc(memberName, memberType, memberTypeName, memberDefaultValue, submembers) );
         }
 
         auto structIndex = context.registerStructMembers(structMemberDescs);
 
         context.registerTypeDesc(TypeDesc(typeDefName, TypeDesc::BASETYPE_STRUCT, TypeDesc::SEMANTIC_NONE, 1, structIndex), typeDefName);
     }
-
-    for (const auto& typeDesc : context.getStructTypeDescs())
-    {
-        printf("1- STRUCT TYPEDEF - %d '%s'\n", typeDesc.typeId(), typeDesc.getName().c_str());
-    }
+//
+//    for (const auto& typeDesc : context.getStructTypeDescs())
+//    {
+//        printf("1- STRUCT TYPEDEF - %d '%s'\n", typeDesc.typeId(), typeDesc.getName(context).c_str());
+//    }
 
     _syntax->registerStructTypeDescSyntax(context);
 
-
-    for (const auto& typeDesc : context.getStructTypeDescs())
-    {
-        printf("2- STRUCT TYPEDEF %d '%s'\n", typeDesc.typeId(), typeDesc.getName().c_str());
-    }
-
-    auto syntaxes = _syntax->getTypeSyntaxes();
-
-    printf("NUM SYNTAXES : %lu\n", syntaxes.size());
-
-    for (const auto& it : syntaxes)
-    {
-        printf("SYNTAX : '%s'\n", it->getName().c_str());
-    }
+//
+//    for (const auto& typeDesc : context.getStructTypeDescs())
+//    {
+//        printf("2- STRUCT TYPEDEF %d '%s'\n", typeDesc.typeId(), typeDesc.getName(context).c_str());
+//    }
+//
+//    auto syntaxes = _syntax->getTypeSyntaxes();
+//
+//    printf("NUM SYNTAXES : %lu\n", syntaxes.size());
+//
+//    for (const auto& it : syntaxes)
+//    {
+//        printf("SYNTAX : '%s'\n", it->getName().c_str());
+//    }
 }
 
 namespace
