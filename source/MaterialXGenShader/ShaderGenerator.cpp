@@ -426,7 +426,7 @@ void ShaderGenerator::registerStructTypeDefs(const DocumentPtr& doc, GenContext&
 
     auto syntaxes = _syntax->getTypeSyntaxes();
 
-    printf("NUM SYNTAXES : %d\n", syntaxes.size());
+    printf("NUM SYNTAXES : %lu\n", syntaxes.size());
 
     for (const auto& it : syntaxes)
     {
