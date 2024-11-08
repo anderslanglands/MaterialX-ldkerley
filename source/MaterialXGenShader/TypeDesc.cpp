@@ -35,6 +35,13 @@ const string& TypeDesc::getName() const
 {
     TypeDescNameMap& typenames = typeNameMap();
 
+    printf("getName() - START - %d\n", _id);
+
+    printf("typenamemap %zu %p\n", typenames.size(), &typenames);
+    for (const auto& it : typenames) {
+        printf("XXX %d '%s' \n", it.first, it.second.c_str());
+    }
+
 
     auto it = typenames.find(_id);
 
@@ -43,6 +50,7 @@ const string& TypeDesc::getName() const
 
         printf("TypeDesc::getName() - %d - '%s'\n", _id, result.c_str());
 
+        printf("getName() - END - %d\n", _id);
 
         return result;
 

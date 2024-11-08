@@ -276,6 +276,7 @@ class MX_GENSHADER_API TypeDescStorage
     }
     vector<TypeDesc> getStructTypeDescs() const
     {
+        printf("getStructTypeDescs() - START\n");
         vector<TypeDesc> result;
         for (const auto& it : _typeMap)
         {
@@ -290,6 +291,7 @@ class MX_GENSHADER_API TypeDescStorage
                 result.emplace_back(it.second);
             }
         }
+        printf("getStructTypeDescs() - END\n");
         return result;
     }
 
