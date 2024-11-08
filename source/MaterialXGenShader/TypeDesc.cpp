@@ -24,6 +24,7 @@ using TypeDescNameMap = std::unordered_map<uint32_t, string>;
 TypeDescNameMap& typeNameMap()
 {
     static TypeDescNameMap map;
+    printf("typeNameMap() - %p\n", &map);
     return map;
 }
 
@@ -115,7 +116,7 @@ void TypeDescStorage::registerTypeDesc(TypeDesc type, const string& name)
 
     TypeDescNameMap& typenames = typeNameMap();
 
-    printf("registerTypeDesc('%s') - %d\n", name.c_str(), type.typeId());
+    printf("registerTypeDesc('%s') - %d %p\n", name.c_str(), type.typeId(), &typenames);
 
     typenames[type.typeId()] = name;
 }
