@@ -197,13 +197,20 @@ void Syntax::registerStructTypeDescSyntax(const GenContext& context)
     // types used for members of another struct are declared in the correct order in the
     // generated shader code.
     auto structTypeDescs = context.getStructTypeDescs();
+
+
+    for (const auto& it : structTypeDescs) {
+        printf("RST before : %d '%s'\n", it.typeId(), it.getName().c_str());
+    }
+
+
     std::sort(structTypeDescs.begin(), structTypeDescs.end(), [](TypeDesc a, TypeDesc b)
     {
         return a.getStructIndex() < b.getStructIndex();
     });
 
     for (const auto& it : structTypeDescs) {
-        printf("RST before : '%s'\n", it.getName().c_str());
+        printf("RST after : %d '%s'\n", it.typeId(), it.getName().c_str());
     }
 
     for (const auto& typeDesc : structTypeDescs)
