@@ -34,8 +34,18 @@ const string TypeDesc::NONE_TYPE_NAME = "none";
 const string& TypeDesc::getName() const
 {
     TypeDescNameMap& typenames = typeNameMap();
+
+
     auto it = typenames.find(_id);
-    return it != typenames.end() ? it->second : NONE_TYPE_NAME;
+
+    const string& result = it != typenames.end() ? it->second : NONE_TYPE_NAME;
+
+
+        printf("TypeDesc::getName() - %d - '%s'\n", _id, result.c_str());
+
+
+        return result;
+
 }
 
 ValuePtr TypeDesc::createValueFromStrings(const string& value, const GenContext& context) const
@@ -96,6 +106,9 @@ void TypeDescStorage::registerTypeDesc(TypeDesc type, const string& name)
     // new candidate type, and raise an error if they differ.
 
     TypeDescNameMap& typenames = typeNameMap();
+
+    printf("registerTypeDesc('%s') - %d\n", name.c_str(), type.typeId());
+
     typenames[type.typeId()] = name;
 }
 
