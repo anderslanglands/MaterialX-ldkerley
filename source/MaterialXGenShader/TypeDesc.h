@@ -265,7 +265,6 @@ class StructMemberDesc
 class MX_GENSHADER_API TypeDescStorage
 {
   public:
-    using TypeDescMap = std::unordered_map<string, TypeDesc>;
 
     TypeDescStorage() noexcept {}
 
@@ -300,8 +299,9 @@ class MX_GENSHADER_API TypeDescStorage
     }
 
   private:
-    using StructMemberDescVecStorage = vector<ConstStructMemberDescVecPtr>;
+    using TypeDescMap = std::unordered_map<string, TypeDesc>;
     using TypeDescNameMap = std::unordered_map<uint32_t, string>;
+    using StructMemberDescVecStorage = vector<ConstStructMemberDescVecPtr>;
 
     // Internal storage of registered type descriptors
     TypeDescMap _typeMap;
