@@ -21,6 +21,9 @@ MATERIALX_NAMESPACE_BEGIN
 
 class ClosureContext;
 
+class Document;
+using DocumentPtr = shared_ptr<Document>;
+
 /// A standard function to allow for handling of application variables for a given node
 using ApplicationVariableHandler = std::function<void(ShaderNode*, GenContext&)>;
 
@@ -223,6 +226,8 @@ class MX_GENSHADER_API GenContext
     //
     // TypeDesc methods
     //
+
+    void registerTypeDefs(const DocumentPtr doc);
 
     TypeDesc getTypeDesc(const string& name) const
     {

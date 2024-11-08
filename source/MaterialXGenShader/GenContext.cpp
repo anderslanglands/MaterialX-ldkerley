@@ -109,6 +109,12 @@ void GenContext::getOutputSuffix(const ShaderOutput* output, string& suffix) con
     }
 }
 
+void GenContext::registerTypeDefs(const DocumentPtr doc)
+{
+    getShaderGenerator().registerTypeDefs(doc, *this);
+}
+
+
 ScopedSetClosureParams::ScopedSetClosureParams(const ClosureContext::ClosureParams* params, const ShaderNode* node, ClosureContext* cct) :
     _cct(cct),
     _node(node),

@@ -31,10 +31,7 @@ MATERIALX_NAMESPACE_BEGIN
 /// must be done in order to access the type's name later using getName() and to find the
 /// type by name using TypeDesc::get().
 ///
-
-// TODO - This is no longer true - should this be removed? or edited?
-
-/// The class is a POD type of 64-bits and can efficiently be stored and passed by value.
+/// The class is a POD type and can efficiently be stored and passed by value.
 /// Type compare operations and hash operations are done using a precomputed hash value.
 ///
 class MX_GENSHADER_API TypeDesc

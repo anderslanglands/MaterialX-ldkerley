@@ -280,7 +280,7 @@ void testUniqueNames(mx::GenContext& context, const std::string& stage)
     mx::FileSearchPath searchPath = mx::getDefaultDataSearchPath();
     loadLibraries({ "libraries/targets", "libraries/stdlib" }, searchPath, doc);
 
-    context.getShaderGenerator().registerTypeDefs(doc, context);
+    context.registerTypeDefs(doc);
 
     const std::string exampleName = "unique_names";
 
