@@ -279,8 +279,14 @@ class MX_GENSHADER_API TypeDescStorage
         vector<TypeDesc> result;
         for (const auto& it : _typeMap)
         {
+
+
             if (it.second.isStruct())
             {
+
+                printf("getStructTypeDescs() - %d %d '%s'\n", it.second.typeId(), it.first, it.second.getName().c_str());
+
+
                 result.emplace_back(it.second);
             }
         }

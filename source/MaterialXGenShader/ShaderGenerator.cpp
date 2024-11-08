@@ -419,7 +419,7 @@ void ShaderGenerator::registerStructTypeDefs(const DocumentPtr& doc, GenContext&
 
     for (const auto& typeDesc : context.getStructTypeDescs())
     {
-        printf("1- STRUCT TYPEDEF '%s'\n", typeDesc.getName().c_str());
+        printf("1- STRUCT TYPEDEF - %d '%s'\n", typeDesc.typeId(), typeDesc.getName().c_str());
     }
 
     _syntax->registerStructTypeDescSyntax(context);
@@ -427,7 +427,7 @@ void ShaderGenerator::registerStructTypeDefs(const DocumentPtr& doc, GenContext&
 
     for (const auto& typeDesc : context.getStructTypeDescs())
     {
-        printf("2- STRUCT TYPEDEF '%s'\n", typeDesc.getName().c_str());
+        printf("2- STRUCT TYPEDEF %d '%s'\n", typeDesc.typeId(), typeDesc.getName().c_str());
     }
 
     auto syntaxes = _syntax->getTypeSyntaxes();
