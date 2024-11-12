@@ -136,6 +136,9 @@ void GenContext::registerTypeDesc(TypeDesc typeDesc, const string& name)
     // new candidate type, and raise an error if they differ.
 
     _typeDescNameMap[typeDesc.typeId()] = name;
+
+    if (typeDesc.isStruct())
+        _structTypeDescOrder.emplace_back(name);
 }
 
 TypeDesc GenContext::getTypeDesc(const string& name) const
@@ -149,37 +152,29 @@ const string& GenContext::getTypeDescName(TypeDesc typeDesc) const
     auto it = _typeDescNameMap.find(typeDesc.typeId());
     return it != _typeDescNameMap.end() ? it->second : TypeDesc::NONE_TYPE_NAME;
 }
+//
+//uint16_t GenContext::registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc)
+//{
+//    if (_structMemberDescStorage.size() >= std::numeric_limits<uint16_t>::max())
+//    {
+//        throw ExceptionShaderGenError("Maximum number of custom struct types has been exceeded.");
+//    }
+//    uint16_t index = static_cast<uint16_t>(_structMemberDescStorage.size());
+//    _structMemberDescStorage.emplace_back(structTypeDesc);
+//    return index;
+//}
+//
+//ConstStructMemberDescVecPtr GenContext::getStructMembers(TypeDesc typeDesc) const
+//{
+//    if (!typeDesc.isStruct())
+//        return nullptr;
+//
+//    return GenContext::_structMemberDescStorage[typeDesc.getStructIndex()];
+//}
 
-uint16_t GenContext::registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc)
+vector<string> GenContext::getStructTypeDescNames() const
 {
-    if (_structMemberDescStorage.size() >= std::numeric_limits<uint16_t>::max())
-    {
-        throw ExceptionShaderGenError("Maximum number of custom struct types has been exceeded.");
-    }
-    uint16_t index = static_cast<uint16_t>(_structMemberDescStorage.size());
-    _structMemberDescStorage.emplace_back(structTypeDesc);
-    return index;
-}
-
-ConstStructMemberDescVecPtr GenContext::getStructMembers(TypeDesc typeDesc) const
-{
-    if (!typeDesc.isStruct())
-        return nullptr;
-
-    return GenContext::_structMemberDescStorage[typeDesc.getStructIndex()];
-}
-
-vector<TypeDesc> GenContext::getStructTypeDescs() const
-{
-    vector<TypeDesc> result;
-    for (const auto& it : _typeDescMap)
-    {
-        if (it.second.isStruct())
-        {
-            result.emplace_back(it.second);
-        }
-    }
-    return result;
+    return _structTypeDescOrder;
 }
 
 

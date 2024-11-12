@@ -1014,7 +1014,7 @@ const GlslProgram::InputMap& GlslProgram::updateUniformsList()
                                 auto memberVariableName = variableName + "." + structMember.getName();
                                 auto memberVariableValue = aggregateValue->getMemberValue(i);
 
-                                populateUniformInput_ref(structMember.getTypeDesc(), structMember.getTypeName(), structMember.getSubMembers().get(), memberVariableName, memberVariableValue, populateUniformInput_ref);
+                                populateUniformInput_ref(structMember.getTypeDesc(), structMember.getTypeName(), structMember.getTypeDesc().getStructMembers().get(), memberVariableName, memberVariableValue, populateUniformInput_ref);
                             }
                         }
                     };
