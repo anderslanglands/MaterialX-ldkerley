@@ -137,6 +137,10 @@ void GenContext::registerTypeDesc(TypeDesc typeDesc, const string& name)
 
     _typeDescNameMap[typeDesc.typeId()] = name;
 
+    // It's important to record the order of the struct types and register their syntax entries in the order
+    // they were added (this is reflected in the struct index).  This ensures that any struct
+    // types used for members of another struct are declared in the correct order in the
+    // generated shader code.
     if (typeDesc.isStruct())
         _structTypeDescOrder.emplace_back(name);
 }
@@ -152,31 +156,11 @@ const string& GenContext::getTypeDescName(TypeDesc typeDesc) const
     auto it = _typeDescNameMap.find(typeDesc.typeId());
     return it != _typeDescNameMap.end() ? it->second : TypeDesc::NONE_TYPE_NAME;
 }
-//
-//uint16_t GenContext::registerStructMembers(ConstStructMemberDescVecPtr structTypeDesc)
-//{
-//    if (_structMemberDescStorage.size() >= std::numeric_limits<uint16_t>::max())
-//    {
-//        throw ExceptionShaderGenError("Maximum number of custom struct types has been exceeded.");
-//    }
-//    uint16_t index = static_cast<uint16_t>(_structMemberDescStorage.size());
-//    _structMemberDescStorage.emplace_back(structTypeDesc);
-//    return index;
-//}
-//
-//ConstStructMemberDescVecPtr GenContext::getStructMembers(TypeDesc typeDesc) const
-//{
-//    if (!typeDesc.isStruct())
-//        return nullptr;
-//
-//    return GenContext::_structMemberDescStorage[typeDesc.getStructIndex()];
-//}
 
-vector<string> GenContext::getStructTypeDescNames() const
+const vector<string>& GenContext::getStructTypeDescNames() const
 {
     return _structTypeDescOrder;
 }
-
 
 ScopedSetClosureParams::ScopedSetClosureParams(const ClosureContext::ClosureParams* params, const ShaderNode* node, ClosureContext* cct) :
     _cct(cct),
