@@ -59,6 +59,9 @@ class MX_FORMAT_API XmlReadOptions
 
     /// Expand any <template> tags present in the document
     bool expandTemplateTags = true;
+
+    /// Substitute any "Value:" prefixed values with the type specific value
+    bool substituteNamedValues = true;
 };
 
 /// @class XmlWriteOptions

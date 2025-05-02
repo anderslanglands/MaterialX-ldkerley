@@ -75,7 +75,6 @@ void replaceNamedValues(mx::DocumentPtr doc, mx::ConstDocumentPtr stdlib)
         auto valueStr = port->getValueString();
         if (mx::stringStartsWith(valueStr, typeValuePrefix))
         {
-            auto valueNameStr = valueStr.substr(typeValuePrefix.size());
 
             auto typeDef = stdlib->getTypeDef(port->getType());
             if (!typeDef)
@@ -83,6 +82,7 @@ void replaceNamedValues(mx::DocumentPtr doc, mx::ConstDocumentPtr stdlib)
                 throw mx::Exception("Unable to find typeDef '"+port->getType()+"'");
             }
 
+            auto valueNameStr = valueStr.substr(typeValuePrefix.size());
             if (!typeDef->hasAttribute(valueNameStr))
             {
                 throw mx::Exception("Unable to find named value '"+valueNameStr+"' for type '"+typeDef->getName()+"'");
@@ -163,10 +163,6 @@ int main(int argc, char* const argv[])
     mx::XmlReadOptions readOptions;
     readOptions.readComments = true;
     readOptions.readNewlines = true;
-
-
-    // investigate if we should merge expandTemplate with replaceNamedValues together.
-    // and possibly do all of it on load - and thus this tool would just read and then write the files.
     readOptions.expandTemplateTags = true;
 
     mx::XmlWriteOptions writeOptions;
