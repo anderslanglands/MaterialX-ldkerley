@@ -11,17 +11,33 @@ if(MATERIALX_BUILD_DATA_LIBRARY)
             LIST_DIRECTORIES false
             *.mtlx)
 
-    if (MATERIALX_BUILD_BAKE_NAMED_VALUES)
+    file(GLOB_RECURSE MATERIALX_DATA_LIBRARY_SHADER_SOURCE_FILES
+            RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+            LIST_DIRECTORIES false
+            *.md
+            *.glsl
+            *.osl
+            *.h
+            *.metal)
+
+    if (MATERIALX_BUILD_EXPAND_TEMPLATE_ELEMS OR MATERIALX_BUILD_BAKE_NAMED_VALUES)
         foreach(SOURCE_FILE IN LISTS MATERIALX_DATA_LIBRARY_MTLX_SOURCE_FILES)
             set(DEST_FILEPATH ${DATA_LIBRARY_BUILD_DIR}/${SOURCE_FILE})
             list(APPEND MATERIALX_DATA_LIBRARY_MTLX_BUILD_FILES ${DEST_FILEPATH})
         endforeach()
 
+        if (MATERIALX_BUILD_EXPAND_TEMPLATE_ELEMS)
+            set(EXPAND_TEMPLATE_ELEMS_ARG "--expandTemplateElems")
+        endif()
+        if (MATERIALX_BUILD_BAKE_NAMED_VALUES)
+            set(BAKE_NAMED_VALUES_ARG "--bakeNamedValues")
+        endif()
+
         add_custom_command(
                 OUTPUT ${MATERIALX_DATA_LIBRARY_MTLX_BUILD_FILES}
                 COMMAND ${CMAKE_COMMAND} -E make_directory ${DATA_LIBRARY_BUILD_DIR}
-                COMMAND ${_MaterialXBuildLibrary} --sourceLibraryRoot ${CMAKE_CURRENT_SOURCE_DIR} --destLibraryRoot ${DATA_LIBRARY_BUILD_DIR}
-                DEPENDS ${MATERIALX_DATA_LIBRARY_MTLX_SOURCE_FILES} MaterialXBuildLibrary
+                COMMAND ${_MaterialXBuildLibrary} --sourceLibraryRoot ${CMAKE_CURRENT_SOURCE_DIR} --destLibraryRoot ${DATA_LIBRARY_BUILD_DIR} ${EXPAND_TEMPLATE_ELEMS_ARG} ${BAKE_NAMED_VALUES_ARG}
+                DEPENDS ${MATERIALX_DATA_LIBRARY_MTLX_SOURCE_FILES} ${_MaterialXBuildLibrary}
         )
 
         list(APPEND MATERIALX_DATA_LIBRARY_BUILD_FILES ${MATERIALX_DATA_LIBRARY_MTLX_BUILD_FILES})
@@ -36,15 +52,6 @@ if(MATERIALX_BUILD_DATA_LIBRARY)
             list(APPEND MATERIALX_DATA_LIBRARY_BUILD_FILES ${DEST_FILEPATH})
         endforeach()
     endif()
-
-    file(GLOB_RECURSE MATERIALX_DATA_LIBRARY_SHADER_SOURCE_FILES
-            RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-            LIST_DIRECTORIES false
-            *.md
-            *.glsl
-            *.osl
-            *.h
-            *.metal)
 
     foreach(SOURCE_FILE IN LISTS MATERIALX_DATA_LIBRARY_SHADER_SOURCE_FILES)
         set(SOURCE_FILEPATH ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_FILE})

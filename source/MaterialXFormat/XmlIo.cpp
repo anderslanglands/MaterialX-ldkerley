@@ -182,7 +182,7 @@ void recursivelyReplaceStrings(ElementPtr elem, const StringMap& strReplaceMappi
     }
 }
 
-void expandXMLTemplateTags(DocumentPtr doc)
+void expandXMLTemplateElems(DocumentPtr doc)
 {
     // replace node definitions that use a TypeList
     for (auto elem : doc->traverseTree())
@@ -275,9 +275,9 @@ void documentFromXml(DocumentPtr doc, const xml_document& xmlDoc, const FileSear
     // Build the element tree.
     elementFromXml(xmlRoot, doc, readOptions);
 
-    if (!readOptions || readOptions->expandTemplateTags)
+    if (!readOptions || readOptions->expandTemplateElems)
     {
-        expandXMLTemplateTags(doc);
+        expandXMLTemplateElems(doc);
     }
 
     // Upgrade version if requested.

@@ -103,6 +103,8 @@ int main(int argc, char* const argv[])
 
     std::string sourceLibraryRootStr = "";
     std::string destLibraryRootStr = "";
+    bool bakeNamedValues = false;
+    bool expandTemplateElems = false;
 
     for (size_t i = 0; i < tokens.size(); i++)
     {
@@ -116,6 +118,16 @@ int main(int argc, char* const argv[])
         else if (token == "--destLibraryRoot")
         {
             destLibraryRootStr = nextToken;
+        }
+        else if (token == "--bakeNamedValues")
+        {
+            bakeNamedValues = true;
+            continue;
+        }
+        else if (token == "--expandTemplateElems")
+        {
+            expandTemplateElems = true;
+            continue;
         }
         else if (token == "--help")
         {
@@ -163,7 +175,7 @@ int main(int argc, char* const argv[])
     mx::XmlReadOptions readOptions;
     readOptions.readComments = true;
     readOptions.readNewlines = true;
-    readOptions.expandTemplateTags = true;
+    readOptions.expandTemplateElems = expandTemplateElems;
 
     mx::XmlWriteOptions writeOptions;
     writeOptions.createDirectories = true;
@@ -177,7 +189,10 @@ int main(int argc, char* const argv[])
 
         mx::readFromXmlFile(doc, sourceFile, mx::FileSearchPath(), &readOptions);
 
-        replaceNamedValues(doc, stdlib);
+        if (bakeNamedValues)
+        {
+            replaceNamedValues(doc, stdlib);
+        }
 
         mx::writeToXmlFile(doc, destFile, &writeOptions);
     }

@@ -16,6 +16,7 @@ target_include_directories(${TARGET_NAME}
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../>)
 
+# This define controls if the named "Value:"
 target_compile_definitions(${TARGET_NAME}
         PRIVATE
         MATERIALX_BUILD_BAKE_NAMED_VALUES=$<BOOL:${MATERIALX_BUILD_BAKE_NAMED_VALUES}>
